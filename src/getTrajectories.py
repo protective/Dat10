@@ -18,7 +18,7 @@ if (False):
 	con.query("DROP INDEX IF EXISTS tid_" + NEW_TABLE + "_idx CASCADE; create index tid_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (tid);")
 
 print "Fetching data"
-res = con.query('select vehicleid, timestamp from ' + NEW_TABLE + ' where tid is null order by vehicleid, timestamp').getresult()
+res = con.query('select vehicleid, timestamp from ' + NEW_TABLE + ' where vehicleid!=354330030781010 order by vehicleid, timestamp').getresult()
 
 tid=3836
 prevtid = tid
