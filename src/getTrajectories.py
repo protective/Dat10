@@ -5,20 +5,24 @@ TABLE = sys.argv[2]
 NEW_TABLE = 'a_' + TABLE
 
 print "Connecting to " + DB
-con = pg.connect(dbname=DB, host='localhost', user='sabrine',passwd='F1ff')
+con = pg.connect(dbname=DB, host='localhost', user='karsten',passwd='F1ff')
 
-if (False):
+if (True):
 	print "Alter table"
 	con.query('create table ' + NEW_TABLE + ' as (select * from ' + TABLE + ');')
 	con.query('alter table ' + NEW_TABLE + ' add column tid int;')
-if (False):
+if (True):
 	print "Creating indexes"
 	con.query("DROP INDEX IF EXISTS vehid_" + NEW_TABLE + "_idx CASCADE; create index vehid_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (vehicleid);")
 	con.query("DROP INDEX IF EXISTS time_" + NEW_TABLE + "_idx CASCADE; create index time_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (timestamp);")
-	con.query("DROP INDEX IF EXISTS tid_" + NEW_TABLE + "_idx CASCADE; create index tid_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (tid);")
+	#con.query("DROP INDEX IF EXISTS tid_" + NEW_TABLE + "_idx CASCADE; create index tid_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (tid);")
 
+
+if (False):
+	con.query('drop table ' + NEW_TABLE + ';')
+	con.query('create table ' + NEW_TABLE + ' as (select * from ' + TABLE + 'where vehicleid = -1);')	
 print "Fetching data"
-res = con.query('select vehicleid, timestamp from ' + NEW_TABLE + ' where vehicleid!=354330030781010 order by vehicleid, timestamp').getresult()
+res = con.query('select vehicleid, timestamp from ' + TABLE + ' order by vehicleid, timestamp').getresult()
 
 tid=3836
 prevtid = tid
@@ -34,7 +38,10 @@ for p in range(0,len(res)):
 	curVhId = res[p][0]
 
 	if abs(prevTime- curTime) > 100 or not prevVhId == curVhId or p==len(res):
-		con.query('update ' + NEW_TABLE + ' set tid=' + str(tid) + " where timestamp>='" + startTime + "' and timestamp<='" + res[p-1][1] + "' and vehicleid=" + str(curVhId) + ";")
+		
+		cuery = 'update ' + NEW_TABLE + ' set tid=' + str(tid) + " where timestamp>='" + startTime + "' and timestamp<='" + res[p-1][1] + "' and vehicleid=" + str(curVhId) + ";"	
+		print cuery		
+		con.query(cuery)
 		
 		startTime = res[p][1]
 		tid += 1
