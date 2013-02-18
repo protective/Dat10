@@ -17,7 +17,7 @@ prevFuel = res[0][0]
 
 for p in range(0, len(res)):
 	#Reset when new tid
-	diffFuel = res[p][0]-prevFuel
+	diffFuel = float(res[p][0]-prevFuel)
 	diffTime = time.mktime(time.strptime(res[p][1], "%Y-%m-%j %H:%M:%S"))-prevTime
 	
 	if diffTime > 0:
@@ -31,5 +31,5 @@ for p in range(0, len(res)):
 	prevFuel = res[p][0]
 	prevTime = time.mktime(time.strptime(res[p][1], "%Y-%m-%j %H:%M:%S"))
 	
-	if p > 10:
+	if p > 2000:
 		break
