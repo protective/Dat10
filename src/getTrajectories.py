@@ -46,7 +46,6 @@ for p in range(0,len(res)):
 		print "Processed entry " + str(p)
 
 query = 'update ' + NEW_TABLE + ' set tid=' + str(tid) + " where timestamp>='" + startTime + "' and timestamp<='" + res[len(res)-1][1] + "' and vehicleid=" + str(res[len(res)-1][0]) + ";"
-print query
 con.query(query)
 
 print "Creating index"
