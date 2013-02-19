@@ -1,14 +1,16 @@
-import random, time, math, pg, sys
+import random, time, math, pg, sys,os
 
+USER = os.getlogin()
 DB = sys.argv[1]
 TABLE = sys.argv[2]
 NEW_TABLE = 'a_' + TABLE
 
 print "Connecting to " + DB
-con = pg.connect(dbname=DB, host='localhost', user='karsten',passwd='F1ff')
+con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 
 if (True):
 	print "Alter table"
+	con.query('drop table IF EXISTS ' + NEW_TABLE + ';')
 	con.query('create table ' + NEW_TABLE + ' as (select * from ' + TABLE + ');')
 	con.query('alter table ' + NEW_TABLE + ' add column tid int;')
 if (True):
@@ -21,6 +23,7 @@ if (True):
 if (False):
 	con.query('drop table ' + NEW_TABLE + ';')
 	con.query('create table ' + NEW_TABLE + ' as (select * from ' + TABLE + 'where vehicleid = -1);')	
+
 print "Fetching data"
 res = con.query('select vehicleid, timestamp from ' + TABLE + ' order by vehicleid, timestamp').getresult()
 
@@ -40,7 +43,7 @@ for p in range(0,len(res)):
 	if abs(prevTime- curTime) > 100 or not prevVhId == curVhId or p==len(res):
 		
 		cuery = 'update ' + NEW_TABLE + ' set tid=' + str(tid) + " where timestamp>='" + startTime + "' and timestamp<='" + res[p-1][1] + "' and vehicleid=" + str(curVhId) + ";"	
-		print cuery		
+		#print cuery		
 		con.query(cuery)
 		
 		startTime = res[p][1]

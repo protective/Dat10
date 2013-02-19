@@ -1,0 +1,25 @@
+create table can_data (vehicleid bigint, timestamp timestamp, longitude float, latitdue float, speed float, direction int, satellites int, temperature float, rpm int, acceleration float, kmcounter float, fuellevel float, throttlepos float, totalconsumed float, actualconsumed float, actual_km_l float, make float, model int, capacity float, weight float);
+
+psql -d "gps_can" -c "copy can_data from '/home/sabrine/speciale/gps_can_data/fuel_vehicle_354330030777323.csv' DELIMITERS ';' CSV HEADER;"
+psql -d 'gps_can' -c "copy temp to '/home/sabrine/tester.csv' delimiter ' ' csv"
+
+timestamp to number: extract('epoch' from age(timestamp, timestamp '1993-01-01 00:00:00'))
+
+create table temp as (select totalconsumed,temperature, extract('epoch' from age(timestamp, timestamp '1993-01-01 00:00:00')) from can_data where vehicleid=354330030781010 and timestamp > ' 2012-10-21 18:47:09' and timestamp < ' 2012-10-22 00:00:00' order by timestamp);
+
+drop table if exists temp; create table temp as (select extract('epoch' from age(timestamp, timestamp '1993-01-01 00:00:00')), totalconsumed, speed, rpm from a_gps_can_data where tid=20700 order by timestamp);
+
+gnuplot > plot "tester.csv" using 3:1 with lines linetype 1, "tester.csv" using 3:2 with lines linetype 2 axes x1y2
+
+
+alter table a_gps_can_data add column dirty bool;
+update a_gps_can_data set dirty=false where tid in (select tid from (select tid, count(tid) from a_gps_can_data group by tid)a where a.count < 100);
+
+
+statistics
+
+throttlepos		almost always 102
+make			always 1
+model			always null
+capacity		always null
+weight			always null
