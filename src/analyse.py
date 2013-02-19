@@ -23,5 +23,11 @@ print "set terminal png size 1000,500;set y2tics;"
 print "set output 'images/" + TID + "_FuelSpeed.png';"
 print "plot 'images/" + TID + "_data.csv' using 1:2 with lines title 'Fuel', 'images/" + TID + "_data.csv' using 1:3 with lines axes x1y2 title 'Speed'"
 
+print "set output 'images/" + TID + "_FuelRPM.png';"
+print "plot 'images/" + TID + "_data.csv' using 1:2 with lines title 'Fuel', 'images/" + TID + "_data.csv' using 1:4 with lines axes x1y2 title 'RPM'"
+
 print "set output 'images/" + TID + "_FuelAcc.png';"
-print "plot 'images/" + TID + "_data.csv' using 1:2 with lines title 'Fuel', 'images/" + TID + "_data.csv' using 1:5 with lines axes x1y2 title 'Acc'"
+print "plot 'images/" + TID + "_data.csv' using 1:2 with lines title 'Fuel', 'images/" + TID + "_data.csv' using 1:5 with lines axes x1y2 title 'Acceleration'"
+
+
+
