@@ -24,7 +24,7 @@ if (False):
 print "Fetching data"
 res = con.query('select vehicleid, timestamp from ' + TABLE + ' order by vehicleid, timestamp').getresult()
 
-tid=3836
+tid=0
 prevtid = tid
 startTime = res[0][1]
 prevTime = time.mktime(time.strptime(startTime, "%Y-%m-%j %H:%M:%S"))
