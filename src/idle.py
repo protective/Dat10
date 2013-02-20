@@ -5,7 +5,7 @@ import os, pg , math, sys
 con = pg.connect(dbname='gps_can', host='localhost', user=os.getlogin(),passwd='F1ff')
 
 try:
-	con.query('alter table a_gps_can_data add column idle int;')
+	con.query('alter table a_gps_can_data add column idle int not null default 0;')
 finally:
 	print 'Setting idle state'
 	con.query("update a_gps_can_data set idle = 1 where speed < 10 and rpm <= 900;")
