@@ -13,31 +13,35 @@ try:
 except:
 	print "already exist"
 
-#con.query('update ' + TABLE + ' set cruise = false;') 
+con.query('update ' + TABLE + ' set cruise = false;') 
 print "done update to false"
-res = con.query('select speed, timestamp  from ' + TABLE + ' order by vehicleid, timestamp').getresult()
+res = con.query('select speed, timestamp, tid  from ' + TABLE + ' order by vehicleid, timestamp').getresult()
 print "all done"
 
-cruiseBegin = 0;
-cruiseCur = 0;
-cruiseSpeed = 0;
+cruiseBegin = 0
+cruiseCur = 0
+cruiseSpeed = 0
+noobs = 0
 Time = time.mktime(time.strptime(res[0][1], "%Y-%m-%j %H:%M:%S"))
 while cruiseBegin < len(res):
-	if cruiseSpeed <= res[cruiseCur][0] +1 and cruiseSpeed >= res[cruiseCur][0] -1 and cruiseSpeed > 5:
+	cruiseCur += 1
+	noobs += 1
+	if cruiseCur < len(res) and cruiseSpeed <= res[cruiseCur][0] +1 and cruiseSpeed >= res[cruiseCur][0] -1 and cruiseSpeed > 5 and res[cruiseBegin][2] == res[cruiseCur][2]:
 		#we are within thresshold of cruisespeed
-		cruiseCur += 1
+
 		continue
 	else:
-		if (abs(Time-time.mktime(time.strptime(res[cruiseCur][1], "%Y-%m-%j %H:%M:%S"))) > 10):
+		if (abs(Time-time.mktime(time.strptime(res[cruiseCur-1][1], "%Y-%m-%j %H:%M:%S"))) > 45 and noobs >= 10):
 			#we have been using cc until now update
-			print "update"
-			con.query('update ' + TABLE + ' set cruise = true where timestamp >= \''+res[cruiseBegin][1] + '\' and timestamp <= \''+ res[cruiseCur][1] + '\';'  )
+			s = 'update ' + str(TABLE) + ' set cruise = true where tid = ' + str(res[cruiseBegin][2]) + ' and timestamp >= \''+str(res[cruiseBegin][1]) + '\' and timestamp <= \''+ str(res[cruiseCur-1][1]) + '\';'  
+			print s
+			con.query(s)
 		
 		cruiseBegin += 1
 		cruiseCur = cruiseBegin;
 		cruiseSpeed = res[cruiseBegin][0]
 		Time = time.mktime(time.strptime(res[cruiseBegin][1], "%Y-%m-%j %H:%M:%S"))
-		
+		noobs = 0
 
 
 
