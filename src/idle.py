@@ -16,5 +16,6 @@ con.query("update a_gps_can_data set idle = 2 where rpm = 0;")
 print "Setting running state"
 con.query("update a_gps_can_data set idle = 3 where idle != 1 and idle !=2;")
 	
-
+print "Creating index"
+con.query("Create index idle_a_gps_can_data_idx on a_gps_can_data (idle);")
 

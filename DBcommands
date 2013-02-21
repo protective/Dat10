@@ -15,6 +15,8 @@ gnuplot > plot "tester.csv" using 3:1 with lines linetype 1, "tester.csv" using 
 alter table a_gps_can_data add column dirty bool;
 update a_gps_can_data set dirty=false where tid in (select tid from (select tid, count(tid) from a_gps_can_data group by tid)a where a.count < 100);
 
+update a_gps_can_data set idle_percentage = p from (select tid, (count(*)-count(case when idle!=1 then 1 end))::float/count(*) as p from a_gps_can_data where dirty is null group by tid)f where a_gps_can_data.tid=f.tid;
+
 
 statistics
 
