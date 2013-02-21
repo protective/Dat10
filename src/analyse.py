@@ -29,5 +29,9 @@ print "plot 'images/" + TID + "_data.csv' using 1:2 with lines title 'Fuel', 'im
 print "set output 'images/" + TID + "_FuelAcc.png';"
 print "plot 'images/" + TID + "_data.csv' using 1:2 with lines title 'Fuel', 'images/" + TID + "_data.csv' using 1:5 with lines axes x1y2 title 'Acceleration'"
 
+print "set output 'images/" + TID + "_SpeedAcc.png';"
+print "plot 'images/" + TID + "_data.csv' using 1:3 with lines title 'Speed' lc rgb \"blue\", 'images/" + TID + "_data.csv' using 1:5 with lines axes x1y2 title 'Acceleration' lc rgb \"red\""
+
+
 
 
