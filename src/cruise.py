@@ -1,20 +1,20 @@
 import pg , math, sys, os ,time
 
 USER = os.getlogin()
-DB = sys.argv[1]
-TABLE = sys.argv[2]
+DB = 'gps_can'
+TABLE = 'a_gps_can_data'
 
 print "Connecting to " + DB
 con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 
 
 try:
-	con.query('alter table '+TABLE+' add column cruise bool;')
+	con.query('alter table ' + TABLE + 'drop IF EXISTS cruise'
+	con.query('alter table '+TABLE+' add column cruise bool default false;')
 except:
 	print "already exist"
 
-con.query('update ' + TABLE + ' set cruise = false;') 
-print "done update to false"
+print "Extracting data"
 res = con.query('select speed, timestamp, tid  from ' + TABLE + ' order by vehicleid, timestamp').getresult()
 print "all done"
 
