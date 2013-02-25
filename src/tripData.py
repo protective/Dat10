@@ -20,12 +20,29 @@ if (False):
 		con.query('alter table ' + TABLE + ' drop km_pr_l;')
 	finally:
 		con.query('alter table ' + TABLE + ' add km_pr_l float;')
-		con.query('update ' + TABLE + ' set km_pr_l = kml from (select tid, ((max(kmcounter)-min(kmcounter))/(case when (max(totalconsumed)-min(totalconsumed)) =0 then 1 else (max(totalconsumed)-min(totalconsumed)) end))kml from a_gps_can_data where totalconsumed is not null and kmcounter is not null and totalconsumed < 4000000 group by tid)s where ' + TABLE + '.tid=s.tid;')
+		con.query('update ' + TABLE + ' set km_pr_l = kml from (select tid, ((max(kmcounter)-min(kmcounter))/(case when (max(totalconsumed)-min(totalconsumed)) =0 then 1 else (max(totalconsumed)-min(totalconsumed)) end))kml from ' + OLD_TABLE + ' where totalconsumed is not null and kmcounter is not null and totalconsumed < 4000000 group by tid)s where ' + TABLE + '.tid=s.tid;')
+		
+if (True):
+	print 'Total km'
+	try:
+		con.query('alter table ' + TABLE + ' drop total_km')
+	finally:
+		con.query('alter table ' + TABLE + ' add total_km int;')
+		con.query('update ' + TABLE + ' set total_km = km from (select tid, (max(kmcounter)-min(kmcounter))km from ' + OLD_TABLE + ' where kmcounter is not null group by tid)s where ' + TABLE + '.tid=s.tid;')
 
-print 'Percentage in idle'
-try:
-	con.query('alter table ' + TABLE + ' drop idle_percentage;')
-finally:
-	con.query('alter table ' + TABLE + ' add idle_percentage float;')
-	con.query('update ' + TABLE + ' set idle_percentage = p from (select tid, (count(*)-count(case when idle!=1 then 1 end))::float/count(*) as p from ' + OLD_TABLE + ' where dirty is null group by tid)f where ' + TABLE + '.tid=f.tid;')
+if (False):
+	print 'Percentage in idle'
+	try:
+		con.query('alter table ' + TABLE + ' drop idle_percentage;')
+	finally:
+		con.query('alter table ' + TABLE + ' add idle_percentage float;')
+		con.query('update ' + TABLE + ' set idle_percentage = p from (select tid, (count(*)-count(case when idle!=1 then 1 end))::float/count(*) as p from ' + OLD_TABLE + ' where dirty is null group by tid)f where ' + TABLE + '.tid=f.tid;')
+
+
+
+
+
+
+
+
 
