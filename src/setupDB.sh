@@ -4,7 +4,8 @@ FILEPATH=$2
 FILES=$FILEPATH/*.csv
 TABLE='gps_can_data'
 
-
+psql -d $DB -f '/usr/share/postgresql/9.1/contrib/postgis-1.5/postgis.sql'
+psql -d $DB -f '/usr/share/postgresql/9.1/contrib/postgis-1.5/spatial_ref_sys.sql'
 psql -d $DB -c "drop table IF EXISTS $TABLE;"
 psql -d $DB -c "create table $TABLE (vehicleid bigint, timestamp timestamp, longitude float, latitude float, speed float, direction int, satellites int, temperature float, rpm int, acceleration float, kmcounter float, fuellevel float, throttlepos float, totalconsumed float, actualconsumed float, actual_km_l float, make float, model int, capacity float, weight float);"
 
@@ -15,7 +16,13 @@ psql -d $DB -c "\copy $TABLE from '$f' DELIMITERS ';' CSV HEADER;"
 echo "Done loading $f"
 done
 
+echo "Create geom postgis"
+psql -d $DB -c "alter table a_gps_can_data add column geom geography(POINT,4326);"
+psql -d $DB -c "update a_gps_can_data set geom = ST_SetSRID(ST_MakePoint(longitude,latitude),4326);"
+
 echo "Creating indexes"
+
+psql -d $DB -c "DROP INDEX IF EXISTS idx_a_gps_can_data CASCADE; create index idx_a_gps_can_data on a_gps_can_data using gist(geom);"
 psql -d $DB -c "DROP INDEX IF EXISTS vehid_idx CASCADE; create index vehid_idx on $TABLE (vehicleid)"
 psql -d $DB -c "DROP INDEX IF EXISTS time_idx CASCADE; create index time_idx on $TABLE (timestamp)"
 psql -d $DB -c "DROP INDEX IF EXISTS lng_idx CASCADE; create index lng_idx on $TABLE (longitude)"
