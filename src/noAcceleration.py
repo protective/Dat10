@@ -11,7 +11,7 @@ con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 res = con.query('select speed, timestamp, tid  from ' + TABLE + ' where tid in (select tid from trip_data) order by tid, timestamp').getresult()
 
 try:
-	con.query('alter table '+TABLE+' add column acckm int;')
+	con.query('alter table trip_data add column acckm int;')
 except:
 	print "already exist"
 
@@ -41,7 +41,7 @@ while i < len(res):
 		if(temp[0][0] != 0):
 			total = acccounter/ temp[0][0]
 		s = "update trip_data set acckm = " + str(total) + " where tid = " + str(tid) + ";"
-		#con.query(s)
+		con.query(s)
 		acccounter = 0
 		i+=1
 		tid = res[i][2]

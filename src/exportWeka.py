@@ -6,7 +6,7 @@ TABLE = 'trip_data'
 
 con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 
-res = con.query("""select vehicleid, idle_percentage, km_pr_l,
+res = con.query("""select vehicleid, idle_percentage, km_pr_l, acckm,
 	(case 
 		when km_pr_l < 6 then 'low' 
 		when km_pr_l >= 6 and km_pr_l< 7 then 'medium'
@@ -20,6 +20,7 @@ output.write("""@RELATION iris
 @ATTRIBUTE id	REAL
 @ATTRIBUTE idle	REAL
 @ATTRIBUTE fuel	REAL
+@ATTRIBUTE accel REAL
 @ATTRIBUTE class	{low, medium, high}
 
 @DATA

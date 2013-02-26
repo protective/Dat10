@@ -27,10 +27,11 @@ if (True):
 	con.query('alter table ' + TABLE + ' add total_km int;')
 	con.query('update ' + TABLE + ' set total_km = km from (select tid, (max(kmcounter)-min(kmcounter))km from ' + OLD_TABLE + ' where kmcounter is not null group by tid)s where ' + TABLE + '.tid=s.tid;')
 
-if (False):
+if (True):
 	print 'Percentage in idle'
 	con.query('alter table ' + TABLE + ' drop if exists idle_percentage;')
 	con.query('alter table ' + TABLE + ' add idle_percentage float;')
 	con.query('update ' + TABLE + ' set idle_percentage = p from (select tid, (count(*)-count(case when idle!=1 then 1 end))::float/count(*) as p from ' + OLD_TABLE + ' where dirty is null group by tid)f where ' + TABLE + '.tid=f.tid;')
+
 
 print "Done"

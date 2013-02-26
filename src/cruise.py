@@ -8,11 +8,10 @@ print "Connecting to " + DB
 con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 
 
-try:
-	con.query('alter table ' + TABLE + 'drop IF EXISTS cruise'
-	con.query('alter table '+TABLE+' add column cruise bool default false;')
-except:
-	print "already exist"
+
+con.query('alter table ' + TABLE + ' drop IF EXISTS cruise;')
+con.query('alter table '+TABLE+' add column cruise bool default false;')
+
 
 print "Extracting data"
 res = con.query('select speed, timestamp, tid  from ' + TABLE + ' order by vehicleid, timestamp').getresult()
@@ -23,7 +22,7 @@ cruiseCur = 0
 cruiseSpeed = 0
 noobs = 0
 Time = time.mktime(time.strptime(res[0][1], "%Y-%m-%j %H:%M:%S"))
-while cruiseBegin < len(res):
+while cruiseBegin < len(res) -1:
 	cruiseCur += 1
 	noobs += 1
 	if cruiseCur < len(res) and cruiseSpeed <= res[cruiseCur][0] +1 and cruiseSpeed >= res[cruiseCur][0] -1 and cruiseSpeed > 5 and res[cruiseBegin][2] == res[cruiseCur][2]:
@@ -37,8 +36,7 @@ while cruiseBegin < len(res):
 			print s
 			con.query(s)
 		
-		cruiseBegin += 1
-		cruiseCur = cruiseBegin;
+		cruiseBegin = cruiseCur
 		cruiseSpeed = res[cruiseBegin][0]
 		Time = time.mktime(time.strptime(res[cruiseBegin][1], "%Y-%m-%j %H:%M:%S"))
 		noobs = 0
