@@ -34,4 +34,11 @@ if (True):
 	con.query('update ' + TABLE + ' set idle_percentage = p from (select tid, (count(*)-count(case when idle!=1 then 1 end))::float/count(*) as p from ' + OLD_TABLE + ' where dirty is null group by tid)f where ' + TABLE + '.tid=f.tid;')
 
 
+if (True):
+	print 'Percentage in cruise'
+	con.query('alter table ' + TABLE + ' drop if exists cruise_percentage;')
+	con.query('alter table ' + TABLE + ' add cruise_percentage float;')
+	con.query('update ' + TABLE + ' set cruise_percentage = p from (select tid, (count(*)-count(case when cruise =false then 1 end))::float/count(*) as p from ' + OLD_TABLE + ' where dirty is null group by tid)f where ' + TABLE + '.tid=f.tid;')
+
+
 print "Done"
