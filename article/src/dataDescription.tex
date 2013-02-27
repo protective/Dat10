@@ -1,24 +1,40 @@
 \section{Data Description}
+A number of data sources can be used to gather data.
+GPS data can easily be collected from any vehicle equiped with a GPS system, through which for example a timestamp, longitude, latitude and speed are available.
+CANBus data provides information about the state of the vehicle.  %TODO: Reformulate
+Retriving CANBus data is not as easy as GPS data, and little data is therefore avialable. 
+CANBus data is for example the engines rounds per minute, fuel consumption and temperature. 
+The hauliers may also provide additional information such as vehicle model, capacity and weight. 
 
-\begin{tabular}{|l|l|l|}\hline
-vehicleid & integer & \\\hline
-timestamp & timestamp & \\\hline
-longitude & float & \\\hline
-latitude & float & \\\hline
-speed & float & \\\hline
-direction & integer & \\\hline
-satellites & integer & \\\hline
-temperature & float & \\\hline
-rpm & integer & \\\hline
-acceleration & float & \\\hline
-kmcounter & float & \\\hline
-fuellevel& float & \\\hline
-throttlepos & float & \\\hline
-totalconsumed & float & \\\hline
-actualconsumed & float & \\\hline
-actual\_km\_l & float & \\\hline
-make & integer & \\\hline
-model & integer & \\\hline
-capacity & float & \\\hline
-weight & float & \\\hline
+Table~\ref{tb:dataDescription} lists the data columns in the provided data set.
+The data set contains 10,224,846 records collected from 6 minibusses. 
+All vehicles are assumed to be compareable.%TODO
+Instantaneous fuel consumption is undependable and should not be used and non of the data provided by the haulier is available.
+totalconsumed is the most accurate measure for fuel consumption, however, it only has a granularity of half a liter. Therefore, it can only be used at an agreegated level of at least a trip.
+
+\begin{table}[bt]
+\begin{tabular}{|l|l|l|l|}\hline
+Name & Data type & Source & Description\\\hline
+vehicleid & integer & ID & Unique identifier for vehicles\\\hline
+timestamp & timestamp & GPS & Date and time of the record\\\hline
+longitude & float & GPS & Longitude coordinate of the vehicle\\\hline
+latitude & float & GPS & Latitude coordinate of the vehicle\\\hline
+speed & float & GPS & Driving speed in km/h\\\hline
+direction & integer & GPS & Direction of the vehicle in degrees. North (0), east(90), south(180) and west(270)\\\hline
+satellites & integer & GPS & Number of visible satellites\\\hline
+rpm & integer & CANBus & The engines rounds per minute\\\hline
+kmcounter & float & CANBus & Mileage record\\\hline
+temperature & float & CANBus & Temperature of the engine in degrees Celsius\\\hline
+fuellevel& float & CANBus & Fuel level in the tank where 100 is full tank.\\\hline
+throttlepos & float & CANBus & Position of the throttle. No data available\\\hline
+totalconsumed & float & CANBus & Total amount of fuel consumed by the vehicle in liters\\\hline
+actualconsumed & float & CANBus & Instantaneous amount of fuel consumption in liters. Undependable\\\hline
+actual\_km\_l & float & CANBus & Instantaneous km/l. Undependable\\\hline
+acceleration & float & CANBus & Acceleration ???\\\hline %TODO: What is this
+make & integer & Haulier &The make of the vehicle. No data available\\\hline
+model & integer & Haulier &The model of the vehicle. No data available\\\hline
+capacity & float & Haulier & Number of possible passengers. No data available\\\hline
+weight & float & Haulier & The weight of the vehicle. No data available\\\hline
 \end{tabular}
+\caption{GPS and CANBus data types}\label{tb:dataDescription}
+\end{table}

@@ -1,0 +1,32 @@
+\section{Defintions}
+\subsection{Trips}
+The provided data set is annotated with a trip identifier, \tid.
+A trip is defined as a collection of records with the same vehicle identifier, \vid, and where each two consecutive records are within 100 seconds of each other.
+A trip is hence defined from when the vehicle is turn on and not by when the vehicle is moving when it is possible to map-match GPS coordinates to road segments. 
+This defintion is chosen as idle time, i.e. when the engine is running but the vehicle is not moving, is persumed to be an important factor for fuel consumption. 
+
+%TODO: Do tests to explain why 100 seconds
+
+The data set contains 13606 distinct trips containing between 1 and 78511 records.
+Many of these trips have less than 100 records and are therefore not useful. %TODO: Do tests to explain why 100 records
+We remove these trips which results in 2868 distinct trips. 
+The longest trip is 231 km and 278 trips drive less than 1 km.
+
+\subsection{km per liter}
+Km per liter is the total number of kilometers driven in the trip divided by the amount of fuel used.
+The fuel consumption is extracted from the totalconsumed column which gives the most accurate consumption of the available data.
+
+All six vehicles in the data set have similar km/l accross their trips (See Figure~\ref{fig:kmlTrips}).
+Most trips are driven with bewteen 5 and 10 km/l and all have trips with 0 km/l. The latter is because they do not drive any where.
+\begin{figure}[htb]
+\centering
+\includegraphics[width=1\textwidth]{../src/images/FuelTrips.png}
+\caption{km/l for all trips}
+\label{fig:kmlTrips}
+\end{figure}
+
+Km per liter can be used as a measure for how fuel efficient the vehicles are.
+We classify the trips into three classes based on their km/l.
+Class \fuelLow contains trips with between 0 and 4 km/l, being all those that fall below the normal values.
+Class \fuelMedium contains trips with between 4 and 8 km/l and class \fuelHigh contains the remaning trips with 8 or more km/l.
+The main cluster is split into two classes to distinguish the best trips.

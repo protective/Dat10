@@ -8,9 +8,9 @@ con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 #
 res = con.query("""select vehicleid, idle_percentage, km_pr_l, acckm, stopngo, cruise_percentage, total_km, 
 	(case 
-		when km_pr_l < 2 then 'verylow' 
-		when km_pr_l >= 2 and km_pr_l< 8 then 'low'
-		when km_pr_l >= 8 then 'veryhigh'
+		when km_pr_l < 4 then 'low' 
+		when km_pr_l >= 4 and km_pr_l< 8 then 'medium'
+		when km_pr_l >= 8 then 'high'
 	end)
 from """ + TABLE).getresult()
 
