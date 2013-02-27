@@ -8,7 +8,7 @@ TABLE = 'trip_data'
 print "Connecting to " + DB
 con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 
-if (True):
+if (False):
 	print 'Setting up ' + TABLE
 	con.query('drop table if exists ' + TABLE + ';')
 	con.query('create table ' + TABLE + '(vehicleid bigint, tid int);')

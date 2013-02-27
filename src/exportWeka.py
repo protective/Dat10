@@ -5,12 +5,12 @@ DB = 'gps_can'
 TABLE = 'trip_data'
 
 con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
-
-res = con.query("""select vehicleid, idle_percentage, km_pr_l, acckm,
+#
+res = con.query("""select vehicleid, idle_percentage, km_pr_l, acckm, stopngo, cruise_percentage, total_km, 
 	(case 
-		when km_pr_l < 6 then 'low' 
-		when km_pr_l >= 6 and km_pr_l< 7 then 'medium'
-		when km_pr_l >= 7 then 'high'
+		when km_pr_l < 2 then 'verylow' 
+		when km_pr_l >= 2 and km_pr_l< 8 then 'low'
+		when km_pr_l >= 8 then 'veryhigh'
 	end)
 from """ + TABLE).getresult()
 
@@ -21,7 +21,10 @@ output.write("""@RELATION iris
 @ATTRIBUTE idle	REAL
 @ATTRIBUTE fuel	REAL
 @ATTRIBUTE accel REAL
-@ATTRIBUTE class	{low, medium, high}
+@ATTRIBUTE stopngo REAL
+@ATTRIBUTE cruise REAL
+@ATTRIBUTE length REAL
+@ATTRIBUTE class	{verylow, low, veryhigh}
 
 @DATA
 """)

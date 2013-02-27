@@ -2,19 +2,18 @@ import pg , math, sys, os ,time
 
 USER = os.getlogin()
 DB = "gps_can"
-TABLE = "a_gps_can_data"
+QUERY_TABLE = "a_gps_can_data"
+TABLE = "trip_data"
 
 
 
 con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 
-res = con.query('select speed, timestamp, tid  from ' + TABLE + ' where tid in (select tid from trip_data) order by tid, timestamp').getresult()
+res = con.query('select speed, timestamp, tid  from ' + QUERY_TABLE + ' where tid in (select tid from ' + TABLE + ') and dirty is null order by tid, timestamp').getresult()
 
-try:
-	con.query('alter table trip_data add column acckm int;')
-except:
-	print "already exist"
 
+con.query("alter table " + TABLE + " drop IF EXISTS acckm;")
+con.query('alter table ' + TABLE + ' add acckm float not null default 0;')
 
 
 curSpeed = 0
@@ -36,11 +35,11 @@ while i < len(res):
 			
 		i+=1
 	else:
-		temp = con.query('select total_km from trip_data where tid = '+ str(tid) ).getresult()
+		temp = con.query('select total_km from ' + TABLE + ' where tid = '+ str(tid) ).getresult()
 		total = 0
 		if(temp[0][0] != 0):
 			total = acccounter/ temp[0][0]
-		s = "update trip_data set acckm = " + str(total) + " where tid = " + str(tid) + ";"
+		s = "update " + TABLE + " set acckm = " + str(total) + " where tid = " + str(tid) + ";"
 		con.query(s)
 		acccounter = 0
 		i+=1
