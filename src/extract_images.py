@@ -28,21 +28,28 @@ if TYPE == 'km_pr_l':
 	print s + "4 lw 2 notitle, 8 lw 2 notitle"
 
 else:
-	res = con.query("select round(cast(" + TYPE + " as numeric), 2)idle, count(*) from " + TABLE + " where km_pr_l < 4 group by idle order by idle;").getresult()
+	if TYPE == 'acckm':
+		val = 'round(cast(' + TYPE + ' as numeric)/10)*10'
+	elif TYPE == 'stopngo':
+		val = 'round(cast(' + TYPE + ' as numeric))'
+	else:
+		val = 'round(cast(' + TYPE + ' as numeric), 2)'
+
+	res = con.query("select " + val + "idle, count(*) from " + TABLE + " where km_pr_l < 4 group by idle order by idle;").getresult()
 	output = open('images/' + TYPE + '_low_data.csv', 'wb')
 	spamwriter = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 
 	for r in res:
 		spamwriter.writerow(r)
 	
-	res = con.query("select round(cast(" + TYPE + " as numeric), 2)idle, count(*) from " + TABLE + " where km_pr_l >= 4 and km_pr_l < 8 group by idle order by idle;").getresult()
+	res = con.query("select " + val + "idle, count(*) from " + TABLE + " where km_pr_l >= 4 and km_pr_l < 8 group by idle order by idle;").getresult()
 	output = open('images/' + TYPE + '_medium_data.csv', 'wb')
 	spamwriter = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 
 	for r in res:
 		spamwriter.writerow(r)
 	
-	res = con.query("select round(cast(" + TYPE + " as numeric), 2)idle, count(*) from " + TABLE + " where km_pr_l > 8 group by idle order by idle;").getresult()
+	res = con.query("select " + val + "idle, count(*) from " + TABLE + " where km_pr_l > 8 group by idle order by idle;").getresult()
 	output = open('images/' + TYPE + '_high_data.csv', 'wb')
 	spamwriter = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 
