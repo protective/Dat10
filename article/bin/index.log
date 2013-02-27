@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012/Debian) (format=pdflatex 2013.2.12)  27 FEB 2013 15:57
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012/Debian) (format=pdflatex 2013.2.12)  27 FEB 2013 16:04
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1052,70 +1052,92 @@ Overfull \hbox (277.78488pt too wide) in paragraph at lines 16--39
 [][] 
  []
 
-) (./src/definitions.tex
+) (./src/definitions.tex <../src/images/km_pr_lTrips.png, id=45, 1003.75pt x 50
+1.875pt>
+File: ../src/images/km_pr_lTrips.png Graphic file (type png)
+<use ../src/images/km_pr_lTrips.png>
+Package pdftex.def Info: ../src/images/km_pr_lTrips.png used on input line 23.
+(pdftex.def)             Requested size: 252.0pt x 125.99684pt.
 
-LaTeX Warning: File `../src/images/FuelTrips.png' not found on input line 23.
-
-
-./src/definitions.tex:23: Package pdftex.def Error: File `../src/images/FuelTri
-ps.png' not found.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.23 ...=1\textwidth]{../src/images/FuelTrips.png}
-                                                  
-Using draft setting for this image.
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-LaTeX Font Info:    Try loading font information for T1+aett on input line 23.
-(/usr/share/texlive/texmf-dist/tex/latex/ae/t1aett.fd
-File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
-)
-Overfull \hbox (264.0pt too wide) in paragraph at lines 23--24
+Overfull \hbox (12.0pt too wide) in paragraph at lines 23--24
  [][] 
  []
 
 ) (./src/measures.tex [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
 
-]
+] <../src/images/idle_percentageTrips.png, id=59, 1003.75pt x 501.875pt>
+File: ../src/images/idle_percentageTrips.png Graphic file (type png)
+<use ../src/images/idle_percentageTrips.png>
+Package pdftex.def Info: ../src/images/idle_percentageTrips.png used on input l
+ine 14.
+(pdftex.def)             Requested size: 252.0pt x 125.99684pt.
 
-LaTeX Warning: File `../src/images/idle_percentageTrips.png' not found on input
- line 14.
+Overfull \hbox (12.0pt too wide) in paragraph at lines 14--15
+ [][] 
+ []
+
+<../src/images/cruise_percentageTrips.png, id=60, 1003.75pt x 501.875pt>
+File: ../src/images/cruise_percentageTrips.png Graphic file (type png)
+<use ../src/images/cruise_percentageTrips.png>
+Package pdftex.def Info: ../src/images/cruise_percentageTrips.png used on input
+ line 28.
+(pdftex.def)             Requested size: 252.0pt x 125.99684pt.
+
+Overfull \hbox (12.0pt too wide) in paragraph at lines 28--29
+ [][] 
+ []
+
+Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
+put line 40.
+<../images/acckm.png, id=63, 500.269pt x 330.033pt>
+File: ../images/acckm.png Graphic file (type png)
+<use ../images/acckm.png>
+Package pdftex.def Info: ../images/acckm.png used on input line 61.
+(pdftex.def)             Requested size: 201.59692pt x 132.99284pt.
+<../src/images/acckmTrips.png, id=65, 1003.75pt x 501.875pt>
+File: ../src/images/acckmTrips.png Graphic file (type png)
+<use ../src/images/acckmTrips.png>
+Package pdftex.def Info: ../src/images/acckmTrips.png used on input line 68.
+(pdftex.def)             Requested size: 252.0pt x 125.99684pt.
+
+Overfull \hbox (12.0pt too wide) in paragraph at lines 68--69
+ [][] 
+ []
 
 
-./src/measures.tex:14: Package pdftex.def Error: File `../src/images/idle_perce
-ntageTrips.png' not found.
+LaTeX Warning: File `../src/images/stopngoTrips.png' not found on input line 79
+.
+
+
+./src/measures.tex:79: Package pdftex.def Error: File `../src/images/stopngoTri
+ps.png' not found.
 
 See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.14 ...h]{../src/images/idle_percentageTrips.png}
+l.79 ...textwidth]{../src/images/stopngoTrips.png}
                                                   
 Using draft setting for this image.
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
-
-Overfull \hbox (264.0pt too wide) in paragraph at lines 14--15
+LaTeX Font Info:    Try loading font information for T1+aett on input line 79.
+(/usr/share/texlive/texmf-dist/tex/latex/ae/t1aett.fd
+File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
+)
+Overfull \hbox (12.0pt too wide) in paragraph at lines 79--80
  [][] 
  []
 
-Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
-put line 35.
-<../images/acckm.png, id=60, 500.269pt x 330.033pt>
-File: ../images/acckm.png Graphic file (type png)
-<use ../images/acckm.png>
-Package pdftex.def Info: ../images/acckm.png used on input line 56.
-(pdftex.def)             Requested size: 201.59692pt x 132.99284pt.
 ))
 No file index.bbl.
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 179.
-[2] [3 <../images/acckm.png>]
+[2 <../src/images/km_pr_lTrips.png> <../src/images/idle_percentageTrips.png> <.
+./src/images/cruise_percentageTrips.png> <../images/acckm.png>] [3
+
+ <../src/images/acckmTrips.png>]
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 179.
 (./bin//index.aux)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 179.
@@ -1131,10 +1153,10 @@ LaTeX Warning: There were multiply-defined labels.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 179.
  ) 
 Here is how much of TeX's memory you used:
- 24022 strings out of 493485
- 498949 string characters out of 3143526
- 619704 words of memory out of 3000000
- 26729 multiletter control sequences out of 15000+200000
+ 24044 strings out of 493485
+ 499660 string characters out of 3143526
+ 619847 words of memory out of 3000000
+ 26748 multiletter control sequences out of 15000+200000
  46948 words of font info for 69 fonts, out of 3000000 for 9000
  957 hyphenation exceptions out of 8191
  63i,12n,74p,666b,609s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -1149,10 +1171,10 @@ cmsy9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.p
 fb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/sha
 re/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texlive/t
 exmf-dist/fonts/type1/urw/times/utmb8a.pfb>
-Output written on ./bin//index.pdf (3 pages, 136460 bytes).
+Output written on ./bin//index.pdf (3 pages, 171283 bytes).
 PDF statistics:
- 122 PDF objects out of 1000 (max. 8388607)
- 102 compressed objects within 2 object streams
- 18 named destinations out of 1000 (max. 500000)
- 90 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 134 PDF objects out of 1000 (max. 8388607)
+ 106 compressed objects within 2 object streams
+ 21 named destinations out of 1000 (max. 500000)
+ 110 words of extra memory for PDF output out of 10000 (max. 10000000)
 
