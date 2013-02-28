@@ -1,18 +1,6 @@
 \section{Data Description}
-A number of data sources can be used to gather data.
-GPS data can easily be collected from any vehicle equiped with a GPS system, through which for example a timestamp, longitude, latitude and speed are available.
-CANBus data provides information about the state of the vehicle.  %TODO: Reformulate
-Retriving CANBus data is not as easy as GPS data, and little data is therefore avialable. 
-CANBus data is for example the engines rounds per minute, fuel consumption and temperature. 
-The hauliers may also provide additional information such as vehicle model, capacity and weight. 
-
-Table~\ref{tb:dataDescription} lists the data columns in the provided data set.
-The data set contains 10,224,846 records collected from 6 minibusses. 
-All vehicles are assumed to be compareable.%TODO
-Instantaneous fuel consumption is undependable and should not be used and non of the data provided by the haulier is available.
-totalconsumed is the most accurate measure for fuel consumption, however, it only has a granularity of half a liter. Therefore, it can only be used at an agreegated level of at least a trip.
-
-\begin{table}[bt]
+\\
+\begin{table}[htb]
 \begin{tabular}{|l|l|l|l|}\hline
 Name & Data type & Source & Description\\\hline
 vehicleid & integer & ID & Unique identifier for vehicles\\\hline
@@ -38,3 +26,17 @@ weight & float & Haulier & The weight of the vehicle. No data available\\\hline
 \end{tabular}
 \caption{GPS and CANBus data types}\label{tb:dataDescription}
 \end{table}
+\clearpage
+
+A number of data sources can be used to gather data.
+GPS data can easily be collected from any vehicle equiped with a GPS system, through which for example a timestamp, longitude, latitude and speed are available.
+CANBus data provides information about the state of the vehicle.  %TODO: Reformulate
+Retriving CANBus data is not as easy as GPS data, and little data is therefore avialable. 
+CANBus data is for example the engines rounds per minute, fuel consumption and temperature. 
+The hauliers may also provide additional information such as vehicle model, capacity and weight. 
+
+Table~\ref{tb:dataDescription} lists the data columns in the provided data set.
+The data set contains 10,224,846 records collected from 6 minibusses. 
+All vehicles are assumed to be compareable.%TODO
+Instantaneous fuel consumption is undependable and should not be used and non of the data provided by the haulier is available.
+totalconsumed is the most accurate measure for fuel consumption, however, it only has a granularity of half a liter. Therefore, it can only be used at an agreegated level of at least a trip.
