@@ -10,7 +10,7 @@ finally:
 	con.query('alter table a_gps_can_data add column idle int not null default 0;')
 
 print 'Setting idle state'
-con.query("update a_gps_can_data set idle = 1 where speed < 10 and rpm <= 900;")
+con.query("update a_gps_can_data set idle = 1 where speed = 0 and rpm > 0;")
 print 'Setting stopped state'
 con.query("update a_gps_can_data set idle = 2 where rpm = 0;")
 print "Setting running state"

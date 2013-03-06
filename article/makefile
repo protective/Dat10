@@ -170,3 +170,13 @@ TODO: $(shell find -name "*.tex")
 #Display todo-list
 todo: TODO
 	@less TODO
+
+# extract check list from all lines beginning with "%CHECK"
+CHECK: $(shell find -name "*.tex")
+	@find ./ -name "*.tex" | \
+		xargs grep -n CHECK | \
+		sed -e 's/:\([0-9]*\):.*%CHECK[: ]\?/: \1:\n\t/' -e 's/^.\///' -e 's/^src\///' | \
+		fmt > CHECK
+#Display todo-list
+check: CHECK
+	@less CHECK

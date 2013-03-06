@@ -8,7 +8,7 @@ TABLE = 'a_gps_can_data'
 
 con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 
-res = con.query("select extract('epoch' from age(timestamp, (select min	(timestamp) from " + TABLE + " where tid=" + TID + "))), totalconsumed-(select min(totalconsumed) from " + TABLE + " where tid=" + TID + 	"), speed, rpm, acceleration from " + TABLE + " where tid=" + TID + " order by timestamp;").getresult()
+res = con.query("select extract('epoch' from age(timestamp, (select min	(timestamp) from " + TABLE + " where tid=" + TID + "))), totalconsumed-(select min(totalconsumed) from " + TABLE + " where tid=" + TID + 	"), speed, rpm, acceleration, temperature from " + TABLE + " where tid=" + TID + " order by timestamp;").getresult()
 
 output = open('images/' + TID + '_data.csv', 'wb')
 
@@ -31,6 +31,12 @@ print "plot 'images/" + TID + "_data.csv' using 1:2 with lines title 'Fuel', 'im
 
 print "set output 'images/" + TID + "_SpeedAcc.png';"
 print "plot 'images/" + TID + "_data.csv' using 1:3 with lines title 'Speed' lc rgb \"blue\", 'images/" + TID + "_data.csv' using 1:5 with lines axes x1y2 title 'Acceleration' lc rgb \"red\""
+
+print "set output 'images/" + TID + "_FuelTemperature.png';"
+print "plot 'images/" + TID + "_data.csv' using 1:2 with lines title 'Fuel' lc rgb \"blue\", 'images/" + TID + "_data.csv' using 1:6 with lines axes x1y2 title 'Temperature' lc rgb \"red\""
+
+print "set output 'images/" + TID + "_SpeedTemperature.png';"
+print "plot 'images/" + TID + "_data.csv' using 1:3 with lines title 'Speed' lc rgb \"blue\", 'images/" + TID + "_data.csv' using 1:6 with lines axes x1y2 title 'Temperature' lc rgb \"red\""
 
 
 
