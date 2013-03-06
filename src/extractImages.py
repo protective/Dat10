@@ -30,12 +30,12 @@ if TYPE == 'km_pr_l':
 	print s + "4 lw 2 notitle, 8 lw 2 notitle"
 
 elif TYPE == 'TimeTrips':
-	print "set terminal png size 1000,500;set y2tics;" 
+	print "set terminal png size 1000,500;" 
 	print "set output 'images/" + TYPE + ".png';"
 	print "set ylabel 'Number of trips;"
 	print "set xlabel 'Time??';"
 
-	print "plot 'numberOfTrajectories.csv' with lines notitle"
+	print "plot 'numberOfTrajectories.csv' with lines lw 3 notitle"
 
 else:
 	val = TYPE + ', km_pr_l as val, total_fuel'
