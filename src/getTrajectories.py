@@ -11,7 +11,7 @@ else:
 	
 LENGTH = 0
 
-print "Testing with " + TIME + " seconds."
+print "Testing with " + str(TIME) + " seconds."
 
 print "Connecting to " + DB
 con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
