@@ -6,10 +6,11 @@ TABLE = 'gps_can_data'
 NEW_TABLE = 'a_' + TABLE
 if len(sys.argv) > 1:
 	TIME = int(sys.argv[1])
+	LENGTH = int(sys.argv[2])
 else:
 	TIME = 100
-	
-LENGTH = 0
+	LENGTH = 100
+
 
 print "Testing with " + str(TIME) + " seconds."
 
@@ -62,7 +63,7 @@ for p in range(0,len(res)):
 	prevVhId = curVhId
 	counter +=1
 		
-	if p%1000 == 0:
+	if p%5000 == 0:
 		print "Processed entry " + str(p)
 
 if counter >=100:
