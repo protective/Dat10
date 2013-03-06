@@ -47,7 +47,6 @@ for p in range(0,len(res)):
 	curVhId = res[p][0]
 
 	if abs(prevTime - curTime) > TIME or prevVhId != curVhId:
-		print abs(prevTime-curTime)
 		if counter >=LENGTH:
 			query = 'update ' + NEW_TABLE + ' set tid=' + str(tid)
 			tid += 1

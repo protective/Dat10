@@ -1,4 +1,3 @@
-python getTrajectories.py 0
 python getTrajectories.py 20
 python getTrajectories.py 40
 python getTrajectories.py 60
