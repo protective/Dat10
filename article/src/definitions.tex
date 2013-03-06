@@ -1,9 +1,13 @@
 \section{Defintions}
 \subsection{Trips}
-The provided data set is annotated with a trip identifier, \tid.
-A trip is defined as a collection of records with the same vehicle identifier, \vid, and where each two consecutive records are within 100 seconds of each other.
-A trip is hence defined from when the vehicle is turn on and not by when the vehicle is moving when it is possible to map-match GPS coordinates to road segments. 
-This defintion is chosen as idle time, i.e. when the engine is running but the vehicle is not moving, is persumed to be an important factor for fuel consumption. 
+The data set is split into trips by annotating each record with a trip identifier, \tid.
+A trip is defined as a collection of consecutive records with the same vehicle identifier, \vid.
+Idle time, i.e. when the engine is running but the vehicle is not moving, is persumed to be an important factor for fuel consumption. 
+We therefore need to ensure that records recorded when the vehicle is idle is included in trips. 
+A trip is hence defined from when the vehicle is turn on and not by when the vehicle is moving or when it is possible to map-match GPS coordinates to road segments.
+In order not to split a trip into two trips just because the engine stalls, we say that a trips ends when two consecutive records are more than some timeframe apart.
+Figure~\ref{fig:TimeTrips} show the number of trips at different timeframes from 20 seconds between two trips to 240 seconds.
+We see that the curve flattens around 100 seconds, and we therefore choose this as the timeframe. %TODO: Do tests to explain why 100 seconds 
 \begin{figure}[htb]
 \centering
 \includegraphics[width=0.5\textwidth]{../src/images/TimeTrips.png}
@@ -11,16 +15,24 @@ This defintion is chosen as idle time, i.e. when the engine is running but the v
 \label{fig:TimeTrips}
 \end{figure}
 
-%TODO: Do tests to explain why 100 seconds
+Many of these trips have very few records - %TODO: statistics
+These short trips are not usable.
+Figure~\ref{fig:LengthTrips} show the number of trips with different minimum limits on number of records in a trip.
+\begin{figure}[htb]
+\centering
+%\includegraphics[width=0.5\textwidth]{../src/images/LengthTrips.png}
+\caption{Number of trips at different length}
+\label{fig:LengthTrips}
+\end{figure}
 
-The data set contains 13606 distinct trips containing between 1 and 78511 records. %CHECK
-Many of these trips have less than 100 records and are therefore not useful. %TODO: Do tests to explain why 100 records
-We remove these trips which results in 2868 distinct trips. %CHECK
-The longest trip is 231 km and 278 trips drive less than 1 km. %CHECK
+%The data set contains 13606 distinct trips containing between 1 and 78511 records. %CHECK
+%Many of these trips have less than 100 records and are therefore not useful. %TODO: Do tests to explain why 100 records
+%We remove these trips which results in 2868 distinct trips. %CHECK
+%The longest trip is 231 km and 278 trips drive less than 1 km. %CHECK
 
 %TODO: Minimum duration?
 
-\subsection{km per liter}
+\subsection{Km per liter}
 Km per liter is the total number of kilometers driven in the trip divided by the amount of fuel used.
 The fuel consumption is extracted from \var{totalconsumed} by substracting the lowest value from the highest.
 
