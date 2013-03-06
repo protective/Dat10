@@ -3,10 +3,10 @@ DB=$1
 FILEPATH=$2
 FILES=$FILEPATH/*.csv
 TABLE='gps_can_data'
-psql -d template1 -c "drop database if exists gps_can;"
-psql -d template1 -c "create database gps_can;"
+psql -d template1 -c "drop database if exists $DB;"
+psql -d template1 -c "create database $DB;"
 
-psql -d $DB -f 'psql -d gps_can -c "Create EXTENSION postgis;"'
+psql -d $DB -c "Create EXTENSION postgis;"
 
 psql -d $DB -c "drop table IF EXISTS $TABLE;"
 psql -d $DB -c "create table $TABLE (vehicleid bigint, timestamp timestamp, longitude float, latitude float, speed float, direction int, satellites int, temperature float, rpm int, acceleration float, kmcounter float, fuellevel float, throttlepos float, totalconsumed float, actualconsumed float, actual_km_l float, make float, model int, capacity float, weight float);"
