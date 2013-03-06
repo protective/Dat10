@@ -4,6 +4,12 @@ The provided data set is annotated with a trip identifier, \tid.
 A trip is defined as a collection of records with the same vehicle identifier, \vid, and where each two consecutive records are within 100 seconds of each other.
 A trip is hence defined from when the vehicle is turn on and not by when the vehicle is moving when it is possible to map-match GPS coordinates to road segments. 
 This defintion is chosen as idle time, i.e. when the engine is running but the vehicle is not moving, is persumed to be an important factor for fuel consumption. 
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.5\textwidth]{../src/images/TimeTrips.png}
+\caption{Number of trips at different times??}
+\label{fig:TimeTrips}
+\end{figure}
 
 %TODO: Do tests to explain why 100 seconds
 
