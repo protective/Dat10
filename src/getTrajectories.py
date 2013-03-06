@@ -5,7 +5,7 @@ DB = 'gps_can'
 TABLE = 'gps_can_data'
 NEW_TABLE = 'a_' + TABLE
 if len(sys.argv) > 1:
-	TIME = sys.argv[1]
+	TIME = int(sys.argv[1])
 else:
 	TIME = 100
 	
@@ -47,6 +47,7 @@ for p in range(0,len(res)):
 	curVhId = res[p][0]
 
 	if abs(prevTime - curTime) > TIME or prevVhId != curVhId:
+		print abs(prevTime-curTime)
 		if counter >=LENGTH:
 			query = 'update ' + NEW_TABLE + ' set tid=' + str(tid)
 			tid += 1
