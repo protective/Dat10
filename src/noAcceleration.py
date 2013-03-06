@@ -26,7 +26,7 @@ i = 1
 minbuff = 5
 oldSpeed = res[0][0]
 while i < len(res):
-	if(tid == res[i][2]):
+	if(tid == res[i][2] and i != len(res)-1):
 		if(res[i][0] - oldSpeed > minbuff):
 			acccounter+= (res[i][0] - oldSpeed) - minbuff
 			oldSpeed = res[i][0] - minbuff
@@ -43,8 +43,9 @@ while i < len(res):
 		con.query(s)
 		acccounter = 0
 		i+=1
-		tid = res[i][2]
-		oldSpeed = res[i][0]
+		if(i != len(res)):
+			tid = res[i][2]
+			oldSpeed = res[i][0]
 
 
 

@@ -37,13 +37,10 @@ for r in range(0, len(res)):
 	
 	if tid != oldTid:
 		km = con.query("select total_km from " + TABLE + " where tid="+str(oldTid)+";").getresult()[0][0]
-		print "km " + str(km)
-		print "c" + str(counter)
 		stopngo = 0
 		if km != 0:
 			stopngo = counter/float(km)
 		query = "update " + TABLE + " set stopngo = " + str(stopngo) + " where tid=" + str(oldTid) + ";"
-		print query
 		con.query(query)
 	
 		tempCounter = counter
@@ -57,13 +54,10 @@ for r in range(0, len(res)):
 		print "Processed entry " + str(r)
 	
 km = con.query("select total_km from " + TABLE + " where tid="+str(oldTid)+";").getresult()[0][0]
-print "km " + str(km)
-print "c" + str(tempCounter)
 stopngo = 0
 if km != 0:
 	stopngo = tempCounter/float(km)
 query = "update " + TABLE + " set stopngo = " + str(stopngo) + " where tid=" + str(oldTid) + ";"
-print query
 con.query(query)
 
 
