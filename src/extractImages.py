@@ -19,6 +19,8 @@ if TYPE == 'km_pr_l':
 
 	print "set terminal png size 1000,500;set y2tics;" 
 	print "set output 'images/" + TYPE + "Trips.png';"
+	print "set ylabel 'km/l';"
+	print "set xlabel 'Trips';"
 
 	s = "plot "
 	for v in vehicles:
@@ -26,36 +28,24 @@ if TYPE == 'km_pr_l':
 		s+= "'images/" + vid + '_' + TYPE + "_data.csv' title '" + vid + "', "
 
 	print s + "4 lw 2 notitle, 8 lw 2 notitle"
-
 else:
-	if TYPE == 'acckm':
-		val = 'round(cast(' + TYPE + ' as numeric)/10)*10'
-		where = ''
-	elif TYPE == 'stopngo':
-		val = 'round(cast(' + TYPE + ' as numeric))'
-		where = ''
-	elif TYPE == 'cruise_percentage':
-		val = 'round(cast(' + TYPE + ' as numeric), 2)'
-		where = ''#' and '+ val + '>0 '
-	else:
-		val = 'round(cast(' + TYPE + ' as numeric), 2)'
-		where = ''
-
-	res = con.query("select " + val + "idle, count(*) from " + TABLE + " where km_pr_l < 4 " + where + " group by idle order by idle;").getresult()
+	val = TYPE + ', km_pr_l as val, total_fuel'
+	where= ''
+	res = con.query("select " + val + " from " + TABLE + " where km_pr_l < 4  order by val;").getresult()
 	output = open('images/' + TYPE + '_low_data.csv', 'wb')
 	spamwriter = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 
 	for r in res:
 		spamwriter.writerow(r)
-	
-	res = con.query("select " + val + "idle, count(*) from " + TABLE + " where km_pr_l >= 4 and km_pr_l < 8 " + where + " group by idle order by idle;").getresult()
+
+	res = con.query("select " + val + " from " + TABLE + " where km_pr_l >= 4 and km_pr_l < 8 order by val;").getresult()
 	output = open('images/' + TYPE + '_medium_data.csv', 'wb')
 	spamwriter = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 
 	for r in res:
 		spamwriter.writerow(r)
-	
-	res = con.query("select " + val + "idle, count(*) from " + TABLE + " where km_pr_l > 8 " + where + " group by idle order by idle;").getresult()
+
+	res = con.query("select " + val + " from " + TABLE + " where km_pr_l > 8 order by val;").getresult()
 	output = open('images/' + TYPE + '_high_data.csv', 'wb')
 	spamwriter = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 
@@ -64,10 +54,18 @@ else:
 
 	print "set terminal png size 1000,500;set y2tics;" 
 	print "set output 'images/" + TYPE + "Trips.png';"
+	print "set ylabel 'km/l';"
+	print "set xlabel '"+ TYPE + "';"
+	if (TYPE == 'stopngo'):
+		print "set xrange[-3:]"
+	elif (TYPE == 'acckm'):
+		print "set xrange[-50:]"
+
+	else:
+		print "set xrange[-0.1:]"
 
 	s = "plot "
-	s+= "'images/" + TYPE + "_high_data.csv' title 'High', "
-	s+= "'images/" + TYPE + "_medium_data.csv' title 'Medium', "
-	s+= "'images/" + TYPE + "_low_data.csv' title 'Low'"
+	s+= "'images/" + TYPE + "_high_data.csv' using 1:2:3 with points lt 1 pt 6 ps variable linecolor rgb \"green\" title 'High' , "
+	s+= "'images/" + TYPE + "_medium_data.csv' using 1:2:3 with points lt 1 pt 6 ps variable linecolor rgb \"blue\" title 'Medium', "
+	s+= "'images/" + TYPE + "_low_data.csv' using 1:2:3 with points lt 1 pt 6 ps variable linecolor rgb \"red\" title 'Low'"
 	print s
-
