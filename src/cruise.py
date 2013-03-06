@@ -33,7 +33,6 @@ while cruiseBegin < len(res) -1:
 		if (abs(Time-time.mktime(time.strptime(res[cruiseCur-1][1], "%Y-%m-%j %H:%M:%S"))) > 45 and noobs >= 10):
 			#we have been using cc until now update
 			s = 'update ' + str(TABLE) + ' set cruise = true where tid = ' + str(res[cruiseBegin][2]) + ' and timestamp >= \''+str(res[cruiseBegin][1]) + '\' and timestamp <= \''+ str(res[cruiseCur-1][1]) + '\';'  
-			print s
 			con.query(s)
 		
 		cruiseBegin = cruiseCur
