@@ -6,8 +6,8 @@ Idle time, i.e. when the engine is running but the vehicle is not moving, is per
 We therefore need to ensure that records recorded when the vehicle is idle is included in trips. 
 A trip is hence defined from when the vehicle is turn on and not by when the vehicle is moving or when it is possible to map-match GPS coordinates to road segments.
 In order not to split a trip into two trips just because the engine stalls, we say that a trips ends when two consecutive records are more than some timeframe apart.
-Figure~\ref{fig:TimeTrips} show the number of trips at different timeframes from 20 seconds between two trips to 190 seconds.
-We see that the curve flattens around 160 seconds, and we therefore choose this as the timeframe. %TODO: Do tests to explain why 100 seconds 
+Figure~\ref{fig:TimeTrips} show the number of trips at different timeframes from 20 seconds between two trips to 240 seconds.
+We see that the curve flattens around 100 seconds, and we therefore choose this as the timeframe. %TODO: Do tests to explain why 100 seconds 
 \begin{figure}[htb]
 \centering
 \includegraphics[width=0.5\textwidth]{../src/images/TimeTrips.png}
