@@ -3,8 +3,9 @@ import xml.parsers.expat
 
 
 TL_TABLE = "trafficLights"
-
+print "begin"
 if len(sys.argv) > 1:
+	print sys.argv[1]
 	f = open(sys.argv[1])
 else:
 	print "ERROR To few arguments"
@@ -41,7 +42,11 @@ p.StartElementHandler = start_element
 p.EndElementHandler = end_element
 #p.CharacterDataHandler = char_data
 
-p.Parse(f.read())
+
+s = f.readline()
+while(s):
+	p.Parse(s)
+	s = f.readline()
 
 con.query("update "+ TL_TABLE +" set geom = ST_SetSRID(ST_MakePoint(lon,lat),4326);")
 
