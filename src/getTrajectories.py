@@ -6,10 +6,10 @@ TABLE = 'gps_can_data'
 NEW_TABLE = 'a_' + TABLE
 if len(sys.argv) > 1:
 	TIME = int(sys.argv[1])
-	LENGTH = int(sys.argv[2])
+	OBS = float(sys.argv[2]) #Number of observations per minut
 else:
-	TIME = 100
-	LENGTH = 100
+	TIME = 120
+	OBS = 2
 
 
 print "Testing with " + str(TIME) + " seconds."
@@ -20,8 +20,9 @@ con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 if (True):
 	print "Alter table"
 	con.query('drop table IF EXISTS ' + NEW_TABLE + ';')
-	con.query('create table ' + NEW_TABLE + ' as (select * from ' + TABLE + ');')
+	con.query('create table ' + NEW_TABLE + ' as (select * from ' + TABLE + ' where rpm > 0 and vehicleid=354330030804267);')
 	con.query('alter table ' + NEW_TABLE + ' add column tid int;')
+	con.query('alter table ' + NEW_TABLE + ' add column dirty bool default false;')
 if (True):
 	print "Creating indexes"
 	con.query("DROP INDEX IF EXISTS vehid_" + NEW_TABLE + "_idx CASCADE; create index vehid_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (vehicleid);")
@@ -46,30 +47,35 @@ print "Processing data"
 for p in range(0,len(res)):		
 	curTime = time.mktime(time.strptime(res[p][1], "%Y-%m-%j %H:%M:%S"))
 	curVhId = res[p][0]
+	diff = abs(prevTime - curTime)
+	counter +=1
 
-	if abs(prevTime - curTime) > TIME or prevVhId != curVhId:
-		if counter >=LENGTH:
+	if diff > TIME or prevVhId != curVhId:
+		length = abs(time.mktime(time.strptime(startTime, "%Y-%m-%j %H:%M:%S")) - time.mktime(time.strptime(res[p-1][1], "%Y-%m-%j %H:%M:%S")))
+#		print str(tid) + "\t" + str(counter/float(length))
+		if length > 0 and counter/float(length) > OBS:
 			query = 'update ' + NEW_TABLE + ' set tid=' + str(tid)
-			tid += 1
 		else:
-			query = 'delete from ' + NEW_TABLE
+			query = 'update ' + NEW_TABLE + ' set tid='+ str(tid) + ', dirty=true '
 		
 		query += " where timestamp>='" + startTime + "' and timestamp<='" + res[p-1][1] + "' and vehicleid=" + str(res[p-1][0]) + ";"
+		#print query
 		con.query(query)
 		startTime = res[p][1]
 		counter=0
+		tid += 1
 	
 	prevTime = curTime
 	prevVhId = curVhId
-	counter +=1
 		
 	if p%5000 == 0:
 		print "Processed entry " + str(p)
 
-if counter >=100:
+length = time.mktime(time.strptime(startTime, "%Y-%m-%j %H:%M:%S")) - time.mktime(time.strptime(res[len(res)-1][1], "%Y-%m-%j %H:%M:%S"))
+if length > 0 and counter/float(length) > OBS:
 	query = 'update ' + NEW_TABLE + ' set tid=' + str(tid)
 else:
-	query = 'delete from ' + NEW_TABLE
+	query = 'update ' + NEW_TABLE + ' set tid='+ str(tid) + ', dirty=true '
 
 query += " where timestamp>='" + startTime + "' and timestamp<='" + res[len(res)-1][1] + "' and vehicleid=" + str(res[len(res)-1][0]) + ";"
 con.query(query)

@@ -7,7 +7,7 @@ TABLE = 'trip_data'
 
 redo = False
 if len(sys.argv) > 1:
-	if sys.argv[1] == "dropAll"
+	if sys.argv[1] == "dropAll":
 		redo = True
 
 print "Connecting to " + DB
