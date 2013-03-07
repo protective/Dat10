@@ -20,7 +20,7 @@ con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 if (True):
 	print "Alter table"
 	con.query('drop table IF EXISTS ' + NEW_TABLE + ';')
-	con.query('create table ' + NEW_TABLE + ' as (select * from ' + TABLE + ' where vehicleid=354330030804267
+	con.query('create table ' + NEW_TABLE + ' as (select * from ' + TABLE + ' where vehicleid=354330030804267;')
 	con.query('alter table ' + NEW_TABLE + ' add column tid int;')
 	con.query('alter table ' + NEW_TABLE + ' add column dirty bool default false;')
 if (True):
