@@ -35,7 +35,7 @@ elif TYPE == 'TimeTrips':
 	print "set ylabel 'Number of trips"
 	print "set xlabel 'Time??'"
 
-	print "plot 'numberOfTrajectories.csv' with lines lw 3 notitle"
+	print "plot 'noTrajectories.csv' with lines lw 3 notitle"
 
 else:
 	val = TYPE + ', km_pr_l as val, total_fuel'
