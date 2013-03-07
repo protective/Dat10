@@ -56,10 +56,9 @@ for p in range(0,len(res)):
 			query = 'update ' + NEW_TABLE + ' set tid=' + str(tid)
 		else:
 			query = 'update ' + NEW_TABLE + ' set tid='+ str(tid) + ', dirty=true '
-			print query
-			break
 		
 		query += " where timestamp>='" + startTime + "' and timestamp<='" + res[p-1][1] + "' and vehicleid=" + str(res[p-1][0]) + ";"
+		print query
 		con.query(query)
 		startTime = res[p][1]
 		counter=0
@@ -67,6 +66,8 @@ for p in range(0,len(res)):
 	
 	prevTime = curTime
 	prevVhId = curVhId
+	if p=10:
+		break
 		
 	if p%5000 == 0:
 		print "Processed entry " + str(p)
