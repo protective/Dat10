@@ -20,7 +20,7 @@ con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 if (True):
 	print "Alter table"
 	con.query('drop table IF EXISTS ' + NEW_TABLE + ';')
-	con.query('create table ' + NEW_TABLE + ' as (select * from ' + TABLE + ' where rpm > 0 and vehicleid=354330030804267);')
+	con.query('create table ' + NEW_TABLE + ' as (select * from ' + TABLE + ' where rpm > 0);') #and vehicleid=354330030804267
 	con.query('alter table ' + NEW_TABLE + ' add column tid int;')
 	con.query('alter table ' + NEW_TABLE + ' add column dirty bool default false;')
 if (True):
@@ -71,7 +71,7 @@ for p in range(0,len(res)):
 	if p%5000 == 0:
 		print "Processed entry " + str(p)
 
-length = time.mktime(time.strptime(startTime, "%Y-%m-%j %H:%M:%S")) - time.mktime(time.strptime(res[len(res)-1][1], "%Y-%m-%j %H:%M:%S"))
+length = abs(time.mktime(time.strptime(startTime, "%Y-%m-%j %H:%M:%S")) - time.mktime(time.strptime(res[len(res)-1][1], "%Y-%m-%j %H:%M:%S")))
 if length > 0 and counter/float(length) > OBS:
 	query = 'update ' + NEW_TABLE + ' set tid=' + str(tid)
 else:
