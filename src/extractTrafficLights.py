@@ -1,0 +1,56 @@
+import os, pg , math, sys
+import xml.parsers.expat
+
+
+TL_TABLE = "trafficLights"
+
+if len(sys.argv) > 1:
+	f = open(sys.argv[1])
+else:
+	print "ERROR To few arguments"
+	
+
+
+con = pg.connect(dbname='gps_can', host='localhost', user=os.getlogin(),passwd='F1ff')
+
+con.query('drop table IF EXISTS ' + TL_TABLE + ';')
+con.query('create table ' + TL_TABLE + ' (tlId bigint, lat real, lon real, geom geography(POINT,4326));')
+tree = []
+
+# 3 handler functions
+def start_element(name, attrs):
+	tree.append(attrs)
+	if "k" in attrs:
+		if attrs['k'] == "highway":
+			if "v" in attrs:
+				if attrs['v'] == "traffic_signals":
+					#print attrs
+					#print tree[-2]
+					cur = "insert into " +TL_TABLE + " values("+tree[-2]["id"] +"," + tree[-2]["lat"] + "," + tree[-2]["lon"] + ");"
+					con.query(cur)
+					
+def end_element(name):
+	tree.pop()
+#def char_data(data):
+    #print 'Character data:', repr(data)
+
+
+p = xml.parsers.expat.ParserCreate()
+
+p.StartElementHandler = start_element
+p.EndElementHandler = end_element
+#p.CharacterDataHandler = char_data
+
+p.Parse(f.read())
+
+con.query("update "+ TL_TABLE +" set geom = ST_SetSRID(ST_MakePoint(lon,lat),4326);")
+
+print "DONE"
+
+
+
+
+
+
+
+
