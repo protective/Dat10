@@ -56,6 +56,8 @@ for p in range(0,len(res)):
 			query = 'update ' + NEW_TABLE + ' set tid=' + str(tid)
 		else:
 			query = 'update ' + NEW_TABLE + ' set tid='+ str(tid) + ', dirty=true '
+			print query
+			break
 		
 		query += " where timestamp>='" + startTime + "' and timestamp<='" + res[p-1][1] + "' and vehicleid=" + str(res[p-1][0]) + ";"
 		con.query(query)
