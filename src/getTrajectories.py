@@ -8,7 +8,7 @@ if len(sys.argv) > 1:
 	TIME = int(sys.argv[1])
 	LENGTH = int(sys.argv[2])
 else:
-	TIME = 100
+	TIME = 120
 	LENGTH = 100
 
 
@@ -22,14 +22,15 @@ if (True):
 	con.query('drop table IF EXISTS ' + NEW_TABLE + ';')
 	con.query('create table ' + NEW_TABLE + ' as (select * from ' + TABLE + ');')
 	con.query('alter table ' + NEW_TABLE + ' add column tid int;')
+	con.query('alter table ' + NEW_TABLE + ' add column dirty bool default false;')
 if (True):
 	print "Creating indexes"
 	con.query("DROP INDEX IF EXISTS vehid_" + NEW_TABLE + "_idx CASCADE; create index vehid_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (vehicleid);")
 	con.query("DROP INDEX IF EXISTS time_" + NEW_TABLE + "_idx CASCADE; create index time_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (timestamp);")
-	#con.query("DROP INDEX IF EXISTS speed_" + NEW_TABLE + "_idx CASCADE; create index speed_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (speed);")
-	#con.query("DROP INDEX IF EXISTS rpm_" + NEW_TABLE + "_idx CASCADE; create index rpm_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (rpm);")
-	#con.query("DROP INDEX IF EXISTS totalconsumed_" + NEW_TABLE + "_idx CASCADE; create index totalconsumed_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (totalconsumed);")
-	#con.query("DROP INDEX IF EXISTS kmcounter_" + NEW_TABLE + "_idx CASCADE; create index kmcounter_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (kmcounter);")
+	con.query("DROP INDEX IF EXISTS speed_" + NEW_TABLE + "_idx CASCADE; create index speed_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (speed);")
+	con.query("DROP INDEX IF EXISTS rpm_" + NEW_TABLE + "_idx CASCADE; create index rpm_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (rpm);")
+	con.query("DROP INDEX IF EXISTS totalconsumed_" + NEW_TABLE + "_idx CASCADE; create index totalconsumed_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (totalconsumed);")
+	con.query("DROP INDEX IF EXISTS kmcounter_" + NEW_TABLE + "_idx CASCADE; create index kmcounter_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (kmcounter);")
 	
 
 print "Fetching data"
@@ -52,7 +53,7 @@ for p in range(0,len(res)):
 			query = 'update ' + NEW_TABLE + ' set tid=' + str(tid)
 			tid += 1
 		else:
-			query = 'delete from ' + NEW_TABLE
+			query = 'update ' + NEW_TABLE + ' set tid='+ str(tid) + ', dirty=true '
 		
 		query += " where timestamp>='" + startTime + "' and timestamp<='" + res[p-1][1] + "' and vehicleid=" + str(res[p-1][0]) + ";"
 		con.query(query)
@@ -66,10 +67,10 @@ for p in range(0,len(res)):
 	if p%5000 == 0:
 		print "Processed entry " + str(p)
 
-if counter >=100:
+if counter >=LENGTH:
 	query = 'update ' + NEW_TABLE + ' set tid=' + str(tid)
 else:
-	query = 'delete from ' + NEW_TABLE
+	query = 'update ' + NEW_TABLE + ' set tid='+ str(tid) + ', dirty=true '
 
 query += " where timestamp>='" + startTime + "' and timestamp<='" + res[len(res)-1][1] + "' and vehicleid=" + str(res[len(res)-1][0]) + ";"
 con.query(query)
@@ -77,9 +78,9 @@ con.query(query)
 print "Creating index"
 con.query("DROP INDEX IF EXISTS tid_" + NEW_TABLE + "_idx CASCADE; create index tid_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (tid);")
 
-print "Counting trips"
-output = open('numberOfTrajectories.csv', 'a')
-print >> output, str(TIME) + "\t" + str(con.query("select count(distinct tid) from " + NEW_TABLE).getresult()[0][0])
+#print "Counting trips"
+#output = open('numberOfTrajectories.csv', 'a')
+#print >> output, str(TIME) + "\t" + str(con.query("select count(distinct tid) from " + NEW_TABLE).getresult()[0][0])
 
 print "Done"
 
