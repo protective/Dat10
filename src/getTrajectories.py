@@ -6,7 +6,7 @@ TABLE = 'gps_can_data'
 NEW_TABLE = 'a_' + TABLE
 if len(sys.argv) > 1:
 	TIME = int(sys.argv[1])
-	OBS = int(sys.argv[2]) #Number of observations per minut
+	OBS = float(sys.argv[2]) #Number of observations per minut
 else:
 	TIME = 120
 	OBS = 2
@@ -58,7 +58,7 @@ for p in range(0,len(res)):
 			query = 'update ' + NEW_TABLE + ' set tid='+ str(tid) + ', dirty=true '
 		
 		query += " where timestamp>='" + startTime + "' and timestamp<='" + res[p-1][1] + "' and vehicleid=" + str(res[p-1][0]) + ";"
-		print query
+		#print query
 		con.query(query)
 		startTime = res[p][1]
 		counter=0
