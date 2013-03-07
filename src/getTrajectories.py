@@ -66,8 +66,6 @@ for p in range(0,len(res)):
 	
 	prevTime = curTime
 	prevVhId = curVhId
-	if p=10:
-		break
 		
 	if p%5000 == 0:
 		print "Processed entry " + str(p)
