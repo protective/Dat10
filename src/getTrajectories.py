@@ -1,12 +1,12 @@
 import random, time, math, pg, sys,os
 
-USER = os.getlogin()
+USER = 'd103'
 DB = 'gps_can'
 TABLE = 'gps_can_data'
 NEW_TABLE = 'a_' + TABLE
 if len(sys.argv) > 1:
 	TIME = int(sys.argv[1])
-	OBS = float(sys.argv[2]) #Number of observations per minut
+	OBS = int(sys.argv[2]) #Number of observations per minut
 else:
 	TIME = 120
 	OBS = 2
@@ -20,17 +20,17 @@ con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 if (True):
 	print "Alter table"
 	con.query('drop table IF EXISTS ' + NEW_TABLE + ';')
-	con.query('create table ' + NEW_TABLE + ' as (select * from ' + TABLE + ' where rpm > 0 and vehicleid=354330030804267);')
+	con.query('create table ' + NEW_TABLE + ' as (select * from ' + TABLE + ' where rpm > 0);')
 	con.query('alter table ' + NEW_TABLE + ' add column tid int;')
 	con.query('alter table ' + NEW_TABLE + ' add column dirty bool default false;')
 if (True):
 	print "Creating indexes"
 	con.query("DROP INDEX IF EXISTS vehid_" + NEW_TABLE + "_idx CASCADE; create index vehid_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (vehicleid);")
 	con.query("DROP INDEX IF EXISTS time_" + NEW_TABLE + "_idx CASCADE; create index time_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (timestamp);")
-	#con.query("DROP INDEX IF EXISTS speed_" + NEW_TABLE + "_idx CASCADE; create index speed_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (speed);")
-	#con.query("DROP INDEX IF EXISTS rpm_" + NEW_TABLE + "_idx CASCADE; create index rpm_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (rpm);")
-	#con.query("DROP INDEX IF EXISTS totalconsumed_" + NEW_TABLE + "_idx CASCADE; create index totalconsumed_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (totalconsumed);")
-	#con.query("DROP INDEX IF EXISTS kmcounter_" + NEW_TABLE + "_idx CASCADE; create index kmcounter_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (kmcounter);")
+	con.query("DROP INDEX IF EXISTS speed_" + NEW_TABLE + "_idx CASCADE; create index speed_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (speed);")
+	con.query("DROP INDEX IF EXISTS rpm_" + NEW_TABLE + "_idx CASCADE; create index rpm_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (rpm);")
+	con.query("DROP INDEX IF EXISTS totalconsumed_" + NEW_TABLE + "_idx CASCADE; create index totalconsumed_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (totalconsumed);")
+	con.query("DROP INDEX IF EXISTS kmcounter_" + NEW_TABLE + "_idx CASCADE; create index kmcounter_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (kmcounter);")
 	
 
 print "Fetching data"
@@ -51,9 +51,9 @@ for p in range(0,len(res)):
 	counter +=1
 
 	if diff > TIME or prevVhId != curVhId:
-		length = abs(time.mktime(time.strptime(startTime, "%Y-%m-%j %H:%M:%S")) - time.mktime(time.strptime(res[p-1][1], "%Y-%m-%j %H:%M:%S")))
+#		length = abs(time.mktime(time.strptime(startTime, "%Y-%m-%j %H:%M:%S")) - time.mktime(time.strptime(res[p-1][1], "%Y-%m-%j %H:%M:%S")))
 #		print str(tid) + "\t" + str(counter/float(length))
-		if length > 0 and counter/float(length) > OBS:
+		if counter > OBS:
 			query = 'update ' + NEW_TABLE + ' set tid=' + str(tid)
 		else:
 			query = 'update ' + NEW_TABLE + ' set tid='+ str(tid) + ', dirty=true '
@@ -71,8 +71,8 @@ for p in range(0,len(res)):
 	if p%5000 == 0:
 		print "Processed entry " + str(p)
 
-length = abs(time.mktime(time.strptime(startTime, "%Y-%m-%j %H:%M:%S")) - time.mktime(time.strptime(res[len(res)-1][1], "%Y-%m-%j %H:%M:%S")))
-if length > 0 and counter/float(length) > OBS:
+#length = abs(time.mktime(time.strptime(startTime, "%Y-%m-%j %H:%M:%S")) - time.mktime(time.strptime(res[len(res)-1][1], "%Y-%m-%j %H:%M:%S")))
+if counter > OBS:
 	query = 'update ' + NEW_TABLE + ' set tid=' + str(tid)
 else:
 	query = 'update ' + NEW_TABLE + ' set tid='+ str(tid) + ', dirty=true '
