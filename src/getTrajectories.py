@@ -52,7 +52,7 @@ for p in range(0,len(res)):
 
 	if diff > TIME or prevVhId != curVhId:
 		length = time.mktime(time.strptime(startTime, "%Y-%m-%j %H:%M:%S")) - time.mktime(time.strptime(res[p-1][1], "%Y-%m-%j %H:%M:%S"))
-		if length/float(counter) > OBS:
+		if float(counter)/length > OBS:
 			query = 'update ' + NEW_TABLE + ' set tid=' + str(tid)
 		else:
 			query = 'update ' + NEW_TABLE + ' set tid='+ str(tid) + ', dirty=true '
@@ -70,7 +70,7 @@ for p in range(0,len(res)):
 		print "Processed entry " + str(p)
 
 length = time.mktime(time.strptime(startTime, "%Y-%m-%j %H:%M:%S")) - time.mktime(time.strptime(res[len(res)-1][1], "%Y-%m-%j %H:%M:%S"))
-if length/float(counter) > OBS:
+if float(counter)/length > OBS:
 	query = 'update ' + NEW_TABLE + ' set tid=' + str(tid)
 else:
 	query = 'update ' + NEW_TABLE + ' set tid='+ str(tid) + ', dirty=true '
@@ -81,9 +81,9 @@ con.query(query)
 print "Creating index"
 con.query("DROP INDEX IF EXISTS tid_" + NEW_TABLE + "_idx CASCADE; create index tid_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (tid);")
 
-#print "Counting trips"
-#output = open('numberOfTrajectories.csv', 'a')
-#print >> output, str(TIME) + "\t" + str(con.query("select count(distinct tid) from " + NEW_TABLE).getresult()[0][0])
+print "Counting trips"
+output = open('numberOfTrajectories.csv', 'a')
+print >> output, str(TIME) + "\t" + str(con.query("select count(distinct tid) from " + NEW_TABLE).getresult()[0][0])
 
 print "Done"
 
