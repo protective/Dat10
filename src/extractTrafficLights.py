@@ -15,7 +15,7 @@ else:
 con = pg.connect(dbname='gps_can', host='localhost', user=os.getlogin(),passwd='F1ff')
 
 con.query('drop table IF EXISTS ' + TL_TABLE + ';')
-con.query('create table ' + TL_TABLE + ' (tlId bigint, lat real, lon real, geom geography(POINT,4326));')
+con.query('create table ' + TL_TABLE + ' (tlId bigint, lat double, lon double, geom geography(POINT,4326));')
 tree = []
 
 # 3 handler functions
@@ -49,6 +49,7 @@ while(s):
 	s = f.readline()
 
 con.query("update "+ TL_TABLE +" set geom = ST_SetSRID(ST_MakePoint(lon,lat),4326);")
+con.query("DROP INDEX IF EXISTS idx_"+TL_TABLE+" CASCADE; create index idx_"+TL_TABLE+" on "+TL_TABLE+" using gist(geom);"
 
 print "DONE"
 
