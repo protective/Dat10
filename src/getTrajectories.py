@@ -85,7 +85,7 @@ con.query("DROP INDEX IF EXISTS tid_" + NEW_TABLE + "_idx CASCADE; create index 
 
 print "Counting trips"
 output = open('numberOfTrajectories.csv', 'a')
-print >> output, str(TIME) + "\t" + str(con.query("select count(distinct tid) from " + NEW_TABLE).getresult()[0][0])
+print >> output, str(TIME) + " " + str(OBS) + " " + str(con.query("select count(distinct tid) from " + NEW_TABLE).getresult()[0][0])
 
 print "Done"
 
