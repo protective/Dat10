@@ -51,8 +51,8 @@ for p in range(0,len(res)):
 	counter +=1
 
 	if diff > TIME or prevVhId != curVhId:
-		length = time.mktime(time.strptime(startTime, "%Y-%m-%j %H:%M:%S")) - time.mktime(time.strptime(res[p-1][1], "%Y-%m-%j %H:%M:%S"))
-		print str(tid) + "\t" + str(counter/float(length))
+		length = abs(time.mktime(time.strptime(startTime, "%Y-%m-%j %H:%M:%S")) - time.mktime(time.strptime(res[p-1][1], "%Y-%m-%j %H:%M:%S")))
+#		print str(tid) + "\t" + str(counter/float(length))
 		if length > 0 and counter/float(length) > OBS:
 			query = 'update ' + NEW_TABLE + ' set tid=' + str(tid)
 		else:
