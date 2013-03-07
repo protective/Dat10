@@ -52,7 +52,7 @@ for p in range(0,len(res)):
 
 	if diff > TIME or prevVhId != curVhId:
 		length = time.mktime(time.strptime(startTime, "%Y-%m-%j %H:%M:%S")) - time.mktime(time.strptime(res[p-1][1], "%Y-%m-%j %H:%M:%S"))
-		if float(counter)/length > OBS:
+		if length > 0 and counter/float(length) > OBS:
 			query = 'update ' + NEW_TABLE + ' set tid=' + str(tid)
 		else:
 			query = 'update ' + NEW_TABLE + ' set tid='+ str(tid) + ', dirty=true '
@@ -70,7 +70,7 @@ for p in range(0,len(res)):
 		print "Processed entry " + str(p)
 
 length = time.mktime(time.strptime(startTime, "%Y-%m-%j %H:%M:%S")) - time.mktime(time.strptime(res[len(res)-1][1], "%Y-%m-%j %H:%M:%S"))
-if float(counter)/length > OBS:
+if length > 0 and counter/float(length) > OBS:
 	query = 'update ' + NEW_TABLE + ' set tid=' + str(tid)
 else:
 	query = 'update ' + NEW_TABLE + ' set tid='+ str(tid) + ', dirty=true '
