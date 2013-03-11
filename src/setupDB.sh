@@ -42,13 +42,12 @@ psql -d $DB -c "DROP INDEX IF EXISTS totalconsumed_idx CASCADE; create index tot
 psql -d $DB -c "DROP INDEX IF EXISTS segmentkey_idx CASCADE; create index segmentkey_idx on $TABLE (segmentkey)"
 psql -d $DB -c "DROP INDEX IF EXISTS direction_idx CASCADE; create index direction_idx on $TABLE (direction)"
 
-
+python cruise.pys
+python idle.py
+python tripData.py dropAll
 python noAcceleration.py
 python noAccelerationW.py
-python cruise.py
 python stopngo.py
-python tripData.py dropAll
-python idle.py
 python extractTrafficLights.py
 python inRangeOfTl.py
 
