@@ -28,7 +28,7 @@ def start_element(name, attrs):
 					#print attrs
 					#print tree[-2]
 					cur = "insert into " +TL_TABLE + " values("+tree[-2]["id"] +"," + tree[-2]["lat"] + "," + tree[-2]["lon"] + ");"
-					print cur					
+					#print cur					
 					con.query(cur)
 					
 def end_element(name):
