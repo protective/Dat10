@@ -1,6 +1,6 @@
 import pg , math, sys, os ,time
 
-USER = os.getlogin()
+USER = "d103"
 DB = "gps_can"
 
 
