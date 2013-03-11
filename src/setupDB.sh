@@ -48,7 +48,7 @@ python tripData.py dropAll
 python noAcceleration.py
 python noAccelerationW.py
 python stopngo.py
-python extractTrafficLights.py
+python extractTrafficLights.py maps/denmark.osm
 python inRangeOfTl.py
 
 
