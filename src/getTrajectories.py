@@ -3,10 +3,10 @@ import random, time, math, pg, sys,os
 USER = 'd103'
 DB = 'gps_can'
 TABLE = 'gps_can_data'
-NEW_TABLE = 'a_' + TABLE
+NEW_TABLE = TABLE + 'TripLength'
 if len(sys.argv) > 1:
 	TIME = int(sys.argv[1])
-	OBS = int(sys.argv[2]) #Number of observations per minut
+	OBS = int(sys.argv[2]) 
 else:
 	TIME = 120
 	OBS = 2
@@ -27,10 +27,10 @@ if (True):
 	print "Creating indexes"
 	con.query("DROP INDEX IF EXISTS vehid_" + NEW_TABLE + "_idx CASCADE; create index vehid_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (vehicleid);")
 	con.query("DROP INDEX IF EXISTS time_" + NEW_TABLE + "_idx CASCADE; create index time_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (timestamp);")
-	con.query("DROP INDEX IF EXISTS speed_" + NEW_TABLE + "_idx CASCADE; create index speed_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (speed);")
-	con.query("DROP INDEX IF EXISTS rpm_" + NEW_TABLE + "_idx CASCADE; create index rpm_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (rpm);")
-	con.query("DROP INDEX IF EXISTS totalconsumed_" + NEW_TABLE + "_idx CASCADE; create index totalconsumed_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (totalconsumed);")
-	con.query("DROP INDEX IF EXISTS kmcounter_" + NEW_TABLE + "_idx CASCADE; create index kmcounter_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (kmcounter);")
+#	con.query("DROP INDEX IF EXISTS speed_" + NEW_TABLE + "_idx CASCADE; create index speed_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (speed);")
+#	con.query("DROP INDEX IF EXISTS rpm_" + NEW_TABLE + "_idx CASCADE; create index rpm_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (rpm);")
+#	con.query("DROP INDEX IF EXISTS totalconsumed_" + NEW_TABLE + "_idx CASCADE; create index totalconsumed_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (totalconsumed);")
+#	con.query("DROP INDEX IF EXISTS kmcounter_" + NEW_TABLE + "_idx CASCADE; create index kmcounter_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (kmcounter);")
 	
 
 print "Fetching data"
