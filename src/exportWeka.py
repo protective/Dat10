@@ -6,7 +6,7 @@ TABLE = 'trip_data'
 
 con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 #
-res = con.query("""select vehicleid, idle_percentage,idle_wo_tl_percentage, km_pr_l, acckm, acckmweight, stopngo, cruise_percentage, total_km, temperature_percentage,  
+res = con.query("""select vehicleid, idle_percentage,idle_wo_tl_percentage,idle_w_tl_percentage, km_pr_l, acckm, acckmweight, stopngo, cruise_percentage, total_km, temperature_percentage,  
 
 	(case 
 		when km_pr_l < 4 then 'low' 
@@ -21,6 +21,7 @@ output.write("""@RELATION iris
 @ATTRIBUTE id	REAL
 @ATTRIBUTE idle	REAL
 @ATTRIBUTE idleWOTL	REAL
+@ATTRIBUTE idleWTL	REAL
 @ATTRIBUTE fuel	REAL
 @ATTRIBUTE accel REAL
 @ATTRIBUTE accelW REAL
