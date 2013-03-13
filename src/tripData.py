@@ -1,6 +1,6 @@
 import pg, sys,os
 
-USER = 'karsten'
+USER = 'd103'
 DB = 'gps_can'
 OLD_TABLE = 'a_gps_can_data'
 TABLE = 'trip_data'
