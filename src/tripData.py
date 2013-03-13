@@ -1,6 +1,6 @@
 import pg, sys,os
 
-USER = 'd103'
+USER = 'karsten'
 DB = 'gps_can'
 OLD_TABLE = 'a_gps_can_data'
 TABLE = 'trip_data'
@@ -42,6 +42,12 @@ if (redo):
 	con.query('alter table ' + TABLE + ' drop if exists idle_percentage;')
 	con.query('alter table ' + TABLE + ' add idle_percentage float;')
 	con.query('update ' + TABLE + ' set idle_percentage = p from (select tid, (count(*)-count(case when idle!=1 then 1 end))::float/count(*) as p from ' + OLD_TABLE + ' where dirty is false group by tid)f where ' + TABLE + '.tid=f.tid;')
+
+if (redo or True):
+	print 'Percentage in idle wo_tl'
+	con.query('alter table ' + TABLE + ' drop if exists idle_wo_tl_percentage;')
+	con.query('alter table ' + TABLE + ' add idle_wo_tl_percentage float;')
+	con.query('update ' + TABLE + ' set idle_wo_tl_percentage = p from (select tid, (count(*)-count(case when idle!=1 and tl is null then 1 end))::float/count(*) as p from ' + OLD_TABLE + ' where dirty is false group by tid)f where ' + TABLE + '.tid=f.tid;')
 
 
 if (redo):
