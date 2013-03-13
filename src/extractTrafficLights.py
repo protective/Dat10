@@ -12,7 +12,7 @@ else:
 	
 
 
-con = pg.connect(dbname='gps_can', host='localhost', user=os.getlogin(),passwd='F1ff')
+con = pg.connect(dbname='gps_can', host='localhost', user='d103',passwd='F1ff')
 
 con.query('drop table IF EXISTS ' + TL_TABLE + ';')
 con.query('create table ' + TL_TABLE + ' (tlId bigint, lat REAL, lon REAL, geom geography(POINT,4326));')

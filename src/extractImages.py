@@ -1,6 +1,6 @@
 import pg, sys, os, csv
 
-USER = os.getlogin()
+USER = 'd103'
 DB = 'gps_can'
 TABLE = 'trip_data'
 TYPE = sys.argv[1]
@@ -35,40 +35,47 @@ elif TYPE == 'TimeTrips':
 	print "set ylabel 'Number of trips"
 	print "set xlabel 'Time??'"
 
-	print "plot 'noTrajectories.csv' with lines lw 3 notitle"
+	print "plot 'data/noTrajectories.csv' with lines lw 3 notitle"
 
-elif TYPE == 'TripLength':
+elif TYPE == 'TripLengthKml':
+	res = con.query("select total_km, km_pr_l from trip_data;").getresult()
+	#res = con.query("select EXTRACT(EPOCH FROM t), km_pr_l from trip_data, (select tid, (max(timestamp)-min(timestamp))t from a_gps_can_data group by tid)a where trip_data.tid=a.tid;").getresult()
+	output = open('data/tripLengthKml.csv', 'wb')
+	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+
+	for r in res:
+		writer.writerow(r)
+
 	print "set terminal png size 1000,500;" 
-	print "set output 'images/" + TYPE + ".png';"
+	print "set output 'images/TripLengthKml.png';"
 	print "set ylabel 'km/l"
-	print "set xlabel 'Trip length'"
-	print "set arrow from 90,graph(0,0) to 90,graph(1,1) nohead lw 2 linecolor rgb \"orange\""
+	print "set xlabel 'km'"
 
-	print "plot 'data/test.csv' notitle"
+	print "plot 'data/tripLengthKml.csv' notitle"
 
 else:
 	val = TYPE + ', km_pr_l as val, total_fuel'
 	where= ''
 	res = con.query("select " + val + " from " + TABLE + " where km_pr_l < 4  order by val;").getresult()
 	output = open('images/' + TYPE + '_low_data.csv', 'wb')
-	spamwriter = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 
 	for r in res:
-		spamwriter.writerow(r)
+		writer.writerow(r)
 
 	res = con.query("select " + val + " from " + TABLE + " where km_pr_l >= 4 and km_pr_l < 8 order by val;").getresult()
 	output = open('images/' + TYPE + '_medium_data.csv', 'wb')
-	spamwriter = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 
 	for r in res:
-		spamwriter.writerow(r)
+		writer.writerow(r)
 
 	res = con.query("select " + val + " from " + TABLE + " where km_pr_l > 8 order by val;").getresult()
 	output = open('images/' + TYPE + '_high_data.csv', 'wb')
-	spamwriter = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 
 	for r in res:
-		spamwriter.writerow(r)
+		writer.writerow(r)
 
 	print "set terminal png size 1000,500;set y2tics;" 
 	print "set output 'images/" + TYPE + "Trips.png';"

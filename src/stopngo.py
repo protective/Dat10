@@ -3,7 +3,7 @@
 
 import pg, sys, os, csv
 
-USER = os.getlogin()
+USER = 'd103'
 DB = 'gps_can'
 QUERY_TABLE = "a_gps_can_data"
 TABLE = 'trip_data'

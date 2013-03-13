@@ -2,12 +2,10 @@ import os, pg , math, sys
 #1 = idle
 #2 = stop
 #3 = run
-con = pg.connect(dbname='gps_can', host='localhost', user=os.getlogin(),passwd='F1ff')
+con = pg.connect(dbname='gps_can', host='localhost', user='d103',passwd='F1ff')
 
-try:
-	con.query('alter table a_gps_can_data drop idle;')
-finally:
-	con.query('alter table a_gps_can_data add column idle int not null default 0;')
+con.query('alter table a_gps_can_data drop IF EXISTS idle;')
+con.query('alter table a_gps_can_data add column idle int not null default 0;')
 
 print 'Setting idle state'
 con.query("update a_gps_can_data set idle = 1 where speed = 0 and rpm > 0;")
