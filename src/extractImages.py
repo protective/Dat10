@@ -35,7 +35,7 @@ elif TYPE == 'TimeTrips':
 	print "set ylabel 'Number of trips"
 	print "set xlabel 'Time??'"
 
-	print "plot 'noTrajectories.csv' with lines lw 3 notitle"
+	print "plot 'data/noTrajectories.csv' with lines lw 3 notitle"
 
 elif TYPE == 'TripLength':
 	print "set terminal png size 1000,500;" 
@@ -44,7 +44,7 @@ elif TYPE == 'TripLength':
 	print "set xlabel 'Trip length'"
 	print "set arrow from 90,graph(0,0) to 90,graph(1,1) nohead lw 2 linecolor rgb \"orange\""
 
-	print "plot 'data/test.csv' notitle"
+	print "plot 'data/noTripsLength.csv' with lines lw 3 notitle"
 
 else:
 	val = TYPE + ', km_pr_l as val, total_fuel'
