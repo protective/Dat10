@@ -1,9 +1,5 @@
 \section{Defintions}
 \subsection{Trips}
-Motoren skal være tændt, e.g. rpm > 0
-ny tur slukket motor i 2 min
-En tur skal have min X observationer per minute
-
 The data set is split into trips by annotating each record with a trip identifier, \tid.
 A trip is defined as a collection of consecutive records with the same vehicle identifier, \vid.
 Idle time, i.e. when the engine is running but the vehicle is not moving, is persumed to be an important factor for fuel consumption. 
@@ -11,7 +7,8 @@ We therefore need to ensure that records recorded when the vehicle is idle is in
 A trip is hence defined from when the vehicle is turn on and not by when the vehicle is moving or when it is possible to map-match GPS coordinates to road segments.
 In order not to split a trip into two trips just because the engine stalls, we say that a trips ends when two consecutive records are more than some timeframe apart.
 Figure~\ref{fig:TimeTrips} show the number of trips at different timeframes from 20 seconds between two trips to 240 seconds.
-We see that the curve flattens around 100 seconds, and we therefore choose this as the timeframe. %TODO: Do tests to explain why 100 seconds 
+We see that the curve flattens around 100 and 120 seconds. 
+Few traffic lights have a circulation time of more that 100 seconds, and in order to aviod splitting a trip because the engine is turned of while waiting, we choose 120 seconds as the timeframe. 
 \begin{figure}[htb]
 \centering
 \includegraphics[width=0.5\textwidth]{../src/images/TimeTrips.png}
@@ -19,7 +16,7 @@ We see that the curve flattens around 100 seconds, and we therefore choose this 
 \label{fig:TimeTrips}
 \end{figure}
 
-Many of these trips have very few records - %TODO: statistics
+Many of these trips have very few records %TODO: statistics
 These short trips are not usable.
 Figure~\ref{fig:LengthTrips} show the number of trips with different minimum limits on number of records in a trip.
 \begin{figure}[htb]
@@ -56,7 +53,7 @@ We classify the trips into three classes based on their km/l.
 Class \fuelLow contains trips with between 0 and 4 km/l, being all those that fall below the normal values and drive very fuel inefficient.
 Class \fuelMedium and \fuelHigh splits the main cluser into two in order to distinguish the better trips.
 Class \fuelMedium contains trips with between 4 and 8 km/l and class \fuelHigh contains the remaning trips with 8 or more km/l.
-Having only two classes, e.g. 0 to 4 and above 4, will allow us to identify very bad trips but not average versus good. 
+Had we only used two classes, e.g. 0 to 4 and above 4, will allow us to identify very bad trips but not average versus good. 
 One could also have a class containing trips with more than 10 km/l but only 94 trips will be in this class. %CHECK
 
 \subsection{Idle}
@@ -67,7 +64,7 @@ Let $idle_t$ be the percentage of the trip $t$ where the car is in an idle state
 
 Figure~\ref{fig:idleTrips} plots $idle_t$ for each trip $t$ versus the km/l of that trip.
 The size of the plot indicates the amount of fuel used in the trip and the color signals what class it has been asigned to. 
-It is clear that most of the trips in class \fuelLow often idles and that the trips in class \fuelHigh clusters around 0 to 4 \%
+It is clear that most of the trips in class \fuelLow idles often and that the trips in class \fuelHigh clusters around 0 to 40 \%.
 
 
 \begin{comment}
@@ -92,7 +89,7 @@ And the trips with high km/l have less idle time.
 
 \subsection{Cruise Control}
 
-\cite{} establishes that driving at a constant speed is more fuel echonomic. 
+\cite{EcoMark} establishes that driving at a constant speed is more fuel echonomic. 
 From observing the data in periods where we think the driver either drivers with cruise control or drives as if he did, we see that the speed varies with $\pm$ 1 km/h.
 Most drivers can drive with a constant speed for a short period. 
 Experienced drivers might be able to drive at a constant speed over a longer time period without cruise control but the speed will generaly vary more. 
@@ -123,16 +120,18 @@ Almost all trips never cruise, and all trips classified as having a low km/l nev
 \label{fig:cruiseTrips}
 \end{figure}
 
-\subsection{acckm}
-
-Acckm capture the sum of accelerration a vehicle perform on a trip. \cite{} establishes that accelerrating consume extra fuel. A trip with a low accelerration should use less fuel. To normalise acckm we divide it by the lenght of the trip. Acckm is caculated in Algorithm \ref{alg.acckm}. A buffer (dotted line) as shown in Figure \ref{fig:acckm} is implemented to prevent small variaction in speed (solid line) to effect the acckm
+\subsection{Acceleration kilometers}
+Acckm$_t$ is the total km driven while accelerating for a given trip $t$, normalised by the lenght of the trip. 
+It is established in \cite{EcoMark} that accelerrating consume extra fuel and a trip with a few acceleration kilometers should therefore use less fuel.  
+Acckm is caculated as in Algorithm \ref{alg.acckm}. 
+A buffer (dotted line) as shown in Figure \ref{fig:acckm} is implemented to prevent small speed variations (solid line) in effecting acckm.
 
 \begin{algorithm}
 \caption{$acckm$}\label{alg.acckm}
 \begin{algorithmic}[1]
 \State $temp = 0$
 \State $counter = 0$
-\State $buffer = 5$
+\State $buffer = 1$ %TODO: Changed to 1. Do this in code.
 \While{$i < n$}
 \If{$v_i - v_{i-1} > buffer$}
 	\State $counter += (v_i - v_{i-1}) - buffer$
@@ -147,7 +146,8 @@ Acckm capture the sum of accelerration a vehicle perform on a trip. \cite{} esta
 \end{algorithmic}
 \end{algorithm}
 
-Figure \ref{fig:acckm} show the number of trips on the y axis having a acckm show on the x axis. Trips with a high km/l are mostly clustered with a low acckm and vice versa. 
+Figure \ref{fig:acckm} shows the number of trips on the y-axis having a acckm show on the x-axis. 
+Trips with a high km/l are mostly clustered with a low acckm and a trips in the \fuelMedium class . 
 
 \begin{figure}[htb]
 \centering
@@ -164,9 +164,10 @@ Figure \ref{fig:acckm} show the number of trips on the y axis having a acckm sho
 \end{figure}
 
 \subsection{Stop and go}
-Stop and go behaviour is not fuel efficient as more fuel is consumed when accelerating that when driving at a constant speed.
+Stop and go behaviour is not fuel efficient as more fuel is consumed when accelerating than when driving at a constant speed.
 It is therefore interesting to see if the number of times a vehicle stops and drives on is correlated with km/l.
-We say a vehicle is stop when it decelerations below 10 km/h and that it drives again when it accelerates up above 15 km/h.
+We say a vehicle is stopped when it decelerations below 10 km/h and that it drives again when it accelerates up above 15 km/h.
+TODO: Explain why.
 
 %TODO: Experiments
 

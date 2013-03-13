@@ -37,6 +37,14 @@ elif TYPE == 'TimeTrips':
 
 	print "plot 'data/noTrajectories.csv' with lines lw 3 notitle"
 
+elif TYPE == 'LengthTrips':
+	print "set terminal png size 1000,500;" 
+	print "set output 'images/" + TYPE + ".png';"
+	print "set ylabel 'Number of trips"
+	print "set xlabel 'Minimum number of seqments'"
+
+	print "plot 'data/noTripsLength.csv' with lines lw 3 notitle"
+
 elif TYPE == 'TripLengthKml':
 	res = con.query("select total_km, km_pr_l from trip_data;").getresult()
 	#res = con.query("select EXTRACT(EPOCH FROM t), km_pr_l from trip_data, (select tid, (max(timestamp)-min(timestamp))t from a_gps_can_data group by tid)a where trip_data.tid=a.tid;").getresult()
