@@ -6,6 +6,10 @@ TABLE = 'trip_data'
 TYPE = sys.argv[1]
 path = 'Dat10/src/'
 
+if (False):
+	USER = 'sabrine'
+	path = ''
+
 con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 
 print "set terminal png size 1000,500;"
@@ -41,9 +45,21 @@ elif TYPE == 'TimeTrips':
 elif TYPE == 'LengthTrips': 
 	print "set output '" + path + "images/" + TYPE + ".png';"
 	print "set ylabel 'Number of trips"
-	print "set xlabel 'Minimum number of seqments'"
+	print "set xlabel 'Minimum number of data records'"
 
 	print "plot '" + path + "data/noTripsLength.csv' with lines lw 3 notitle"
+	
+elif TYPE == 'minFuel':
+	print "set output '" + path + "images/minFuel.png';"
+	print "set ylabel 'Number of trips"
+	print "set xlabel 'Minimum fuel consumption'"
+	output = open(path +'data/minFuel.csv', 'wb')
+	for i in range(0,20, 1):
+		step = float(i)/10
+		res = con.query("select count(*)-count(case when total_fuel < " + str(step) + " then 1 end) from trip_data;").getresult()
+		print >>output, str(step) + " " + str(res[0][0])
+
+	print "plot '" + path + "data/minFuel.csv' with lines lw 3 notitle"
 
 elif TYPE == 'TripLengthKml':
 	res = con.query("select total_km, km_pr_l from trip_data;").getresult()
@@ -89,21 +105,18 @@ else:
 	res = con.query("select " + val + " from " + TABLE + " where km_pr_l < 4  order by val;").getresult()
 	output = open(path + 'images/' + TYPE + '_low_data.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-
 	for r in res:
 		writer.writerow(r)
 
 	res = con.query("select " + val + " from " + TABLE + " where km_pr_l >= 4 and km_pr_l < 8 order by val;").getresult()
 	output = open(path + 'images/' + TYPE + '_medium_data.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-
 	for r in res:
 		writer.writerow(r)
 
 	res = con.query("select " + val + " from " + TABLE + " where km_pr_l > 8 order by val;").getresult()
 	output = open(path + 'images/' + TYPE + '_high_data.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-
 	for r in res:
 		writer.writerow(r)
 
