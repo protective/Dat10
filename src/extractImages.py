@@ -7,7 +7,7 @@ TYPE = sys.argv[1]
 
 con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 
-print "set terminal png size 1000,500;" 
+print "set terminal png size 1000,500;"
 
 if TYPE == 'km_pr_l':
 	vehicles = con.query("select distinct vehicleid from " + TABLE + ";").getresult()
@@ -59,6 +59,9 @@ elif TYPE == 'TripLengthKml':
 	print "set xlabel 'km'"
 
 	print "plot 'data/tripLengthKml.csv' notitle"
+
+elif TYPE == 'test':
+	print 'plot 2'
 
 elif TYPE == 'idle2':
 	res = con.query("""
