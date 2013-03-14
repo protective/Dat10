@@ -80,7 +80,7 @@ elif TYPE == 'idle2':
 	print "set output 'Dat10/src/images/idle2.png';"
 	print "set yrange[0:100]"
 	print "set key outside"
-	print """plot 'data/idle2.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, 'data/idle2.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, 'data/idle2.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1"""
+	print """plot 'data/idle2.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, 'data/idle2.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 2, 'data/idle2.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1"""
 	
 
 else:
