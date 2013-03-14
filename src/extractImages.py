@@ -1,6 +1,6 @@
 import pg, sys, os, csv
 
-USER = 'sabrine'
+USER = 'd103'
 DB = 'gps_can'
 TABLE = 'trip_data'
 TYPE = sys.argv[1]
