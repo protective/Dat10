@@ -4,7 +4,7 @@ The data set is split into trips by annotating each record with a trip identifie
 A trip is defined as a collection of consecutive records with the same vehicle identifier, \vid.
 Idle time, i.e. when the engine is running but the vehicle is not moving, is persumed to be an important factor for fuel consumption. 
 We therefore need to ensure that records recorded when the vehicle is idle is included in trips. 
-A trip is hence defined from when the vehicle is turn on and not by when the vehicle is moving or when it is possible to map-match GPS coordinates to road segments.
+A trip is hence defined from when the vehicle engine is turned on and not by when the vehicle is moving or when it is possible to map-match GPS coordinates to road segments.
 In order not to split a trip into two trips just because the engine stalls, we say that a trips ends when two consecutive records are more than some timeframe apart.
 Figure~\ref{fig:TimeTrips} show the number of trips at different timeframes from 20 seconds between two trips to 240 seconds.
 We see that the curve flattens around 100 and 120 seconds. 
@@ -39,7 +39,7 @@ The fuel consumption is extracted from \var{totalconsumed} by substracting the l
 
 All six vehicles in the data set have similar km/l accross their trips (See Figure~\ref{fig:kmlTrips}).
 All trips a plotted along the x-axis with the km/l as the y-value.
-Most trips have been driven with between 5 and 10 km/l and 278 trips with 0 km/l. %CHECK
+Most trips have been driven with between 5 and 10 km/l and 278 trips with 0 km/l. %TODO CHECK
 The latter is because they do not drive any where.
 \begin{figure}[htb]
 \centering
@@ -54,7 +54,7 @@ Class \fuelLow contains trips with between 0 and 4 km/l, being all those that fa
 Class \fuelMedium and \fuelHigh splits the main cluser into two in order to distinguish the better trips.
 Class \fuelMedium contains trips with between 4 and 8 km/l and class \fuelHigh contains the remaning trips with 8 or more km/l.
 Had we only used two classes, e.g. 0 to 4 and above 4, will allow us to identify very bad trips but not average versus good. 
-One could also have a class containing trips with more than 10 km/l but only 94 trips will be in this class. %CHECK
+One could also have a class containing trips with more than 10 km/l but only 94 trips will be in this class. %TODO CHECK
 
 \subsection{Idle}
 We say a vehicle is idle when its speed is zero while the engine is running, i.e. the engines rounds per minut (RPM) is above zero. 
