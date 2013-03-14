@@ -28,7 +28,7 @@ if (redo):
 if (redo):
 	print 'Total km'
 	con.query('alter table ' + TABLE + ' drop if exists total_km')
-	con.query('alter table ' + TABLE + ' add total_km int;')
+	con.query('alter table ' + TABLE + ' add total_km float;')
 	con.query('update ' + TABLE + ' set total_km = km from (select tid, (max(kmcounter)-min(kmcounter))km from ' + OLD_TABLE + ' where kmcounter is not null and dirty is false group by tid)s where ' + TABLE + '.tid=s.tid;')
 	
 if (redo):
@@ -43,13 +43,13 @@ if (redo):
 	con.query('alter table ' + TABLE + ' add idle_percentage float;')
 	con.query('update ' + TABLE + ' set idle_percentage = p from (select tid, count(case when idle=1 then 1 end)::float/count(*) as p from ' + OLD_TABLE + ' where dirty is false group by tid)f where ' + TABLE + '.tid=f.tid;')
 
-if (redo or True):
+if (redo):
 	print 'Percentage in idle wo_tl'
 	con.query('alter table ' + TABLE + ' drop if exists idle_wo_tl_percentage;')
 	con.query('alter table ' + TABLE + ' add idle_wo_tl_percentage float;')
 	con.query('update ' + TABLE + ' set idle_wo_tl_percentage = p from (select tid, count(case when idle=1 and tl is null then 1 end)::float/count(*) as p from ' + OLD_TABLE + ' where dirty is false group by tid)f where ' + TABLE + '.tid=f.tid;')
 
-if (redo or True):
+if (redo):
 	print 'Percentage in idle w_tl'
 	con.query('alter table ' + TABLE + ' drop if exists idle_w_tl_percentage;')
 	con.query('alter table ' + TABLE + ' add idle_w_tl_percentage float;')
