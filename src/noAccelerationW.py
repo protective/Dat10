@@ -45,8 +45,8 @@ while i < len(res):
 	else:
 		temp = con.query('select total_km from ' + TABLE + ' where tid = '+ str(tid) ).getresult()
 		total = 0
-		if(temp[0][0] != 0):
-			total = acccounter/ temp[0][0]
+		if(float(temp[0][0]) != 0):
+			total = float(acccounter)/ float(temp[0][0])
 		s = "update " + TABLE + " set acckmWeight = " + str(total) + " where tid = " + str(tid) + ";"
 		con.query(s)
 		acccounter = 0
