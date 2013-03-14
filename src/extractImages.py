@@ -60,9 +60,6 @@ elif TYPE == 'TripLengthKml':
 
 	print "plot 'data/tripLengthKml.csv' notitle"
 
-elif TYPE == 'test':
-	print 'plot 2'
-
 elif TYPE == 'idle2':
 	res = con.query("""
 	select round(idle_percentage*100), 
@@ -78,13 +75,15 @@ elif TYPE == 'idle2':
 		writer.writerow(r)
 	
 	print "set output 'Dat10/src/images/idle2.png';"
+	print "set ylabel 'Percent'"
+	print "set xlabel 'Percent idle'"
 	print "set yrange[0:100]"
+	print "set xrange[0:100]"
 	print "set key outside"
-	print """plot 'data/idle2.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, 'data/idle2.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 6, 'data/idle2.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1"""
-	
+	print """plot 'data/idle2.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, 'data/idle2.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, 'data/idle2.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1"""
 
 else:
-	val = TYPE + ', km_pr_l as val, total_fuel'
+	val = TYPE + ', km_pr_l as val, |/ (total_fuel/3.14)'
 	where= ''
 	res = con.query("select " + val + " from " + TABLE + " where km_pr_l < 4  order by val;").getresult()
 	output = open('images/' + TYPE + '_low_data.csv', 'wb')
