@@ -72,12 +72,12 @@ elif TYPE == 'idle2':
 	from trip_data group by round order by round;
 	""").getresult()
 		
-	output = open('data/idle2.csv', 'wb')
+	output = open('Dat10/src/data/idle2.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 	for r in res:
 		writer.writerow(r)
 	
-	print "set output 'images/idle2.png';"
+	print "set output 'Dat10/src/images/idle2.png';"
 	print "set yrange[0:100]"
 	print "set key outside"
 	print """plot 'data/idle2.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 4, 'data/idle2.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, 'data/idle2.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 2"""
