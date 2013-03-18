@@ -96,7 +96,7 @@ elif TYPE == 'idle2':
 	print "set ylabel 'Percent'"
 	print "set xlabel 'Percent idle'"
 	print "set yrange[0:100]"
-	print "set xrange[0:100]"
+	print "set xrange[0:60]"
 	print "set y2tics"
 	print "set y2label 'Number of datapoints'"
 	print "set key outside"
