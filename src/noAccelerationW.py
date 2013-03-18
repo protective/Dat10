@@ -9,12 +9,10 @@ TABLE = "trip_data"
 
 con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 
-res = con.query('select speed, timestamp, tid  from ' + QUERY_TABLE + ' where tid in (select tid from ' + TABLE + ') and dirty is false order by tid, timestamp').getresult()
-
-
 con.query("alter table " + TABLE + " drop IF EXISTS acckmWeight;")
 con.query('alter table ' + TABLE + ' add acckmWeight float not null default 0;')
 
+res = con.query('select speed, timestamp, tid  from ' + QUERY_TABLE + ' where tid in (select tid from ' + TABLE + ') and dirty is false order by tid, timestamp').getresult()
 
 curSpeed = 0
 oldSpeed = 0
