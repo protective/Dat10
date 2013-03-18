@@ -1,4 +1,4 @@
-import pg, sys,os
+import pg, sys,os, time
 
 USER = 'd103'
 DB = 'gps_can'
@@ -9,6 +9,9 @@ redo = False
 if len(sys.argv) > 1:
 	if sys.argv[1] == "dropAll":
 		redo = True
+
+if (True):
+	USER= 'sabrine'
 
 print "Connecting to " + DB
 con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
@@ -42,6 +45,32 @@ if (redo):
 	con.query('alter table ' + TABLE + ' drop if exists idle_percentage;')
 	con.query('alter table ' + TABLE + ' add idle_percentage float;')
 	con.query('update ' + TABLE + ' set idle_percentage = p from (select tid, count(case when idle=1 then 1 end)::float/count(*) as p from ' + OLD_TABLE + ' where dirty is false group by tid)f where ' + TABLE + '.tid=f.tid;')
+
+if (True):
+	print 'Time in idle'
+	con.query('alter table ' + TABLE + ' drop if exists idle_time;')
+	con.query('alter table ' + TABLE + ' add idle_time float;')
+	trips = con.query('select distinct tid from trip_data where dirty is false;').getresult() #
+	for t in trips:
+		trip = t[0]
+		res = con.query("select timestamp, idle from a_gps_can_data where tid=" + str(trip) + " and dirty is false order by timestamp;").getresult() #
+		start = ""
+		sek = 0
+		for i in range(0,len(res)):
+			ts = res[i][0]
+			idle = res[i][1]
+			if idle == 1 and start == "":
+				start = ts
+			if start != "" and (idle != 1 or i==len(res)-1):
+				end = res[i-1][0]
+				if i==len(res)-1:
+					end = res[i][0]
+				print start + " " + end
+				sek += abs(time.mktime(time.strptime(start, "%Y-%m-%j %H:%M:%S")) - time.mktime(time.strptime(end, "%Y-%m-%j %H:%M:%S")))
+			
+				start = ""
+		con.query("update "+ TABLE + " set idle_time = " + str(sek) + " where tid="+ str(trip) + ";")
+	
 
 if (redo):
 	print 'Percentage in idle wo_tl'
