@@ -1,6 +1,6 @@
 import pg , math, sys, os ,time
 
-USER = 'karsten'
+USER = 'd103'
 DB = "gps_can"
 QUERY_TABLE = "a_gps_can_data"
 TABLE = "trip_data"
@@ -55,7 +55,9 @@ while i <= len(res):
 
 			
 	else:
-		print "conunter " + str(TlCounter) + " green " + str(TlGreenCounter) + " red " + str(TlRedCounter)
+		#print "conunter " + str(TlCounter) + " green " + str(TlGreenCounter) + " red " + str(TlRedCounter)
+		con.query("update " + TABLE + " set TlCounter = " + str(TlCounter) " , TlRedCounter = " + str(TlRedCounter) + " , TlGreenCounter = " + str(TlGreenCounter) + " Where  tid = " + str(tid) + ";")
+
 		TlCounter = 0
 		TlRedCounter = 0
 		TlGreenCounter = 0
