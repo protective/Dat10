@@ -126,13 +126,6 @@ else:
 	print "set output '" + path + "images/" + TYPE + "Trips.png';"
 	print "set ylabel 'km/l';"
 	print "set xlabel '"+ TYPE + "';"
-	if (TYPE == 'stopngo'):
-		print "set xrange[-3:]"
-	elif (TYPE == 'acckm'):
-		print "set xrange[-50:]"
-
-	else:
-		print "set xrange[-0.1:]"
 
 	s = "plot "
 	s+= "'" + path + "images/" + TYPE + "_high_data.csv' using 1:2:3 with points lt 1 pt 6 ps variable linecolor rgb \"green\" title 'High' , "
