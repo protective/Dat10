@@ -1,6 +1,6 @@
 import pg , math, sys, os ,time
 
-USER = 'karsten'
+USER = 'd103'
 DB = "gps_can"
 QUERY_TABLE = "a_gps_can_data"
 TABLE = "trip_data"
@@ -21,9 +21,9 @@ res = con.query('select speed, timestamp, tid, tl  from ' + QUERY_TABLE + ' wher
 
 
 
-TlCounter = 0
-TlRedCounter = 0
-TlGreenCounter = 0
+TlCounter = float(0)
+TlRedCounter = float(0)
+TlGreenCounter = float(0)
 
 stopping = 0;
 inlight = False;
@@ -56,7 +56,15 @@ while i <= len(res):
 			
 	else:
 		#print "conunter " + str(TlCounter) + " green " + str(TlGreenCounter) + " red " + str(TlRedCounter)
-		s = "update " + TABLE + " set TlCounter = " + str(TlCounter) + " , TlRedCounter = " + str(TlRedCounter) + " , TlGreenCounter = " + str(TlGreenCounter) + " where tid = " + str(tid) + ";"
+
+		temp = con.query('select total_km from ' + TABLE + ' where tid = '+ str(tid) ).getresult()
+		total = 0		
+		if(float(temp[0][0] != 0)):
+			total = float(temp[0][0])
+		if total > 0:
+			s = "update " + TABLE + " set TlCounter = " + str(TlCounter/total) + " , TlRedCounter = " + str(TlRedCounter/total) + " , TlGreenCounter = " + str(TlGreenCounter/total) + " where tid = " + str(tid) + ";"
+		else: 
+			s = "update " + TABLE + " set TlCounter = " + str(0) + " , TlRedCounter = " + str(0) + " , TlGreenCounter = " + str(0) + " where tid = " + str(tid) + ";"
 		#print s
 		con.query(s)
 
