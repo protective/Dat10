@@ -10,7 +10,7 @@ if len(sys.argv) > 1:
 	if sys.argv[1] == "dropAll":
 		redo = True
 
-if (True):
+if (False):
 	USER= 'sabrine'
 
 print "Connecting to " + DB
