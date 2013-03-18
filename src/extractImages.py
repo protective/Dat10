@@ -82,7 +82,8 @@ elif TYPE == 'idle2':
 	select round(idle_percentage*100), 
 		count(case when km_pr_l <=4 then 1 end)::float/count(*)*100 as low,
 		count(case when km_pr_l < 8 then 1 end)::float/count(*)*100 as medium,
-		100 as high  
+		100 as high ,
+		count(*) 
 	from trip_data group by round order by round;
 	""").getresult()
 		
@@ -97,7 +98,7 @@ elif TYPE == 'idle2':
 	print "set yrange[0:100]"
 	print "set xrange[0:100]"
 	print "set key outside"
-	print "plot '" + path + "data/idle2.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, 'data/idle2.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, 'data/idle2.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1"
+	print "plot '" + path + "data/idle2.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, 'data/idle2.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, 'data/idle2.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "'data/idle2.csv using 1:5"
 
 else:
 	val = TYPE + ', km_pr_l as val, |/ (total_fuel/3.14)'
