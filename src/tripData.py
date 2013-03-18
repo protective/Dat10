@@ -50,7 +50,7 @@ if (True):
 	print 'Time in idle'
 	con.query('alter table ' + TABLE + ' drop if exists idle_time;')
 	con.query('alter table ' + TABLE + ' add idle_time float;')
-	trips = con.query('select distinct tid from trip_data where dirty is false;').getresult() #
+	trips = con.query('select distinct tid from trip_data').getresult() #
 	for t in trips:
 		trip = t[0]
 		res = con.query("select timestamp, idle from a_gps_can_data where tid=" + str(trip) + " and dirty is false order by timestamp;").getresult() #
