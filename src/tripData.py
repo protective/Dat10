@@ -46,7 +46,7 @@ if (redo):
 	con.query('alter table ' + TABLE + ' add idle_percentage float;')
 	con.query('update ' + TABLE + ' set idle_percentage = p from (select tid, count(case when idle=1 then 1 end)::float/count(*) as p from ' + OLD_TABLE + ' where dirty is false group by tid)f where ' + TABLE + '.tid=f.tid;')
 
-if (True):
+if (redo):
 	print 'Time in idle'
 	con.query('alter table ' + TABLE + ' drop if exists idle_time;')
 	con.query('alter table ' + TABLE + ' add idle_time float;')
@@ -54,7 +54,7 @@ if (True):
 	for t in trips:
 		trip = t[0]
 #	trip = 444
-		res = con.query("select timestamp, idle from a_gps_can_data where tid=" + str(trip) + "  order by timestamp;").getresult() #and dirty is false
+		res = con.query("select timestamp, idle from a_gps_can_data where tid=" + str(trip) + " and dirty is false order by timestamp;").getresult()
 		start = ""
 		sek = 0
 #		print trip;
