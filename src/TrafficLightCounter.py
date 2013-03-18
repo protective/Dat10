@@ -8,13 +8,13 @@ TABLE = "trip_data"
 con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 
 con.query("alter table " + TABLE + " drop IF EXISTS TlCounter;")
-con.query('alter table ' + TABLE + ' add TlCounter int not null default 0;')
+con.query('alter table ' + TABLE + ' add TlCounter float not null default 0;')
 
 con.query("alter table " + TABLE + " drop IF EXISTS TlRedCounter;")
-con.query('alter table ' + TABLE + ' add TlRedCounter int not null default 0;')
+con.query('alter table ' + TABLE + ' add TlRedCounter float not null default 0;')
 
 con.query("alter table " + TABLE + " drop IF EXISTS TlGreenCounter;")
-con.query('alter table ' + TABLE + ' add TlGreenCounter int not null default 0;')
+con.query('alter table ' + TABLE + ' add TlGreenCounter float not null default 0;')
 
 res = con.query('select speed, timestamp, tid, tl  from ' + QUERY_TABLE + ' where tid in (select tid from ' + TABLE + ')order by tid, timestamp').getresult()
 
