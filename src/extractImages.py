@@ -95,7 +95,7 @@ elif TYPE == 'idle2':
 			count(case when km_pr_l < 8 then 1 end)::float/count(*)*100 as medium,
 			100 as high,
 			count(*)
-			from trip_data where round(idle_percentage*100) = """ + i + ";")
+			from trip_data where round(idle_percentage*100) = """ + i + ";").getresult()
 		for r in res:
 			writer.writerow(r)
 
