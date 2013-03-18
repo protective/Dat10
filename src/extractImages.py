@@ -6,7 +6,7 @@ TABLE = 'trip_data'
 TYPE = sys.argv[1]
 path = 'Dat10/src/'
 
-if (False):
+if (True):
 	USER = 'sabrine'
 	path = ''
 
@@ -98,7 +98,7 @@ elif TYPE == 'idle2':
 	print "set yrange[0:100]"
 	print "set xrange[0:100]"
 	print "set key outside"
-	print "plot '" + path + "data/idle2.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, 'data/idle2.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, 'data/idle2.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/idle2.csv' using 1:5 with lines title Data points"
+	print "plot '" + path + "data/idle2.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, 'data/idle2.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, 'data/idle2.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/idle2.csv' using 1:5 with lines title 'Data points'"
 
 else:
 	val = TYPE + ', km_pr_l as val, |/ (total_fuel/3.14)'
