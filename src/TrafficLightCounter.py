@@ -1,6 +1,6 @@
 import pg , math, sys, os ,time
 
-USER = 'd103'
+USER = 'karsten'
 DB = "gps_can"
 QUERY_TABLE = "a_gps_can_data"
 TABLE = "trip_data"
@@ -32,8 +32,8 @@ tid = 0
 tid = res[0][2]
 oldlight = 0
 while i <= len(res):
-	if(tid == res[i][2] and i < len(res)):
-		print res[i]
+	if(i < len(res) and tid == res[i][2] ):
+		#print res[i]
 		
 		if inlight == False and res[i][3]:
 			oldlight = res[i][3]
@@ -56,11 +56,14 @@ while i <= len(res):
 			
 	else:
 		#print "conunter " + str(TlCounter) + " green " + str(TlGreenCounter) + " red " + str(TlRedCounter)
-		con.query("update " + TABLE + " set TlCounter = " + str(TlCounter) " , TlRedCounter = " + str(TlRedCounter) + " , TlGreenCounter = " + str(TlGreenCounter) + " Where  tid = " + str(tid) + ";")
+		s = "update " + TABLE + " set TlCounter = " + str(TlCounter) + " , TlRedCounter = " + str(TlRedCounter) + " , TlGreenCounter = " + str(TlGreenCounter) + " where tid = " + str(tid) + ";"
+		#print s
+		con.query(s)
 
 		TlCounter = 0
 		TlRedCounter = 0
 		TlGreenCounter = 0
-		tid = res[i][2]
+		if i < len(res):
+			tid = res[i][2]
 	i+=1
 
