@@ -84,7 +84,7 @@ elif TYPE == 'idle2':
 		count(case when km_pr_l < 8 then 1 end)::float/count(*)*100 as medium,
 		100 as high ,
 		count(*) 
-	from trip_data where round <=60 group by round order by round;
+	from trip_data where round(idle_percentage*100) <=60 group by round order by round;
 	""").getresult()
 	
 	output = open(path + 'data/idle2.csv', 'wb')
