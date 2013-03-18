@@ -6,7 +6,7 @@ TABLE = 'trip_data'
 TYPE = sys.argv[1]
 path = 'Dat10/src/'
 
-if (True):
+if (False):
 	USER = 'sabrine'
 	path = ''
 
@@ -78,26 +78,19 @@ elif TYPE == 'TripLengthKml':
 	print "plot '" + path + "data/tripLengthKml.csv' notitle"
 
 elif TYPE == 'idle2':
-	#res = con.query("""
-	#select round(idle_percentage*100), 
-	#	count(case when km_pr_l <=4 then 1 end)::float/count(*)*100 as low,
-	#	count(case when km_pr_l < 8 then 1 end)::float/count(*)*100 as medium,
-	#	100 as high ,
-	#	count(*) 
-	#from trip_data group by round order by round;
-	#""").getresult()
+	res = con.query("""
+	select round(idle_percentage*100), 
+		count(case when km_pr_l <=4 then 1 end)::float/count(*)*100 as low,
+		count(case when km_pr_l < 8 then 1 end)::float/count(*)*100 as medium,
+		100 as high ,
+		count(*) 
+	from trip_data where round <=60 group by round order by round;
+	""").getresult()
 	
 	output = open(path + 'data/idle2.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-	for i in range(0,100):
-		res = con.query("""select 
-			count(case when km_pr_l <=4 then 1 end)::float/count(*)*100 as low,
-			count(case when km_pr_l < 8 then 1 end)::float/count(*)*100 as medium,
-			100 as high,
-			count(*)
-			from trip_data where round(idle_percentage*100) = """ + i + ";").getresult()
-		for r in res:
-			writer.writerow(r)
+	for r in res:
+		writer.writerow(r)
 
 	print "set output '" + path + "/images/idle2.png';"
 	print "set ylabel 'Percent'"
