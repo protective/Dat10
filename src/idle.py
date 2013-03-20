@@ -30,9 +30,13 @@ for t in trips:
 			
 			sek = abs(time.mktime(time.strptime(start, "%Y-%m-%j %H:%M:%S")) - time.mktime(time.strptime(end, "%Y-%m-%j %H:%M:%S"))) + 1
 			if sek > duration:
-				con.query("update a_gps_can_data set idle 1 where tid="+ str(trip) + " and timestamp >=" +start + " and timestamp <=" + end +";")			
+				con.query("update a_gps_can_data set idle=1 where tid="+ str(trip) + " and timestamp >=" +start + " and timestamp <=" + end +";")			
 			start = ""
 
 print "Creating index"
 con.query("Create index idle_a_gps_can_data_idx on a_gps_can_data (idle);")
+
+print "Counting idle"
+output = open('numberofidle.csv', 'a')
+print >> output, str(duration) + " " + str(con.query("select count(*) from a_gps_can_data where idle=1;").getresult()[0][0])
 
