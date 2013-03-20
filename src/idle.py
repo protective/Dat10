@@ -3,7 +3,10 @@ import os, pg, math, sys, time
 USER = 'd103'
 con = pg.connect(dbname='gps_can', host='localhost', user=USER,passwd='F1ff')
 
-duration = sys.argv[1]
+if len(sys.argv) > 1:
+	duration = int(sys.argv[1])
+else:
+	duration = 0
 
 print "Altering table"
 con.query('alter table a_gps_can_data drop IF EXISTS idle;')
@@ -11,7 +14,7 @@ con.query('alter table a_gps_can_data add column idle int not null default 0;')
 
 print 'Setting idle state with ' + str(duration) + " seconds duration"
 #con.query("update a_gps_can_data set idle = 1 where speed = 0 and rpm > 0;")
-trips = con.query('select distinct tid from trip_data').getresult()
+trips = con.query('select distinct tid from a_gps_can_data').getresult()
 for t in trips:
 	trip = t[0]
 	res = con.query("select timestamp, speed, rpm from a_gps_can_data where tid=" + str(trip) + " and dirty is false order by timestamp;").getresult() #
@@ -29,14 +32,18 @@ for t in trips:
 				end = res[i][0]
 			
 			sek = abs(time.mktime(time.strptime(start, "%Y-%m-%j %H:%M:%S")) - time.mktime(time.strptime(end, "%Y-%m-%j %H:%M:%S"))) + 1
-			if sek > duration:
-				con.query("update a_gps_can_data set idle=1 where tid="+ str(trip) + " and timestamp >=" +start + " and timestamp <=" + end +";")			
+			if sek >= duration:
+				q= "update a_gps_can_data set idle=1 where tid="+ str(trip) + " and timestamp >='" +start + "' and timestamp <='" + end +"';"
+				con.query(q)			
+				
 			start = ""
 
 print "Creating index"
 con.query("Create index idle_a_gps_can_data_idx on a_gps_can_data (idle);")
 
 print "Counting idle"
-output = open('numberofidle.csv', 'a')
-print >> output, str(duration) + " " + str(con.query("select count(*) from a_gps_can_data where idle=1;").getresult()[0][0])
+output = open('data/idleDuration.csv', 'a')
+temp = con.query("select count(*) from a_gps_can_data where idle=1;").getresult()[0][0];
+print >> output, str(duration) + " " + str(temp)
+print str(duration) + " " + str(temp)
 

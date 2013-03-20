@@ -43,11 +43,11 @@ elif TYPE == 'TimeTrips':
 	print "plot '" + path + "data/noTrajectories.csv' with lines lw 3 notitle"
 
 elif TYPE == 'LengthTrips': 
-	print "set output '" + path + "images/" + TYPE + ".png';"
+	print "set output '" + path + "images/TripsLength.png';"
 	print "set ylabel 'Number of trips"
 	print "set xlabel 'Minimum number of data records'"
 
-	print "plot '" + path + "data/noTripsLength.csv' with lines lw 3 notitle"
+	print "plot '" + path + "data/numberOfTrajectories.csv' with lines lw 3 notitle"
 	
 elif TYPE == 'minFuel':
 	print "set output '" + path + "images/minFuel.png';"
@@ -93,17 +93,23 @@ elif TYPE == 'idle2':
 		writer.writerow(r)
 
 	print "set output '" + path + "/images/idle2.png';"
-	print "set ylabel 'Percent'"
-	print "set xlabel 'Percent idle'"
+	print "set ylabel 'Percent (%)'"
+	print "set xlabel 'Percent of trip in idle (%)'"
 	print "set yrange[0:100]"
 	print "set xrange[0:60]"
 	print "set y2tics"
 	print "set y2label 'Number of datapoints'"
 	print "set key outside"
 	print "plot '" + path + "data/idle2.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, 'data/idle2.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, 'data/idle2.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/idle2.csv' using 1:5 with lines lw 3 title 'Data points' axes x1y2"
+	
+elif TYPE == 'idleDuration':
+	print "set output '" + path + "images/idleDuration.png';"
+	print "set ylabel 'Number of idle records"
+	print "set xlabel 'Minimum duration'"
+	print "plot '" + path + "data/idleDuration.csv' with lines lw 3 notitle"
 
 else:
-	val = TYPE + ', km_pr_l as val, |/ (total_fuel/3.14)'
+	val = TYPE + '*100, km_pr_l as val, |/ (total_fuel/3.14)'
 	where= ''
 	res = con.query("select " + val + " from " + TABLE + " where km_pr_l < 4  order by val;").getresult()
 	output = open(path + 'images/' + TYPE + '_low_data.csv', 'wb')

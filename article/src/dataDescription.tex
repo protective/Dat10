@@ -7,7 +7,9 @@ CANBus data is for example the engines rounds per minute, fuel consumption and t
 The hauliers may also provide additional information such as vehicle model, capacity and weight. 
 
 Table~\ref{tb:dataDescription} lists the data columns of the provided data set.
-The data set contains 10,224,846 records collected from 6 minibusses. 
+GPS and CANBus data is colleted for six vehicles over a timeperiod.
+Most of the data is recorded with 1 hertz frequency, but some data is collected with a larger frequency.
+The data set contains 6,365,359 records with about 1 mio. records from five vehicles and half a milion from one vehicle.
 All vehicles are assumed to be compareable.%TODO
 Of the four columns for fuel comsumption, \var{totalconsumed} is the most accurate measure.
 The instantaneous values, i.e. \var{actualconsumed} and \var{actual\_km\_l}, is said to be undependable by the data provider and should not be used. 
