@@ -3,13 +3,15 @@ import random, time, math, pg, sys,os
 USER = 'd103'
 DB = 'gps_can'
 TABLE = 'gps_can_data'
-NEW_TABLE = TABLE + 'TripLength'
+NEW_TABLE = 'a_' + TABLE
 if len(sys.argv) > 1:
 	TIME = int(sys.argv[1])
-	OBS = int(sys.argv[2]) 
+	OBS = int(sys.argv[2])
+	if len(sys.argv)> 3:
+		NEW_TABLE = sys.argv[3]
 else:
 	TIME = 120
-	OBS = 2
+	OBS = 0
 
 
 print "Testing with " + str(TIME) + " seconds."
@@ -27,10 +29,8 @@ if (True):
 	print "Creating indexes"
 	con.query("DROP INDEX IF EXISTS vehid_" + NEW_TABLE + "_idx CASCADE; create index vehid_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (vehicleid);")
 	con.query("DROP INDEX IF EXISTS time_" + NEW_TABLE + "_idx CASCADE; create index time_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (timestamp);")
-#	con.query("DROP INDEX IF EXISTS speed_" + NEW_TABLE + "_idx CASCADE; create index speed_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (speed);")
-#	con.query("DROP INDEX IF EXISTS rpm_" + NEW_TABLE + "_idx CASCADE; create index rpm_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (rpm);")
-#	con.query("DROP INDEX IF EXISTS totalconsumed_" + NEW_TABLE + "_idx CASCADE; create index totalconsumed_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (totalconsumed);")
-#	con.query("DROP INDEX IF EXISTS kmcounter_" + NEW_TABLE + "_idx CASCADE; create index kmcounter_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (kmcounter);")
+	con.query("DROP INDEX IF EXISTS speed_" + NEW_TABLE + "_idx CASCADE; create index speed_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (speed);")
+	con.query("DROP INDEX IF EXISTS rpm_" + NEW_TABLE + "_idx CASCADE; create index rpm_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (rpm);")
 	
 
 print "Fetching data"
@@ -84,8 +84,10 @@ print "Creating index"
 con.query("DROP INDEX IF EXISTS tid_" + NEW_TABLE + "_idx CASCADE; create index tid_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (tid);")
 
 print "Counting trips"
-output = open('numberOfTrajectories.csv', 'a')
-print >> output, str(TIME) + " " + str(OBS) + " " + str(con.query("select count(distinct tid) from " + NEW_TABLE + ' where dirty is false;').getresult()[0][0])
+output = open('data/numberOfTrajectories.csv', 'a')
+s = str(TIME) + " " + str(OBS) + " " + str(con.query("select count(distinct tid) from " + NEW_TABLE + ' where dirty is false;').getresult()[0][0])
+print s 
+print >> output, s
 
 print "Done"
 

@@ -18,8 +18,8 @@ psql -d $DB -c "\copy $TABLE from '$f' DELIMITERS ';' CSV HEADER;"
 echo "Done loading $f"
 done
 
-echo "get trajectories TODO remember to set"
-python getTrajectories.py 100 0
+echo "get trajectories"
+python getTrajectories.py 120 0
 
 echo "Create geom postgis"
 psql -d $DB -c "alter table a_gps_can_data add column geom geography(POINT,4326);"
@@ -42,14 +42,15 @@ psql -d $DB -c "DROP INDEX IF EXISTS totalconsumed_idx CASCADE; create index tot
 psql -d $DB -c "DROP INDEX IF EXISTS segmentkey_idx CASCADE; create index segmentkey_idx on $TABLE (segmentkey)"
 psql -d $DB -c "DROP INDEX IF EXISTS direction_idx CASCADE; create index direction_idx on $TABLE (direction)"
 
+python idle.py 0
 python cruise.pys
-python idle.py
 python tripData.py dropAll
+python extractTrafficLights.py maps/denmark.osm
+python inRangeOfTl.py
 python noAcceleration.py
 python noAccelerationW.py
 python stopngo.py
-python extractTrafficLights.py maps/denmark.osm
-python inRangeOfTl.py
+
 
 
 
