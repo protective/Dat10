@@ -33,7 +33,7 @@ if TYPE == 'km_pr_l':
 		vid = str(v[0])
 		s+= path + "'data/" + vid + "_kmldata.csv' title '" + vid + "', "
 
-	print s += "4 lw 2 notitle, 8 lw 2 notitle"
+	print s + "4 lw 2 notitle, 8 lw 2 notitle"
 
 elif TYPE == 'TimeTrips':
 	print "set output '" + path + "images/" + TYPE + ".png';"
