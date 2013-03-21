@@ -24,7 +24,7 @@ if TYPE == 'km_pr_l':
 		output = open(path + 'data/' + vid + '_kmldata.csv', 'wb')
 		for r in res:
 			print>> output, str(i) + " " + r[0]
-			i++
+			i+=1
  
 	print "set output '" + path + "images/kmlTrips.png';"
 	print "set ylabel 'km/l';"
