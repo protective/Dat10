@@ -31,7 +31,7 @@ if TYPE == 'km_pr_l':
 	s = "plot "
 	for v in vehicles:
 		vid = str(v[0])
-		s+= path + "'data/" + vid + "_kmldata.csv' title '" + vid + "', "
+		s+= "'"path + "data/" + vid + "_kmldata.csv' title '" + vid + "', "
 
 	print s + "4 lw 2 notitle, 8 lw 2 notitle"
 
