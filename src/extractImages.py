@@ -125,7 +125,7 @@ elif TYPE == 'idle3':
 	print "set y2tics"
 	print "set y2label 'Number of trips'"
 	print "set key outside"
-	print "plot '" + path + "data/idle3.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, 'data/idle3.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, 'data/idle3.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/idle3.csv' using 1:5 with lines lw 3 title 'Data points' axes x1y2"
+	print "plot '" + path + "data/idle3.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/idle3.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/idle3.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/idle3.csv' using 1:5 with lines lw 3 title 'Data points' axes x1y2"
 	
 elif TYPE == 'idleDuration':
 	print "set output '" + path + "images/idleDuration.png';"

@@ -43,10 +43,10 @@ psql -d $DB -c "DROP INDEX IF EXISTS segmentkey_idx CASCADE; create index segmen
 psql -d $DB -c "DROP INDEX IF EXISTS direction_idx CASCADE; create index direction_idx on $TABLE (direction)"
 
 python idle.py 0
-python cruise.pys
-python tripData.py dropAll
+python cruise.py
 python extractTrafficLights.py maps/denmark.osm
 python inRangeOfTl.py
+python tripData.py dropAll
 python noAcceleration.py
 python noAccelerationW.py
 python stopngo.py
