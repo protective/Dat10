@@ -7,9 +7,8 @@ We therefore need to ensure that records recorded when the vehicle is idling is 
 
 A trip is hence defined from when the engine of the vehicle is turned on.
 In order not to split a trip into two just because the engine stalls, we say that a trips ends when two consecutive records are more than some timeframe apart.
-Figure~\ref{fig:TimeTrips} shows the number of trips at different timeframes from 20 seconds between two trips to 240 seconds.
-We see that the curve flattens around 100 and 120 seconds. 
-Few traffic lights have a circulation time of more that 100 seconds, and in order to aviod splitting a trip because the engine is turned of while waiting, we choose 120 seconds as the timeframe. 
+Figure~\ref{fig:TimeTrips} shows the number of trips at different timeframes from 5 seconds between two trips to 200 seconds.
+We see that the curve flattens around 20 and we choose this as the timeframe. 
 \begin{figure}[htb]
 \centering
 \includegraphics[width=0.5\textwidth]{../src/images/TimeTrips.png}

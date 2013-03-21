@@ -17,12 +17,14 @@ print "set terminal png size 1000,500;"
 if TYPE == 'km_pr_l':
 	vehicles = con.query("select distinct vehicleid from " + TABLE + ";").getresult()
 
+	i = 0
 	for v in vehicles:
 		vid = str(v[0])
 		res = con.query("select km_pr_l from " + TABLE + " where vehicleid=" + vid + " order by tid;").getresult()
 		output = open(path + 'data/' + vid + '_kmldata.csv', 'wb')
 		for r in res:
-			print>> output, r[0]
+			print>> output, str(i) + " " + r[0]
+			i++
  
 	print "set output '" + path + "images/kmlTrips.png';"
 	print "set ylabel 'km/l';"
