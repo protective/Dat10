@@ -1,5 +1,4 @@
-TIME=120
-LENGTH=60
+TIME=20
 
 python getTrajectories.py $TIME 0 True trajectoryLength.csv
 python getTrajectories.py $TIME 10 True trajectoryLength.csv
