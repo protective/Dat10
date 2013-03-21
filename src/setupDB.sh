@@ -19,7 +19,7 @@ TABLE='gps_can_data'
 #done
 
 echo "get trajectories"
-python getTrajectories.py 120 30
+python getTrajectories.py 20 30
 
 #echo "Create geom postgis"
 #psql -d $DB -c "alter table a_gps_can_data add column geom geography(POINT,4326);"
