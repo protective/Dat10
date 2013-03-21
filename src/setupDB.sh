@@ -18,12 +18,12 @@ TABLE='gps_can_data'
 #echo "Done loading $f"
 #done
 
-#echo "get trajectories"
-#python getTrajectories.py 120 30
+echo "get trajectories"
+python getTrajectories.py 120 30
 
-echo "Create geom postgis"
-psql -d $DB -c "alter table a_gps_can_data add column geom geography(POINT,4326);"
-psql -d $DB -c "update a_gps_can_data set geom = ST_SetSRID(ST_MakePoint(longitude,latitude),4326);"
+#echo "Create geom postgis"
+#psql -d $DB -c "alter table a_gps_can_data add column geom geography(POINT,4326);"
+#psql -d $DB -c "update a_gps_can_data set geom = ST_SetSRID(ST_MakePoint(longitude,latitude),4326);"
 
 
 echo "load open streetmap"
