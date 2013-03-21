@@ -1,8 +1,8 @@
 #!/bin/bash
-#DB=$1
-#FILEPATH=$2
-#FILES=$FILEPATH/*.csv
-#TABLE='gps_can_data'
+DB=$1
+FILEPATH=$2
+FILES=$FILEPATH/*.csv
+TABLE='gps_can_data'
 #psql -d template1 -c "drop database if exists $DB;"
 #psql -d template1 -c "create database $DB;"
 
@@ -18,8 +18,8 @@
 #echo "Done loading $f"
 #done
 
-echo "get trajectories"
-python getTrajectories.py 120 30
+#echo "get trajectories"
+#python getTrajectories.py 120 30
 
 echo "Create geom postgis"
 psql -d $DB -c "alter table a_gps_can_data add column geom geography(POINT,4326);"
