@@ -48,7 +48,7 @@ elif TYPE == 'TripsSize':
 elif TYPE == 'TimeTrips':
 	print "set output '" + path + "images/TimeTrips.png';"
 	print "set ylabel 'Number of trips"
-	print "set xlabel 'Time??'"
+	print "set xlabel 'Timeframe (s)'"
 	print "set yrange[0:]"
 
 	print "plot '" + path + "data/trajectoryTime.csv' using 1:3 with lines lw 3 notitle"
