@@ -1,6 +1,6 @@
 import random, time, math, pg, sys,os
 
-USER = 'sabrine'
+USER = 'd103'
 DB = 'gps_can'
 TABLE = 'gps_can_data'
 NEW_TABLE = 'a_' + TABLE

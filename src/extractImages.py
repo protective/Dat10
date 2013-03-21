@@ -6,7 +6,7 @@ TABLE = 'trip_data'
 TYPE = sys.argv[1]
 path = 'Dat10/src/'
 
-if (True):
+if (False):
 	USER = 'sabrine'
 	path = ''
 
