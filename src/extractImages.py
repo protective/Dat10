@@ -47,7 +47,7 @@ elif TYPE == 'LengthTrips':
 	print "set ylabel 'Number of trips"
 	print "set xlabel 'Minimum number of data records'"
 
-	print "plot '" + path + "data/numberOfTrajectories.csv' with lines lw 3 notitle"
+	print "plot '" + path + "data/numberOfTrajectories.csv' using 2:3 with lines lw 3 notitle"
 	
 elif TYPE == 'minFuel':
 	print "set output '" + path + "images/minFuel.png';"
@@ -121,7 +121,7 @@ elif TYPE == 'idle3':
 	print "set ylabel 'Class distribution (%)'"
 	print "set xlabel 'Idle time (s)'"
 	print "set yrange[0:100]"
-	print "set xrange[0:100]"
+	print "set xrange[0:400]"
 	print "set y2tics"
 	print "set y2label 'Number of trips'"
 	print "set key outside"
