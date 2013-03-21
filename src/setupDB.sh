@@ -41,6 +41,7 @@ psql -d $DB -c "DROP INDEX IF EXISTS kmcounter_idx CASCADE; create index kmcount
 psql -d $DB -c "DROP INDEX IF EXISTS totalconsumed_idx CASCADE; create index totalconsumed_idx on $TABLE (totalconsumed)"
 psql -d $DB -c "DROP INDEX IF EXISTS segmentkey_idx CASCADE; create index segmentkey_idx on $TABLE (segmentkey)"
 psql -d $DB -c "DROP INDEX IF EXISTS direction_idx CASCADE; create index direction_idx on $TABLE (direction)"
+psql -d $DB -c "DROP INDEX IF EXISTS dirty_a_gps_can_data_idx CASCADE; create index dirty_a_gps_can_data_idx on $TABLE (dirty)"
 
 python idle.py 0
 python cruise.py
