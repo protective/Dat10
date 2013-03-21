@@ -13,11 +13,14 @@ scp d103@172.25.26.191:Dat10/src/images/idleTime.png images/idleTime.png
 ssh -x -l d103 172.25.26.191 "python Dat10/src/extractImages.py idleDuration | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/idleDuration.png images/idleDuration.png
 
+ssh -x -l d103 172.25.26.191 "python Dat10/src/extractImages.py km_pr_l | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/kmlTrips.png images/kmlTrips.png
+
 ssh -x -l d103 172.25.26.191 "python Dat10/src/extractImages.py LengthTrips | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/TripsLength.png images/TripsLength.png
 
-ssh -x -l d103 172.25.26.191 "python Dat10/src/extractImages.py km_pr_l | gnuplot"
-scp d103@172.25.26.191:Dat10/src/images/kmlTrips.png images/kmlTrips.png
+ssh -x -l d103 172.25.26.191 "python Dat10/src/extractImages.py TimeTrips | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/TripsLength.png images/TripsLength.png
 
 ssh -x -l d103 172.25.26.191 "python Dat10/src/extractImages.py TripsSize | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/TripsSize.png images/TripsSize.png

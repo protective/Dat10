@@ -1,4 +1,4 @@
-python getTrajectories.py 0 0 True trajectoryTime.csv
+python getTrajectories.py 10 0 True trajectoryTime.csv
 python getTrajectories.py 20 0 True trajectoryTime.csv
 python getTrajectories.py 40 0 True trajectoryTime.csv
 python getTrajectories.py 60 0 True trajectoryTime.csv

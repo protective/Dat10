@@ -46,12 +46,12 @@ elif TYPE == 'TripsSize':
 	print "plot '" + path + "data/trajectoryLength.csv' using 2:3 with lines lw 3 title 'Timeframe', '" + path + "data/trajectoryTime.csv' using 1:3 with lines lw 3 title 'Length' axes x2y1"
 	
 elif TYPE == 'TimeTrips':
-	print "set output '" + path + "images/" + TYPE + ".png';"
+	print "set output '" + path + "images/TimeTrips.png';"
 	print "set ylabel 'Number of trips"
 	print "set xlabel 'Time??'"
 	print "set yrange[0:]"
 
-	print "plot '" + path + "data/noTrajectories.csv' with lines lw 3 notitle"
+	print "plot '" + path + "data/trajectoryTime.csv' using 1:3 with lines lw 3 notitle"
 
 elif TYPE == 'LengthTrips': 
 	print "set output '" + path + "images/TripsLength.png';"
