@@ -19,7 +19,7 @@ echo "Done loading $f"
 done
 
 echo "get trajectories"
-python getTrajectories.py 120 30 False
+python getTrajectories.py 120 30
 
 echo "Create geom postgis"
 psql -d $DB -c "alter table a_gps_can_data add column geom geography(POINT,4326);"

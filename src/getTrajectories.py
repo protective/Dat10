@@ -8,11 +8,13 @@ NEW_TABLE = 'a_' + TABLE
 TIME = 120
 LENGTH = 30
 test = False
+filename = ''
 if len(sys.argv) > 1:
 	TIME = int(sys.argv[1])
 	LENGTH = int(sys.argv[2])
 	if len(sys.argv)> 3:
 		test = bool(sys.argv[3])
+		filename = str(sys.argv[4])
 		
 counter = 0
 	
@@ -91,7 +93,7 @@ if not test:
 	con.query("DROP INDEX IF EXISTS tid_" + NEW_TABLE + "_idx CASCADE; create index tid_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (tid);")
 
 if(test):
-	output = open('data/numberOfTrajectories.csv', 'a')
+	output = open('data/'+filename, 'a')
 	s = str(TIME) + " " + str(LENGTH) + " " + str(counter)
 	print s 
 	print >> output, s

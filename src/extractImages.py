@@ -6,7 +6,7 @@ TABLE = 'trip_data'
 TYPE = sys.argv[1]
 path = 'Dat10/src/'
 
-if (False):
+if (True):
 	USER = 'sabrine'
 	path = ''
 
@@ -34,7 +34,16 @@ if TYPE == 'km_pr_l':
 		s+= "'"+path + "data/" + vid + "_kmldata.csv' title '" + vid + "', "
 
 	print s + "4 lw 2 notitle, 8 lw 2 notitle"
-
+	
+elif TYPE == 'TripsSize':
+	print "set output '" + path + "images/TripsSize.png'"
+	print "set ylabel 'Number of trips"
+	print "set xlabel 'Timeframe'"	
+	print "set x2tics"
+	print "set x2label 'Length'"
+	
+	print "plot '" + path + "data/trajectoryLength.csv' using 1:3 with lines lw 3 title 'Timeframe', '" + path + "data/trajectoryTime.csv' using 2:3 with lines lw 3 title 'Length' axes x2y1"
+	
 elif TYPE == 'TimeTrips':
 	print "set output '" + path + "images/" + TYPE + ".png';"
 	print "set ylabel 'Number of trips"
