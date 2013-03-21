@@ -20,7 +20,7 @@ if TYPE == 'km_pr_l':
 	i = 0
 	for v in vehicles:
 		vid = str(v[0])
-		res = con.query("select km_pr_l from " + TABLE + " where vehicleid=" + vid + " order by tid;").getresult()
+		res = con.query("select km_pr_l from " + TABLE + " where vehicleid=" + vid + " and dirty is false order by tid;").getresult()
 		output = open(path + 'data/' + vid + '_kmldata.csv', 'wb')
 		for r in res:
 			print>> output, str(i) + " " + str(r[0])
