@@ -104,12 +104,12 @@ elif TYPE == 'idle2':
 	
 elif TYPE == 'idle3':
 	res = con.query("""
-	select round(idle_time*100), 
+	select round(idle_time/10)*10 as idle, 
 		count(case when km_pr_l <=4 then 1 end)::float/count(*)*100 as low,
 		count(case when km_pr_l < 8 then 1 end)::float/count(*)*100 as medium,
 		100 as high ,
 		count(*) 
-	from trip_data group by round order by round;
+	from trip_data group by idle order by idle;
 	""").getresult()
 	
 	output = open(path + 'data/idle3.csv', 'wb')
