@@ -1,0 +1,27 @@
+\section{Data Preparation/Trip}
+
+The data set is split into trips by annotating each record with a trip identifier, \tid.
+A trip is defined as a collection of consecutive records with the same vehicle identifier, \vid.
+Idle time, i.e. when the engine is running but the vehicle is not moving, is persumed to be an important factor for fuel consumption. 
+We therefore need to ensure that records recorded when the vehicle is idling is included in the trips. 
+
+A trip is hence defined from when the engine of the vehicle is turned on.
+In order not to split a trip into two just because the engine stalls, we say that a trips ends when two consecutive records are more than some timeframe apart.
+Figure~\ref{fig:TimeTrips} shows the number of trips at different timeframes from 20 seconds between two trips to 240 seconds.
+We see that the curve flattens around 100 and 120 seconds. 
+Few traffic lights have a circulation time of more that 100 seconds, and in order to aviod splitting a trip because the engine is turned of while waiting, we choose 120 seconds as the timeframe. 
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.5\textwidth]{../src/images/TimeTrips.png}
+\caption{Number of trips at different timeframes}
+\label{fig:TimeTrips}
+\end{figure}
+
+Too short trips with too few records will not give a usable image of which factors influence fuel consumption.
+Figure~\ref{fig:LengthTrips} show the number of trips with different minimum limits on number of records in a trip.
+\begin{figure}[htb]
+\centering
+%\includegraphics[width=0.5\textwidth]{../src/images/TripsLength.png}
+\caption{Number of trips at different lengths}
+\label{fig:LengthTrips}
+\end{figure}
