@@ -23,7 +23,7 @@ if TYPE == 'km_pr_l':
 		res = con.query("select km_pr_l from " + TABLE + " where vehicleid=" + vid + " order by tid;").getresult()
 		output = open(path + 'data/' + vid + '_kmldata.csv', 'wb')
 		for r in res:
-			print>> output, str(i) + " " + r[0]
+			print>> output, str(i) + " " + str(r[0])
 			i+=1
  
 	print "set output '" + path + "images/kmlTrips.png';"
