@@ -84,7 +84,7 @@ elif TYPE == 'TripLengthKml':
 
 elif TYPE == 'idle2':
 	res = con.query("""
-	select round(idle_percentage*100), 
+	select round((idle_percentage*100)::numeric,1), 
 		count(case when km_pr_l <=4 then 1 end)::float/count(*)*100 as low,
 		count(case when km_pr_l < 8 then 1 end)::float/count(*)*100 as medium,
 		100 as high ,
@@ -92,7 +92,7 @@ elif TYPE == 'idle2':
 	from """ + TABLE + """ group by round order by round;
 	""").getresult()
 	
-	output = open(path + 'data/idle2.csv', 'wb')
+	output = open(path + 'data/idle2.csv', 'w+')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 	for r in res:
 		writer.writerow(r)
@@ -101,11 +101,11 @@ elif TYPE == 'idle2':
 	print "set ylabel 'Class distribution (%)'"
 	print "set xlabel 'Percent of trip in idle (%)'"
 	print "set yrange[0:100]"
-	print "set xrange[0:60]"
+	print "set xrange[0:]"
 	print "set y2tics"
 	print "set y2label 'Number of trips'"
 	print "set key outside"
-	print "plot '" + path + "data/idle2.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, 'data/idle2.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, 'data/idle2.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/idle2.csv' using 1:5 with lines lw 3 title 'Data points' axes x1y2"
+	print "plot '" + path + "data/idle2.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '" + path + "data/idle2.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '" + path + "data/idle2.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/idle2.csv' using 1:5 with lines lw 3 title 'Number of trips' axes x1y2"
 	
 elif TYPE == 'idle3':
 	res = con.query("""
@@ -117,7 +117,7 @@ elif TYPE == 'idle3':
 	from """ + TABLE + """ group by idle order by idle;
 	""").getresult()
 	
-	output = open(path + 'data/idle3.csv', 'wb')
+	output = open(path + 'data/idle3.csv', 'w+')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 	for r in res:
 		writer.writerow(r)
@@ -126,11 +126,11 @@ elif TYPE == 'idle3':
 	print "set ylabel 'Class distribution (%)'"
 	print "set xlabel 'Idle time (s)'"
 	print "set yrange[0:100]"
-	print "set xrange[0:400]"
+	print "set xrange[0:]"
 	print "set y2tics"
 	print "set y2label 'Number of trips'"
 	print "set key outside"
-	print "plot '" + path + "data/idle3.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/idle3.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/idle3.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/idle3.csv' using 1:5 with lines lw 3 title 'Data points' axes x1y2"
+	print "plot '" + path + "data/idle3.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/idle3.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/idle3.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/idle3.csv' using 1:5 with lines lw 3 title 'Number of trips' axes x1y2"
 
 elif TYPE == 'normalRoad':
 	res = con.query("""
@@ -141,6 +141,7 @@ elif TYPE == 'normalRoad':
 		count(*) 
 	from """ + TABLE + """ group by NormalRoad order by NormalRoad;
 	""").getresult()
+
 	
 	output = open(path + 'data/normalRoad.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
