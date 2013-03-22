@@ -19,7 +19,8 @@ con.query('alter table ' + DATATABLE + ' add column idleRange int not null defau
 con.query('update ' + DATATABLE + ' set idleRange = 1 where rpm>0 and speed = 0;')
 
 print "Creating index"
-con.query("Create index idle_" + DATATABLE + "_idx on " + DATATABLE + " (idle);")
+con.query("DROP INDEX IF EXISTS idle_" + DATATABLE + "_idx;")
+con.query("Create index idle_" + DATATABLE + "_idx on " + DATATABLE + " (idleRange);")
 
 if test:
 	print "Counting idle"

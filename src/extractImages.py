@@ -170,19 +170,19 @@ elif TYPE == 'idleDuration':
 elif TYPE == 'idleTime':
 	val = 'idle_time, km_pr_l as val, |/ (total_fuel/3.14)'
 	res = con.query("select " + val + " from " + TABLE + " where km_pr_l < 4  order by val;").getresult()
-	output = open(path + 'images/' + TYPE + '_low_data.csv', 'wb')
+	output = open(path + 'data/' + TYPE + '_low_data.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 	for r in res:
 		writer.writerow(r)
 
 	res = con.query("select " + val + " from " + TABLE + " where km_pr_l >= 4 and km_pr_l < 8 order by val;").getresult()
-	output = open(path + 'images/' + TYPE + '_medium_data.csv', 'wb')
+	output = open(path + 'data/' + TYPE + '_medium_data.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 	for r in res:
 		writer.writerow(r)
 
 	res = con.query("select " + val + " from " + TABLE + " where km_pr_l > 8 order by val;").getresult()
-	output = open(path + 'images/' + TYPE + '_high_data.csv', 'wb')
+	output = open(path + 'data/' + TYPE + '_high_data.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 	for r in res:
 		writer.writerow(r)
@@ -192,10 +192,24 @@ elif TYPE == 'idleTime':
 	print "set xlabel 'Idle time (s)';"
 
 	s = "plot "
-	s+= "'" + path + "images/" + TYPE + "_high_data.csv' using 1:2:3 with points lt 1 pt 6 ps variable linecolor rgb \"green\" title 'High' , "
-	s+= "'" + path + "images/" + TYPE + "_medium_data.csv' using 1:2:3 with points lt 1 pt 6 ps variable linecolor rgb \"blue\" title 'Medium', "
-	s+= "'" + path + "images/" + TYPE + "_low_data.csv' using 1:2:3 with points lt 1 pt 6 ps variable linecolor rgb \"red\" title 'Low'"
+	s+= "'" + path + "data/" + TYPE + "_high_data.csv' using 1:2:3 with points lt 1 pt 6 ps variable linecolor rgb \"green\" title 'High' , "
+	s+= "'" + path + "data/" + TYPE + "_medium_data.csv' using 1:2:3 with points lt 1 pt 6 ps variable linecolor rgb \"blue\" title 'Medium', "
+	s+= "'" + path + "data/" + TYPE + "_low_data.csv' using 1:2:3 with points lt 1 pt 6 ps variable linecolor rgb \"red\" title 'Low'"
 	print s
+	
+elif TYPE == 'idleRange':
+	res = con.query("select idle, count(*) from (select round(count(case when idleRange=1 then 1 end)/10)*10 as idle from " + TABLE + " group by tid)a group by idle order by idle;").getresult()
+	
+	output = open(path + 'data/idleRange.csv', 'wb')
+	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+	for r in res:
+		writer.writerow(r)
+
+	print "set output '" + path + "images/idleRange.png';"
+	print "set ylabel 'Number of records';"
+	print "set xlabel 'Idle range (s)';"
+
+	s = "plot "+ path + "data/idleRange.csv' using 1:2:3 with points lt 1 pt 6 ps variable linecolor rgb \"green\" title 'High' , "
 
 elif TYPE == 'idlePercent':
 	val = 'idle_percentage*100, km_pr_l as val, |/ (total_fuel/3.14)'

@@ -26,6 +26,9 @@ scp d103@172.25.26.191:Dat10/src/images/kmlTrips.png images/kmlTrips.png
 ssh -x -l d103 172.25.26.191 "python Dat10/src/extractImages.py LengthTrips $TABLE | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/TripsLength.png images/TripsLength.png
 
+ssh -x -l d103 172.25.26.191 "python Dat10/src/extractImages.py idleRange $TABLE | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/idleRange.png images/idleRange.png
+
 ssh -x -l d103 172.25.26.191 "python Dat10/src/extractImages.py TimeTrips $TABLE | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/TimeTrips.png images/TimeTrips.png
 
