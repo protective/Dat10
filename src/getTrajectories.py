@@ -3,7 +3,7 @@ import random, time, math, pg, sys,os
 USER = 'd103'
 DB = 'gps_can'
 TABLE = 'gps_can_data'
-NEW_TABLE = 'a_' + TABLE
+NEW_TABLE = 'b_' + TABLE
 
 TIME = 120
 LENGTH = 30
@@ -19,7 +19,7 @@ if len(sys.argv) > 1:
 counter = 0
 	
 
-print "Testing with " + str(TIME) + " seconds timeframe and " + str(LENGTH) + " length."
+print str(TIME) + " seconds timeframe and " + str(LENGTH) + " length."
 
 print "Connecting to " + DB
 con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')

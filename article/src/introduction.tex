@@ -1,26 +1,35 @@
 \section{Introduction}
 
-Reducing fuel consumption and greenhouse gas emissions is important.
+Reducing fuel consumption and greenhouse gas emissions is important and at least to main techniques exist.
+Eco-routing aims to propose the most fuel efficient routes by looking at historic recordings of fuel consumptions and by heuristics.
+Eco-driving aims to changes the drivers driving behaviour in order to use as little fuel as possible on the routes they choose themself.
+%TODO: Maybe remove this sentence
+Much research has been done on eco-routing\cite{}, %TODO: many citations.
+but little has been done on eco-driving. %TODO: citations or something 
+The authors of \cite{EcodrivingAdvice} list a number of advices for eco-driving that will reduce fuel consumption. 
+\begin{enumerate*}
+\item Shift up the gear as soon as possible \label{intro.advice.gear}
+\item Maintain a steady speed \label{intro.advice.speed}
+\item Anticipate traffic flow \label{intro.advice.flow}
+\item Decelerate smoothly \label{intro.advice.deceleration}
+\item Avoid idling \label{intro.advice.idling}
+\item Avoid pressing the accelerator when switching on the engine \label{intro.advice.accelerator}
+\item Minimise additional weight \label{intro.advice.weight}
+\item Minimise air resistance \label{intro.advice.air}
+\item Maintain correct tyre pressures \label{intro.advice.tyre}
+\item Avoid fuel consuming accessories, e.g. air-conditioning\label{intro.advice.accessories}
+\item Use fuel saving in-car devices as revolution counter and cruise control \label{intro.advice.cruise}
+\end{enumerate*}
 
-What is Eco-driving? \cite{EcodrivingAdvice}
-\begin{itemize}
-\item Shift up as soon as possible
-\item Maintain a steady speed
-\item Anticipate traffic flow
-\item Decelerate smoothly
-\item Avoid idling
-\item Avoid pressing the accelerator when switching on engine
-\item Minimise additional weight
-\item Minimise air resistance
-\item Maintain correct tyre pressures
-\item Avoid fuel consuming accessories, e.g. air-conditioning
-\item Use fuel saving in-car devices as revolution counter and cruise control
-\end{itemize}
+Some of these advice, especially \ref{intro.advice.gear} through \ref{intro.advice.deceleration}, needs practice, while other advices, especially \ref{intro.advice.idling} though \ref{intro.advice.cruise} can be implemented without much practise. %TODO: refomulate
 
+It is imperative to receive useful feadback in order to improve ones eco-driving performance.
+This can either be by an in-car device that shows the instantanious and aggregated fuel consumption or by provided individual advice on which factors the driver should improve.
+Both require detailed information of past driving patterns.
+GPS data provides location, speed and direction at a high frequence, and the data is easy and cheap to collect.
+Additional data is, however, needed to evaluate many of the advices given above.
+CANBus data can provide some of this, but the data is not yet avaiable in the same amount as GPS data.
 
-
-We aim to identify which factors, available through GPS and CANbus data, has an influence on
-fuel consumption and how one explains the difference in the fuel consumption of different
-vehicles of the same type?
+We aim to identify which factors available through GPS and CANBus data, has an influence on fuel consumption and how one explains the difference in the fuel consumption of different vehicles of the same type?
 
 Contributions

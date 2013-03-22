@@ -2,19 +2,20 @@ import pg , math, sys, os ,time
 
 USER = 'd103'
 DB = 'gps_can'
-TABLE = 'a_gps_can_data'
+DATATABLE = 'a_gps_can_data'
+TRIPDATA = 'trip_data'
 
 print "Connecting to " + DB
 con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 
 
 
-con.query('alter table ' + TABLE + ' drop IF EXISTS cruise;')
-con.query('alter table '+TABLE+' add column cruise bool default false;')
+con.query('alter table ' + DATATABLE + ' drop IF EXISTS cruise;')
+con.query('alter table '+DATATABLE+' add column cruise bool default false;')
 
 
 print "Extracting data"
-res = con.query('select speed, timestamp, tid  from ' + TABLE + ' where dirty is false order by vehicleid, timestamp').getresult()
+res = con.query('select speed, timestamp, tid  from ' + DATATABLE + ' where dirty is false order by vehicleid, timestamp').getresult()
 print "all done"
 
 cruiseBegin = 0
@@ -32,7 +33,7 @@ while cruiseBegin < len(res) -1:
 	else:
 		if (abs(Time-time.mktime(time.strptime(res[cruiseCur-1][1], "%Y-%m-%j %H:%M:%S"))) > 45 and noobs >= 10):
 			#we have been using cc until now update
-			s = 'update ' + str(TABLE) + ' set cruise = true where tid = ' + str(res[cruiseBegin][2]) + ' and timestamp >= \''+str(res[cruiseBegin][1]) + '\' and timestamp <= \''+ str(res[cruiseCur-1][1]) + '\';'  
+			s = 'update ' + str(DATATABLE) + ' set cruise = true where tid = ' + str(res[cruiseBegin][2]) + ' and timestamp >= \''+str(res[cruiseBegin][1]) + '\' and timestamp <= \''+ str(res[cruiseCur-1][1]) + '\';'  
 			con.query(s)
 		
 		cruiseBegin = cruiseCur
@@ -41,7 +42,10 @@ while cruiseBegin < len(res) -1:
 		noobs = 0
 
 
-
+print 'Percentage in cruise'
+con.query('alter table ' + TRIPDATA + ' drop if exists cruise_percentage;')
+con.query('alter table ' + TRIPDATA + ' add cruise_percentage float;')
+con.query('update ' + TRIPDATA + ' set cruise_percentage = p from (select tid, (count(*)-count(case when cruise =false then 1 end))::float/count(*) as p from ' + DATATABLE + ' where dirty is false group by tid)f where ' + TRIPDATA + '.tid=f.tid;')
 
 
 
