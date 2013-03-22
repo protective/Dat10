@@ -4,6 +4,8 @@ FILEPATH=$2
 FILES=$FILEPATH/*.csv
 TABLE='gps_can_data'
 
+PREFIX='a'
+
 resetDatabase=false
 copyData=false
 getTrajectories=false
@@ -37,13 +39,13 @@ fi
 
 if $getTrajectories then
 echo "get trajectories"
-python getTrajectories.py 20 30
+python getTrajectories.py 20 30 a
 fi
 
 if $postgis then
 echo "Create geom postgis"
-psql -d $DB -c "alter table a_gps_can_data add column geom geography(POINT,4326);"
-psql -d $DB -c "update a_gps_can_data set geom = ST_SetSRID(ST_MakePoint(longitude,latitude),4326);"
+psql -d $DB -c "alter table $PREFIX _gps_can_data add column geom geography(POINT,4326);"
+psql -d $DB -c "update $PREFIX _gps_can_data set geom = ST_SetSRID(ST_MakePoint(longitude,latitude),4326);"
 
 echo "load open streetmap"
 psql -d $DB -f $2/osm_dk_20130214.sql
@@ -54,7 +56,7 @@ fi
 
 if $indexes then
 echo "Creating indexes"
-psql -d $DB -c "DROP INDEX IF EXISTS idx_a_gps_can_data CASCADE; create index idx_a_gps_can_data on a_gps_can_data using gist(geom);"
+
 psql -d $DB -c "DROP INDEX IF EXISTS vehid_idx CASCADE; create index vehid_idx on $TABLE (vehicleid)"
 psql -d $DB -c "DROP INDEX IF EXISTS time_idx CASCADE; create index time_idx on $TABLE (timestamp)"
 psql -d $DB -c "DROP INDEX IF EXISTS lng_idx CASCADE; create index lng_idx on $TABLE (longitude)"
@@ -68,34 +70,34 @@ psql -d $DB -c "DROP INDEX IF EXISTS kmcounter_idx CASCADE; create index kmcount
 psql -d $DB -c "DROP INDEX IF EXISTS totalconsumed_idx CASCADE; create index totalconsumed_idx on $TABLE (totalconsumed)"
 psql -d $DB -c "DROP INDEX IF EXISTS segmentkey_idx CASCADE; create index segmentkey_idx on $TABLE (segmentkey)"
 psql -d $DB -c "DROP INDEX IF EXISTS direction_idx CASCADE; create index direction_idx on $TABLE (direction)"
-psql -d $DB -c "DROP INDEX IF EXISTS dirty_a_gps_can_data_idx CASCADE; create index dirty_a_gps_can_data_idx on $TABLE (dirty)"
+
 fi
 
 if $tripData then
-python tripData.py
+python tripData.py a
 fi
 
 if $idle then
-python idle.py 0
+python idle.py 0 a
 fi
 
 if $cruise then
-python cruise.py
+python cruise.py a
 fi
 
 if $trafficLights then
-python extractTrafficLights.py maps/denmark.osm
-python inRangeOfTl.py
+python extractTrafficLights.py maps/denmark.osm a
+python inRangeOfTl.py a
 fi
 
 if $acceleration then
-python noAcceleration.py
-python noAccelerationW.py
-python stopngo.py
+python noAcceleration.py a
+python noAccelerationW.py a
+python stopngo.py a
 fi
 
 if $temperature then
-python temperature.py
+python temperature.py a
 fi
 
 
