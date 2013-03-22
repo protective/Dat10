@@ -1,10 +1,10 @@
 
-if ( -z "$1" ) then 
+if [ -z "$1" ]; then
 	TABLE="trip_data"
 else
 	TABLE=$1
 fi
-
+echo $TABLE
 ssh -x -l d103 172.25.26.191 "python Dat10/src/extractImages.py idle2 $TABLE | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/idle2.png images/idle2.png
 

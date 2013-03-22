@@ -61,7 +61,7 @@ print 'Time in idle'
 con.query('alter table ' + TRIPDATA + ' drop if exists idle_time;')
 con.query('alter table ' + TRIPDATA + ' add idle_time float;')
 trips = con.query('select distinct tid from ' + TRIPDATA).getresult() #
-	for t in trips:
+for t in trips:
 	trip = t[0]
 
 	res = con.query("select timestamp, idle from " + DATATABLE + " where tid=" + str(trip) + " and dirty is false order by timestamp;").getresult()
