@@ -99,7 +99,7 @@ elif TYPE == 'idle2':
 	print "set ylabel 'Class distribution (%)'"
 	print "set xlabel 'Percent of trip in idle (%)'"
 	print "set yrange[0:100]"
-	print "set xrange[0:60]"
+	print "set xrange[0:]"
 	print "set y2tics"
 	print "set y2label 'Number of trips'"
 	print "set key outside"
@@ -124,7 +124,7 @@ elif TYPE == 'idle3':
 	print "set ylabel 'Class distribution (%)'"
 	print "set xlabel 'Idle time (s)'"
 	print "set yrange[0:100]"
-	print "set xrange[0:400]"
+	print "set xrange[0:]"
 	print "set y2tics"
 	print "set y2label 'Number of trips'"
 	print "set key outside"
@@ -137,12 +137,7 @@ elif TYPE == 'normalRoad':
 		count(case when km_pr_l < 8 then 1 end)::float/count(*)*100 as medium,
 		100 as high ,
 		count(*) 
-<<<<<<< HEAD
-	from trip_data group by PNormalRoad order by PNormalRoad;
-=======
-	from """ + TABLE + """ group by NormalRoad order by NormalRoad;
->>>>>>> 8e3d3e8c32a4d21565feecd2df9a51169c813c24
-	""").getresult()
+	from """ + TABLE + """ group by NormalRoad order by NormalRoad;""").getresult()
 	
 	output = open(path + 'data/normalRoad.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
