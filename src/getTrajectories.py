@@ -18,7 +18,7 @@ if len(sys.argv) > 1:
 	if len(sys.argv)> 4:
 		test = bool(sys.argv[4])
 		filename = str(sys.argv[5])
-		
+print "create table" + NEW_TABLE	
 counter = 0
 	
 
