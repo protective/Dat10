@@ -198,7 +198,7 @@ elif TYPE == 'idleTime':
 	print s
 	
 elif TYPE == 'idleRange':
-	con.query("select idle, count(*) from (select round(count(case when idleRange=1 then 1 end)/10)*10 as idle from " + TABLE + " group by tid)a group by idle order by idle;")
+	res = con.query("select idle, count(*) from (select round(count(case when idleRange=1 then 1 end)/10)*10 as idle from " + TABLE + " group by tid)a group by idle order by idle;")
 	
 	output = open(path + 'data/idleRange.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
