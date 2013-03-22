@@ -90,7 +90,7 @@ elif TYPE == 'idle2':
 	from """ + TABLE + """ group by round order by round;
 	""").getresult()
 	
-	output = open(path + 'data/idle2.csv', 'wb')
+	output = open(path + 'data/idle2.csv', 'w+')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 	for r in res:
 		writer.writerow(r)
@@ -115,7 +115,7 @@ elif TYPE == 'idle3':
 	from """ + TABLE + """ group by idle order by idle;
 	""").getresult()
 	
-	output = open(path + 'data/idle3.csv', 'wb')
+	output = open(path + 'data/idle3.csv', 'w+')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 	for r in res:
 		writer.writerow(r)
