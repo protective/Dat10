@@ -2,8 +2,10 @@ import pg, sys, os, csv
 
 USER = 'd103'
 DB = 'gps_can'
-TABLE = 'b_trip_data'
+TABLE = 'trip_data'
 TYPE = sys.argv[1]
+if len(sys.argv) > 2:
+	TABLE = sys.argv[2]
 path = 'Dat10/src/'
 
 if (False):
@@ -137,11 +139,7 @@ elif TYPE == 'normalRoad':
 		count(case when km_pr_l < 8 then 1 end)::float/count(*)*100 as medium,
 		100 as high ,
 		count(*) 
-<<<<<<< HEAD
-	from trip_data group by PNormalRoad order by PNormalRoad;
-=======
 	from """ + TABLE + """ group by NormalRoad order by NormalRoad;
->>>>>>> 8e3d3e8c32a4d21565feecd2df9a51169c813c24
 	""").getresult()
 	
 	output = open(path + 'data/normalRoad.csv', 'wb')
