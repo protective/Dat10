@@ -17,8 +17,8 @@ con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 
 print 'Setting up ' + TABLE
 con.query('drop table if exists ' + TABLE + ';')
-con.query('create table ' + TABLE + '(vehicleid bigint, tid int);')
-con.query('insert into ' + TABLE + '(select distinct vehicleid, tid from ' + OLD_TABLE + ' where dirty is false and totalconsumed is not null and kmcounter is not null);')
+con.query('create table ' + TABLE + ' (vehicleid bigint, tid int);')
+con.query('insert into ' + TABLE + ' (select distinct vehicleid, tid from ' + OLD_TABLE + ' where dirty is false and totalconsumed is not null and kmcounter is not null);')
 
 print 'km pr liter'
 con.query('alter table ' + TABLE + ' drop if exists km_pr_l;')
