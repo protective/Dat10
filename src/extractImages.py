@@ -82,7 +82,7 @@ elif TYPE == 'TripLengthKml':
 
 elif TYPE == 'idle2':
 	res = con.query("""
-	select round(idle_percentage*100), 
+	select round((idle_percentage*100)::numeric,1), 
 		count(case when km_pr_l <=4 then 1 end)::float/count(*)*100 as low,
 		count(case when km_pr_l < 8 then 1 end)::float/count(*)*100 as medium,
 		100 as high ,
