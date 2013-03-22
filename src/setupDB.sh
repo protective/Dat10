@@ -4,19 +4,11 @@ FILEPATH=$2
 FILES=$FILEPATH/*.csv
 TABLE='gps_can_data'
 
-PREFIX='a'
 
 resetDatabase=false
 copyData=false
-getTrajectories=false
-postgis=false
 indexes=false
-tripData=false
-idle=false
-cruise=false
-trafficLights=false
-acceleration=false
-temperature=false
+
 
 if $resetDatabase then
 psql -d template1 -c "drop database if exists $DB;"
@@ -37,22 +29,7 @@ echo "Done loading $f"
 done
 fi
 
-if $getTrajectories then
-echo "get trajectories"
-python getTrajectories.py 20 30 a
-fi
 
-if $postgis then
-echo "Create geom postgis"
-psql -d $DB -c "alter table $PREFIX _gps_can_data add column geom geography(POINT,4326);"
-psql -d $DB -c "update $PREFIX _gps_can_data set geom = ST_SetSRID(ST_MakePoint(longitude,latitude),4326);"
-
-echo "load open streetmap"
-psql -d $DB -f $2/osm_dk_20130214.sql
-
-psql -d $DB -c "create create index osm_dk_20130214_segmentkey_idx on osm_dk_20130214 (segmentkey);"
-psql -d $DB -c "create create index osm_dk_20130214_category_idx on osm_dk_20130214 (category);"
-fi
 
 if $indexes then
 echo "Creating indexes"
@@ -73,32 +50,6 @@ psql -d $DB -c "DROP INDEX IF EXISTS direction_idx CASCADE; create index directi
 
 fi
 
-if $tripData then
-python tripData.py a
-fi
-
-if $idle then
-python idle.py 0 a
-fi
-
-if $cruise then
-python cruise.py a
-fi
-
-if $trafficLights then
-python extractTrafficLights.py maps/denmark.osm a
-python inRangeOfTl.py a
-fi
-
-if $acceleration then
-python noAcceleration.py a
-python noAccelerationW.py a
-python stopngo.py a
-fi
-
-if $temperature then
-python temperature.py a
-fi
 
 
 
