@@ -25,6 +25,6 @@ con.query('alter table ' + TABLE + ' add total_km float;')
 con.query('update ' + TABLE + ' set total_km = km from (select tid, (max(kmcounter)-min(kmcounter))km from ' + OLD_TABLE + ' where kmcounter is not null and dirty is false group by tid)s where ' + TABLE + '.tid=s.tid;')
 
 print 'Total fuel'
-	con.query('alter table ' + TABLE + ' drop if exists total_fuel')
-	con.query('alter table ' + TABLE + ' add total_fuel float;')
-	con.query('update ' + TABLE + ' set total_fuel = fuel from (select tid, (max(totalconsumed)-min(totalconsumed))fuel from ' + OLD_TABLE + ' where totalconsumed is not null and totalconsumed < 4000000 and dirty is false group by tid)s where ' + TABLE + '.tid=s.tid;')
+con.query('alter table ' + TABLE + ' drop if exists total_fuel')
+con.query('alter table ' + TABLE + ' add total_fuel float;')
+con.query('update ' + TABLE + ' set total_fuel = fuel from (select tid, (max(totalconsumed)-min(totalconsumed))fuel from ' + OLD_TABLE + ' where totalconsumed is not null and totalconsumed < 4000000 and dirty is false group by tid)s where ' + TABLE + '.tid=s.tid;')

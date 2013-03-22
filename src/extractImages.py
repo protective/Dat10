@@ -2,7 +2,7 @@ import pg, sys, os, csv
 
 USER = 'd103'
 DB = 'gps_can'
-TABLE = 'trip_data'
+TABLE = 'b_trip_data'
 TYPE = sys.argv[1]
 path = 'Dat10/src/'
 

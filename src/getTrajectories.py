@@ -5,7 +5,7 @@ DB = 'gps_can'
 TABLE = 'gps_can_data'
 NEW_TABLE = 'b_' + TABLE
 
-TIME = 120
+TIME = 20
 LENGTH = 30
 test = False
 filename = ''
