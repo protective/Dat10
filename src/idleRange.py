@@ -7,7 +7,7 @@ con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 
 test= False
 PREFIX = 'a'
-if len(sys.argv) > 2:
+if len(sys.argv) > 1:
 	PREFIX = sys.argv[2]
 DATATABLE = ""+PREFIX+"_gps_can_data"
 TRIPDATA = ""+PREFIX+"_trip_data"
