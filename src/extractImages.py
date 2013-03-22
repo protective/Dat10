@@ -99,7 +99,7 @@ elif TYPE == 'idle2':
 	print "set ylabel 'Class distribution (%)'"
 	print "set xlabel 'Percent of trip in idle (%)'"
 	print "set yrange[0:100]"
-	print "set xrange[0:]"
+	print "set xrange[0:8]"
 	print "set y2tics"
 	print "set y2label 'Number of trips'"
 	print "set key outside"
