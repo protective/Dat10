@@ -3,37 +3,57 @@ DB=$1
 FILEPATH=$2
 FILES=$FILEPATH/*.csv
 TABLE='gps_can_data'
-#psql -d template1 -c "drop database if exists $DB;"
-#psql -d template1 -c "create database $DB;"
 
-#psql -d $DB -c "Create EXTENSION postgis;"
+resetDatabase=false
+copyData=false
+getTrajectories=false
+postgis=false
+indexes=false
+tripData=false
+idle=false
+cruise=false
+trafficLights=false
+acceleration=false
+temperature=false
 
-#psql -d $DB -c "drop table IF EXISTS $TABLE;"
-#psql -d $DB -c "create table $TABLE (vehicleid bigint, timestamp timestamp, longitude float, latitude float, speed float, compass int, satellites int, temperature float, rpm int, acceleration float, kmcounter float, fuellevel float, throttlepos float, totalconsumed float, actualconsumed float, actual_km_l float, make float, model int, capacity float, weight float, segmentkey int, direction varchar(8));"
+if $resetDatabase then
+psql -d template1 -c "drop database if exists $DB;"
+psql -d template1 -c "create database $DB;"
 
-#echo "Copying data"
-#for f in $FILES
-#do
-#psql -d $DB -c "\copy $TABLE from '$f' DELIMITERS ';' CSV HEADER;"
-#echo "Done loading $f"
-#done
+psql -d $DB -c "Create EXTENSION postgis;"
 
+psql -d $DB -c "drop table IF EXISTS $TABLE;"
+psql -d $DB -c "create table $TABLE (vehicleid bigint, timestamp timestamp, longitude float, latitude float, speed float, compass int, satellites int, temperature float, rpm int, acceleration float, kmcounter float, fuellevel float, throttlepos float, totalconsumed float, actualconsumed float, actual_km_l float, make float, model int, capacity float, weight float, segmentkey int, direction varchar(8));"
+fi
+
+if $copyData then
+echo "Copying data"
+for f in $FILES
+do
+psql -d $DB -c "\copy $TABLE from '$f' DELIMITERS ';' CSV HEADER;"
+echo "Done loading $f"
+done
+fi
+
+if $getTrajectories then
 echo "get trajectories"
 python getTrajectories.py 20 30
+fi
 
-#echo "Create geom postgis"
-#psql -d $DB -c "alter table a_gps_can_data add column geom geography(POINT,4326);"
-#psql -d $DB -c "update a_gps_can_data set geom = ST_SetSRID(ST_MakePoint(longitude,latitude),4326);"
-
+if $postgis then
+echo "Create geom postgis"
+psql -d $DB -c "alter table a_gps_can_data add column geom geography(POINT,4326);"
+psql -d $DB -c "update a_gps_can_data set geom = ST_SetSRID(ST_MakePoint(longitude,latitude),4326);"
 
 echo "load open streetmap"
-#psql -d $DB -f $2/osm_dk_20130214.sql
+psql -d $DB -f $2/osm_dk_20130214.sql
 
-#psql -d $DB -c "create create index osm_dk_20130214_segmentkey_idx on osm_dk_20130214 (segmentkey);"
-#psql -d $DB -c "create create index osm_dk_20130214_category_idx on osm_dk_20130214 (category);"
+psql -d $DB -c "create create index osm_dk_20130214_segmentkey_idx on osm_dk_20130214 (segmentkey);"
+psql -d $DB -c "create create index osm_dk_20130214_category_idx on osm_dk_20130214 (category);"
+fi
 
+if $indexes then
 echo "Creating indexes"
-
 psql -d $DB -c "DROP INDEX IF EXISTS idx_a_gps_can_data CASCADE; create index idx_a_gps_can_data on a_gps_can_data using gist(geom);"
 psql -d $DB -c "DROP INDEX IF EXISTS vehid_idx CASCADE; create index vehid_idx on $TABLE (vehicleid)"
 psql -d $DB -c "DROP INDEX IF EXISTS time_idx CASCADE; create index time_idx on $TABLE (timestamp)"
@@ -49,15 +69,38 @@ psql -d $DB -c "DROP INDEX IF EXISTS totalconsumed_idx CASCADE; create index tot
 psql -d $DB -c "DROP INDEX IF EXISTS segmentkey_idx CASCADE; create index segmentkey_idx on $TABLE (segmentkey)"
 psql -d $DB -c "DROP INDEX IF EXISTS direction_idx CASCADE; create index direction_idx on $TABLE (direction)"
 psql -d $DB -c "DROP INDEX IF EXISTS dirty_a_gps_can_data_idx CASCADE; create index dirty_a_gps_can_data_idx on $TABLE (dirty)"
+fi
 
+if $tripData then
+python tripData.py
+fi
+
+if $idle then
 python idle.py 0
+fi
+
+if $cruise then
 python cruise.py
+fi
+
+if $trafficLights then
 python extractTrafficLights.py maps/denmark.osm
 python inRangeOfTl.py
-python tripData.py dropAll
+fi
+
+if $acceleration then
 python noAcceleration.py
 python noAccelerationW.py
 python stopngo.py
+fi
+
+if $temperature then
+python temperature.py
+fi
+
+
+
+
 
 
 

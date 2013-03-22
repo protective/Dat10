@@ -2,7 +2,7 @@ import pg, sys, os, csv
 
 USER = 'd103'
 DB = 'gps_can'
-TABLE = 'trip_data'
+TABLE = 'b_trip_data'
 TYPE = sys.argv[1]
 path = 'Dat10/src/'
 
@@ -20,7 +20,7 @@ if TYPE == 'km_pr_l':
 	i = 0
 	for v in vehicles:
 		vid = str(v[0])
-		res = con.query("select km_pr_l from " + TABLE + " where vehicleid=" + vid + " and dirty is false order by tid;").getresult()
+		res = con.query("select km_pr_l from " + TABLE + " where vehicleid=" + vid + " order by tid;").getresult()
 		output = open(path + 'data/' + vid + '_kmldata.csv', 'wb')
 		for r in res:
 			print>> output, str(i) + " " + str(r[0])
@@ -36,16 +36,6 @@ if TYPE == 'km_pr_l':
 		s+= "'"+path + "data/" + vid + "_kmldata.csv' title '" + vid + "', "
 
 	print s + "4 lw 2 notitle, 8 lw 2 notitle"
-	
-elif TYPE == 'TripsSize':
-	print "set output '" + path + "images/TripsSize.png'"
-	print "set ylabel 'Number of trips"
-	print "set xlabel 'Timeframe'"	
-	print "set x2tics"
-	print "set x2label 'Length'"
-	print "set yrange[0:]"
-	
-	print "plot '" + path + "data/trajectoryLength.csv' using 2:3 with lines lw 3 title 'Timeframe', '" + path + "data/trajectoryTime.csv' using 1:3 with lines lw 3 title 'Length' axes x2y1"
 	
 elif TYPE == 'TimeTrips':
 	print "set output '" + path + "images/TimeTrips.png';"
@@ -70,14 +60,13 @@ elif TYPE == 'minFuel':
 	output = open(path +'data/minFuel.csv', 'wb')
 	for i in range(0,20, 1):
 		step = float(i)/10
-		res = con.query("select count(*)-count(case when total_fuel < " + str(step) + " then 1 end) from trip_data;").getresult()
+		res = con.query("select count(*)-count(case when total_fuel < " + str(step) + " then 1 end) from " + TABLE + ";").getresult()
 		print >>output, str(step) + " " + str(res[0][0])
 
 	print "plot '" + path + "data/minFuel.csv' with lines lw 3 notitle"
 
 elif TYPE == 'TripLengthKml':
-	res = con.query("select total_km, km_pr_l from trip_data;").getresult()
-	#res = con.query("select EXTRACT(EPOCH FROM t), km_pr_l from trip_data, (select tid, (max(timestamp)-min(timestamp))t from a_gps_can_data group by tid)a where trip_data.tid=a.tid;").getresult()
+	res = con.query("select total_km, km_pr_l from " + TABLE + ";").getresult()
 	output = open(path +'data/tripLengthKml.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 
@@ -98,7 +87,7 @@ elif TYPE == 'idle2':
 		count(case when km_pr_l < 8 then 1 end)::float/count(*)*100 as medium,
 		100 as high ,
 		count(*) 
-	from trip_data group by round order by round;
+	from """ + TABLE + """ group by round order by round;
 	""").getresult()
 	
 	output = open(path + 'data/idle2.csv', 'wb')
@@ -123,7 +112,7 @@ elif TYPE == 'idle3':
 		count(case when km_pr_l < 8 then 1 end)::float/count(*)*100 as medium,
 		100 as high ,
 		count(*) 
-	from trip_data group by idle order by idle;
+	from """ + TABLE + """ group by idle order by idle;
 	""").getresult()
 	
 	output = open(path + 'data/idle3.csv', 'wb')
@@ -148,7 +137,11 @@ elif TYPE == 'normalRoad':
 		count(case when km_pr_l < 8 then 1 end)::float/count(*)*100 as medium,
 		100 as high ,
 		count(*) 
+<<<<<<< HEAD
 	from trip_data group by PNormalRoad order by PNormalRoad;
+=======
+	from """ + TABLE + """ group by NormalRoad order by NormalRoad;
+>>>>>>> 8e3d3e8c32a4d21565feecd2df9a51169c813c24
 	""").getresult()
 	
 	output = open(path + 'data/normalRoad.csv', 'wb')
