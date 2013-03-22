@@ -20,8 +20,8 @@ fi
 
 if ($postgis) then
 echo "Create geom postgis"
-psql -d $DB -c "alter table $PREFIX\_gps_can_data add column geom geography(POINT,4326);"
-psql -d $DB -c "update $PREFIX\_gps_can_data set geom = ST_SetSRID(ST_MakePoint(longitude,latitude),4326);"
+psql -d $DB -c "alter table "$PREFIX"_gps_can_data add column geom geography(POINT,4326);"
+psql -d $DB -c "update "$PREFIX"_gps_can_data set geom = ST_SetSRID(ST_MakePoint(longitude,latitude),4326);"
 
 echo "load open streetmap"
 psql -d $DB -f $2/osm_dk_20130214.sql
