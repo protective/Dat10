@@ -3,18 +3,21 @@ import random, time, math, pg, sys,os
 USER = 'd103'
 DB = 'gps_can'
 TABLE = 'gps_can_data'
-NEW_TABLE = 'b_' + TABLE
+
 
 TIME = 20
 LENGTH = 30
 test = False
 filename = ''
+TIDTOUPDATE = 'tid'
+NEW_TABLE = 'a_' + TABLE
 if len(sys.argv) > 1:
 	TIME = int(sys.argv[1])
 	LENGTH = int(sys.argv[2])
-	if len(sys.argv)> 3:
-		test = bool(sys.argv[3])
-		filename = str(sys.argv[4])
+	NEW_TABLE = ''+sys.argv[3]+'_' + TABLE
+	if len(sys.argv)> 4:
+		test = bool(sys.argv[4])
+		filename = str(sys.argv[5])
 		
 counter = 0
 	
@@ -28,7 +31,6 @@ if (not test):
 	print "Alter table"
 	con.query('drop table IF EXISTS ' + NEW_TABLE + ';')
 	con.query('create table ' + NEW_TABLE + ' as (select * from ' + TABLE + ' where rpm > 0);')
-	con.query('alter table ' + NEW_TABLE + ' add column tid int;')
 	con.query('alter table ' + NEW_TABLE + ' add column dirty bool default false;')
 if (not test):
 	print "Creating indexes"
@@ -36,7 +38,10 @@ if (not test):
 	con.query("DROP INDEX IF EXISTS time_" + NEW_TABLE + "_idx CASCADE; create index time_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (timestamp);")
 	con.query("DROP INDEX IF EXISTS speed_" + NEW_TABLE + "_idx CASCADE; create index speed_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (speed);")
 	con.query("DROP INDEX IF EXISTS rpm_" + NEW_TABLE + "_idx CASCADE; create index rpm_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (rpm);")
-	
+
+
+con.query('alter table ' + NEW_TABLE + 'drop IF EXISTS '+TIDTOUPDATE+';')
+con.query('alter table ' + NEW_TABLE + ' add column '+TIDTOUPDATE+' int;')
 
 print "Fetching data"
 res = con.query('select vehicleid, timestamp from ' + TABLE + ' where rpm > 0 order by vehicleid, timestamp').getresult()
@@ -57,10 +62,10 @@ for p in range(0,len(res)):
 	if diff > TIME or prevVhId != curVhId:
 		length = abs(time.mktime(time.strptime(startTime, "%Y-%m-%j %H:%M:%S")) - time.mktime(time.strptime(res[p-1][1], "%Y-%m-%j %H:%M:%S")))
 		if length >= LENGTH:
-			query = 'update ' + NEW_TABLE + ' set tid=' + str(tid)
+			query = 'update ' + NEW_TABLE + ' set '+TIDTOUPDATE+'=' + str(tid)
 			counter +=1
 		else:
-			query = 'update ' + NEW_TABLE + ' set tid='+ str(tid) + ', dirty=true '
+			query = 'update ' + NEW_TABLE + ' set '+TIDTOUPDATE+'='+ str(tid) + ', dirty=true '
 	
 		query += " where timestamp>='" + startTime + "' and timestamp<='" + res[p-1][1] + "' and vehicleid=" + str(res[p-1][0]) + ";"
 
@@ -79,10 +84,10 @@ for p in range(0,len(res)):
 length = abs(time.mktime(time.strptime(startTime, "%Y-%m-%j %H:%M:%S")) - time.mktime(time.strptime(res[p-1][1], "%Y-%m-%j %H:%M:%S")))
 print length
 if length >= LENGTH:
-	query = 'update ' + NEW_TABLE + ' set tid=' + str(tid)
+	query = 'update ' + NEW_TABLE + ' set '+TIDTOUPDATE+'=' + str(tid)
 	counter +=1
 else:
-	query = 'update ' + NEW_TABLE + ' set tid='+ str(tid) + ', dirty=true '
+	query = 'update ' + NEW_TABLE + ' set '+TIDTOUPDATE+'='+ str(tid) + ', dirty=true '
 
 query += " where timestamp>='" + startTime + "' and timestamp<='" + res[len(res)-1][1] + "' and vehicleid=" + str(res[len(res)-1][0]) + ";"
 if( not test):
@@ -90,7 +95,7 @@ if( not test):
 
 if not test:
 	print "Creating index"
-	con.query("DROP INDEX IF EXISTS tid_" + NEW_TABLE + "_idx CASCADE; create index tid_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (tid);")
+	con.query("DROP INDEX IF EXISTS "+TIDTOUPDATE+"_" + NEW_TABLE + "_idx CASCADE; create index "+TIDTOUPDATE+"_" + NEW_TABLE + "_idx on " + NEW_TABLE + ' ('+TIDTOUPDATE+');')
 
 if(test):
 	output = open('data/'+filename, 'a')
