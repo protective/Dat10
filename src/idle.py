@@ -13,7 +13,7 @@ if len(sys.argv) > 1:
 	duration = int(sys.argv[1])
 
 
-print "Altering table"
+"""print "Altering table"
 con.query('alter table ' + DATATABLE + ' drop IF EXISTS idle;')
 con.query('alter table ' + DATATABLE + ' add column idle int not null default 0;')
 
@@ -56,13 +56,16 @@ print 'Percentage in idle'
 con.query('alter table ' + TRIPDATA + ' drop if exists idle_percentage;')
 con.query('alter table ' + TRIPDATA + ' add idle_percentage float;')
 con.query('update ' + TRIPDATA + ' set idle_percentage = p from (select tid, count(case when idle=1 then 1 end)::float/count(*) as p from ' + DATATABLE + ' where dirty is false group by tid)f where ' + TRIPDATA + '.tid=f.tid;')
-
+"""
 print 'Time in idle'
 con.query('alter table ' + TRIPDATA + ' drop if exists idle_time;')
 con.query('alter table ' + TRIPDATA + ' add idle_time float;')
 trips = con.query('select distinct tid from ' + TRIPDATA).getresult() #
 for t in trips:
 	trip = t[0]
+	if str(trip)=='773':
+		print '******************************************'
+
 	res = con.query("select timestamp, idle from " + DATATABLE + " where tid=" + str(trip) + " and dirty is false order by timestamp;").getresult()
 	start = ""
 	sek = 0
