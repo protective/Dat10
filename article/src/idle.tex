@@ -1,15 +1,15 @@
 \section{Avoid Idling}
 
-Avoid idling or minimising idle time is a factor in eco-driving, as fuel is still consumed when the engine is running even though the vehicle is not moving.
+Avoiding idling or minimising idle time is a factor in eco-driving as fuel is still consumed when the engine is running even though the vehicle is not moving.
 The driver is hence consuming unneccesary fuel when idling.
 
-A vehicle is idling when the engines rounds per minute (RPM) is above zero while the speed is zero for at least X consecutive recordings. %CHECK
+A vehicle is idling when the engines rounds per minute (RPM) is above zero while the speed is zero for at least 50 consecutive recordings. %CHECK
 Let $\vrpm$ and $\vspeed$ be the RPM and speed of vehicle $v$ at time $t$, then a vehicle is ideling when
-\[\mbox{\textbf{for }} i, \dots ,t, \dots, i+X \mbox{: }\vrpm> 0 \wedge \vspeed=0 \]
-A vehicle must be in idling at least $X$ seconds in order to eliminate involuntary idle times at for example traffic lights or due to small disturbances is the traffic flow.
+\[\mbox{\textbf{for }} i, \dots ,t, \dots, i+50 \mbox{: }\vrpm> 0 \wedge \vspeed=0 \]
+A vehicle must be in idling at least $50$ seconds in order to eliminate involuntary idle times at for example traffic lights or due to small disturbances is the traffic flow.
 Figure~\ref{fig:idleDuration} plots a graph of the number of records in which a vehicle is idling at different minimum durations. 
 
-\begin{figure}[htb]
+\begin{figure}[htb] %TODO: Not updated
 \centering
 \includegraphics[width=0.5\textwidth]{../src/images/idleDuration.png}
 \caption{Minimum idle duration}

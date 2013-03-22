@@ -1,6 +1,6 @@
 
 if [ -z "$1" ]; then
-	TABLE="trip_data"
+	TABLE="a_trip_data"
 else
 	TABLE=$1
 fi

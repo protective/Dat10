@@ -168,7 +168,7 @@ elif TYPE == 'idleDuration':
 	print "plot '" + path + "data/idleDuration.csv' with lines lw 3 notitle"
 
 elif TYPE == 'idleTime':
-	val = 'idle_time*100, km_pr_l as val, |/ (total_fuel/3.14)'
+	val = 'idle_time, km_pr_l as val, |/ (total_fuel/3.14)'
 	res = con.query("select " + val + " from " + TABLE + " where km_pr_l < 4  order by val;").getresult()
 	output = open(path + 'images/' + TYPE + '_low_data.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
