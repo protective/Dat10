@@ -23,11 +23,11 @@ con.query(s)
 
 
 con.query("alter table " + TABLE + " drop IF EXISTS PMoterRoad;")
-con.query('alter table ' + TABLE + ' add PMoterRoad int;')
+con.query('alter table ' + TABLE + ' add PMoterRoad float;')
 con.query("alter table " + TABLE + " drop IF EXISTS PNormalRoad;")
-con.query('alter table ' + TABLE + ' add PNormalRoad int;')
+con.query('alter table ' + TABLE + ' add PNormalRoad float;')
 con.query("alter table " + TABLE + " drop IF EXISTS PSmallRoad;")
-con.query('alter table ' + TABLE + ' add PSmallRoad int;')
+con.query('alter table ' + TABLE + ' add PSmallRoad float;')
 
 
 s = 'update ' + TABLE + '  set PMoterRoad = p from (select tid, count(case when roadCategory=1 then 1 end)::float/count(*) as p from ' + QUERY_TABLE + ' where dirty is false group by tid)f where ' + TABLE + '.tid=f.tid;'

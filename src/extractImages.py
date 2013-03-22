@@ -140,7 +140,35 @@ elif TYPE == 'idle3':
 	print "set y2label 'Number of trips'"
 	print "set key outside"
 	print "plot '" + path + "data/idle3.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/idle3.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/idle3.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/idle3.csv' using 1:5 with lines lw 3 title 'Data points' axes x1y2"
+
+elif TYPE == 'normalRoad':
+	res = con.query("""
+	select round(PNormalRoad/10)*10 as NormalRoad, 
+		count(case when km_pr_l <=4 then 1 end)::float/count(*)*100 as low,
+		count(case when km_pr_l < 8 then 1 end)::float/count(*)*100 as medium,
+		100 as high ,
+		count(*) 
+	from trip_data group by NormalRoad order by NormalRoad;
+	""").getresult()
 	
+	output = open(path + 'data/normalRoad.csv', 'wb')
+	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+	for r in res:
+		writer.writerow(r)
+
+	print "set output '" + path + "/images/NormalRoad.png';"
+	print "set ylabel 'Class distribution (%)'"
+	print "set xlabel 'Normal Road P'"
+	print "set yrange[0:100]"
+	print "set xrange[0:400]"
+	print "set y2tics"
+	print "set y2label 'Number of trips'"
+	print "set key outside"
+	print "plot '" + path + "data/NormalRoad.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/NormalRoad.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/NormalRoad.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/NormalRoad.csv' using 1:5 with lines lw 3 title 'Data points' axes x1y2"
+
+
+
+
 elif TYPE == 'idleDuration':
 	print "set output '" + path + "images/idleDuration.png';"
 	print "set ylabel 'Number of idle records"
