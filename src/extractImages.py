@@ -209,7 +209,7 @@ elif TYPE == 'idleRange':
 	print "set ylabel 'Number of records';"
 	print "set xlabel 'Idle range (s)';"
 
-	s = "plot "+ path + "data/idleRange.csv' using 1:2:3 with points lt 1 pt 6 ps variable linecolor rgb \"green\" title 'High' , "
+	print "plot "+ path + "data/idleRange.csv' using 1:2:3 with points lt 1 pt 6 ps variable linecolor rgb \"green\" title 'High' , "
 
 elif TYPE == 'idlePercent':
 	val = 'idle_percentage*100, km_pr_l as val, |/ (total_fuel/3.14)'
