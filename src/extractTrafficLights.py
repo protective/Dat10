@@ -1,7 +1,8 @@
 import os, pg , math, sys
 import xml.parsers.expat
 
-TABLE = "a_gps_can_data"
+
+
 TL_TABLE = "trafficLights"
 print "begin"
 if len(sys.argv) > 1:
@@ -10,6 +11,11 @@ if len(sys.argv) > 1:
 else:
 	print "ERROR To few arguments"
 	
+PREFIX = 'a'
+if len(sys.argv) > 2:
+	PREFIX = sys.argv[2]
+TABLE = ""+TABLE+"_gps_can_data"
+
 
 
 con = pg.connect(dbname='gps_can', host='localhost', user='d103',passwd='F1ff')

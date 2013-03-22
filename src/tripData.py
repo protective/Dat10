@@ -2,8 +2,14 @@ import pg, sys,os, time
 
 USER = 'd103'
 DB = 'gps_can'
-OLD_TABLE = 'b_gps_can_data'
-TABLE = 'b_trip_data'
+OLD_TABLE = 'a_gps_can_data'
+PREFIX = 'a'
+if len(sys.argv) > 1:
+	PREFIX = sys.argv[1]
+OLD_TABLE = ""+PREFIX+"_gps_can_data"
+TABLE = ""+PREFIX+"_trip_data"
+
+
 
 
 print "Connecting to " + DB
