@@ -200,7 +200,7 @@ elif TYPE == 'idleTime':
 elif TYPE == 'idleRange':
 	res = con.query("select idle, count(*) from (select round(count(case when idleRange=1 then 1 end)/10)*10 as idle from " + TABLE + " group by tid)a group by idle order by idle;").getresult()
 	
-	output = open(path + 'data/idleRange.csv', 'wb')
+	output = open(path + 'data/idleRange.csv', 'w+')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 	for r in res:
 		writer.writerow(r)
@@ -209,7 +209,7 @@ elif TYPE == 'idleRange':
 	print "set ylabel 'Number of records';"
 	print "set xlabel 'Idle range (s)';"
 
-	print "plot "+ path + "data/idleRange.csv' using 1:2:3 with points lt 1 pt 6 ps variable linecolor rgb \"green\" title 'High' , "
+	print "plot '"+ path + "data/idleRange.csv' with bars"
 
 elif TYPE == 'idlePercent':
 	val = 'idle_percentage*100, km_pr_l as val, |/ (total_fuel/3.14)'
