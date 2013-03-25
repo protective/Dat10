@@ -14,7 +14,7 @@ else:
 PREFIX = 'a'
 if len(sys.argv) > 2:
 	PREFIX = sys.argv[2]
-TABLE = ""+TABLE+"_gps_can_data"
+TABLE = ""+PREFIX+"_gps_can_data"
 
 
 
