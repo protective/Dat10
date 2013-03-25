@@ -209,7 +209,30 @@ elif TYPE == 'idleRange':
 	print "set ylabel 'Number of records';"
 	print "set xlabel 'Idle range (s)';"
 
-	print "plot '"+ path + "data/idleRange.csv' with bars"
+	print "plot '"+ path + "data/idleRange.csv' with boxes"
+	
+elif TYPE == 'idleRange2':
+	vehicles = con.query("select distinct vehicleid from " + TABLE + ";").getresult()
+	for v in vehicles:
+		res = con.query("select  round(idleRange/10)*10 as idle, count(*) from "+ TABLE + " where vehicleid =" + str(v[0]) + " group by idle;").getresult()
+	
+		output = open(path + 'data/'+str(v[0])+'idleRange2.csv', 'w+')
+		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+		for r in res:
+			writer.writerow(r)
+
+	print "set output '" + path + "images/idleRange.png';"
+	print "set ylabel 'Number of records';"
+	print "set xlabel 'Idle range (s)'"
+	print "set style data histogram"
+	print "set style histogram cluster gap 1"
+	print "set style fill solid border -1"
+	print "set boxwidth 0.9"
+	
+	s = "plot "
+	for v in vehicles:
+		s += "'" + path + "data/"+str(v[0]) + "idleRange.csv' using 2:xtic(1),"
+	print s[:-1]
 
 elif TYPE == 'idlePercent':
 	val = 'idle_percentage*100, km_pr_l as val, |/ (total_fuel/3.14)'
