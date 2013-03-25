@@ -24,9 +24,17 @@ con.query("DROP INDEX IF EXISTS idle_" + DATATABLE + "_idx;")
 con.query("Create index idle_" + DATATABLE + "_idx on " + DATATABLE + " (idleRange);")
 """
 
-res = con.query("select timestamp from " + DATATABLE + " where idleRange=1 order by timestamp;").getresult()
-for r in res:
-	print r[0]
+con.query('alter table ' + DATATABLE + ' drop IF EXISTS idleRange;')
+con.query('alter table ' + DATATABLE + ' add column idleRange int not null default 0;')
+res = con.query("select timestamp, idleRange from " + DATATABLE + " order by timestamp;").getresult()
+s = -1
+for r in range(0, len(res)-1):
+	if res[r][1] == "1" and s==-1:
+		s = time.mktime(time.strptime(res[r][0], "%Y-%m-%j %H:%M:%S"))
+	if res[r][1] == "0" and r > 0:
+		print s + "\t" + time.mktime(time.strptime(res[r-1][0], "%Y-%m-%j %H:%M:%S"))
+
+		
 
 
 
