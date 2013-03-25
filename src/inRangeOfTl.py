@@ -11,7 +11,7 @@ TRIPDATA = ""+PREFIX+"_trip_data"
 
 con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 
-res = con.query("select max(tid) from a_gps_can_data").getresult()
+res = con.query("select max(tid) from "+DATATABLE+"").getresult()
 print res
 
 for i in range(0,res[0][0]):

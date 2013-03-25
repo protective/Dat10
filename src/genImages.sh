@@ -34,7 +34,6 @@ scp d103@172.25.26.191:Dat10/src/images/idleRange.png images/idleRange.png
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py TimeTrips $TABLE | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/TimeTrips.png images/TimeTrips.png
 
-
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py normalRoad $TABLE | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/normalRoad.png images/normalRoad.png
 
@@ -47,5 +46,21 @@ scp d103@172.25.26.191:Dat10/src/images/moterRoad.png images/moterRoad.png
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py trafficlight $TABLE | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/trafficlight.png images/trafficlight.png
 
+
+
+
+
+
+
+
+
+
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;git checkout extractImages.py"
+
+
+
+
+
+
+
 
