@@ -36,13 +36,13 @@ temperature=true
 #python tripData.py $PREFIX
 #fi
 
-if ($idle) then
+#if ($idle) then
 #python idle.py 0 $PREFIX
-fi
+#fi
 
-if ($cruise) then
+#if ($cruise) then
 #python cruise.py $PREFIX
-fi
+#fi
 
 if ($trafficLights) then
 python extractTrafficLights.py maps/denmark.osm $PREFIX
@@ -55,8 +55,8 @@ python noAccelerationW.py $PREFIX
 python stopngo.py $PREFIX
 fi
 
-if ($temperature) then
+#if ($temperature) then
 #python temperature.py $PREFIX
-fi
+#fi
 
 
