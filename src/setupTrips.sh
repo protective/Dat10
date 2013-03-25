@@ -4,7 +4,7 @@ PREFIX=$2
 TRIPTIME=$3
 
 getTrajectories=true
-postgis=true
+postgis=false
 tripData=true
 idle=true
 cruise=true
