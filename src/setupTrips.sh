@@ -47,7 +47,7 @@ psql -d $DB -c "select geom from "$PREFIX" limit 1;"
 #fi
 
 if ($trafficLights) then
-python extractTrafficLights.py maps/denmark.osm $PREFIX
+#python extractTrafficLights.py maps/denmark.osm $PREFIX
 python inRangeOfTl.py $PREFIX
 fi
 
