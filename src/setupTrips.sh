@@ -37,11 +37,11 @@ temperature=true
 #fi
 
 if ($idle) then
-python idle.py 0 $PREFIX
+#python idle.py 0 $PREFIX
 fi
 
 if ($cruise) then
-python cruise.py $PREFIX
+#python cruise.py $PREFIX
 fi
 
 if ($trafficLights) then
@@ -56,7 +56,7 @@ python stopngo.py $PREFIX
 fi
 
 if ($temperature) then
-python temperature.py $PREFIX
+#python temperature.py $PREFIX
 fi
 
 
