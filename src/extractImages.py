@@ -134,12 +134,12 @@ elif TYPE == 'idle3':
 
 elif TYPE == 'normalRoad':
 	res = con.query("""
-	select round(PNormalRoad/10)*10 as PNormalRoad, 
+	select round(PNormalRoad*100::numeric,1), 
 		count(case when km_pr_l <=4 then 1 end)::float/count(*)*100 as low,
 		count(case when km_pr_l < 8 then 1 end)::float/count(*)*100 as medium,
 		100 as high ,
 		count(*) 
-	from """ + TABLE + """ group by NormalRoad order by NormalRoad;
+	from """ + TABLE + """ group by round order by round;
 	""").getresult()
 
 	
