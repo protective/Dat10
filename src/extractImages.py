@@ -6,7 +6,7 @@ TABLE = 'trip_data'
 TYPE = sys.argv[1]
 if len(sys.argv) > 2:
 	TABLE = sys.argv[2]
-path = 'Dat10/src/'
+path = ''
 
 if (False):
 	USER = 'sabrine'
@@ -152,7 +152,7 @@ elif TYPE == 'normalRoad':
 	print "set ylabel 'Class distribution (%)'"
 	print "set xlabel 'Normal Road P'"
 	print "set yrange[0:100]"
-	print "set xrange[0:400]"
+	print "set xrange[0:100]"
 	print "set y2tics"
 	print "set y2label 'Number of trips'"
 	print "set key outside"
