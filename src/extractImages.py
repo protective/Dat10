@@ -134,7 +134,7 @@ elif TYPE == 'idle3':
 
 elif TYPE == 'normalRoad':
 	res = con.query("""
-	select round((PNormalRoad*100)::numeric,1), 
+	select round((PNormalRoad*10)::numeric,0), 
 		count(case when km_pr_l <=4 then 1 end)::float/count(*)*100 as low,
 		count(case when km_pr_l < 8 then 1 end)::float/count(*)*100 as medium,
 		100 as high ,
@@ -152,11 +152,89 @@ elif TYPE == 'normalRoad':
 	print "set ylabel 'Class distribution (%)'"
 	print "set xlabel 'Normal Road P'"
 	print "set yrange[0:100]"
-	print "set xrange[0:100]"
+	print "set xrange[0:10]"
 	print "set y2tics"
 	print "set y2label 'Number of trips'"
 	print "set key outside"
 	print "plot '" + path + "data/normalRoad.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/normalRoad.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/normalRoad.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/normalRoad.csv' using 1:5 with lines lw 3 title 'Data points' axes x1y2"
+elif TYPE == 'smallRoad':
+	res = con.query("""
+	select round((PSmallRoad*10)::numeric,0), 
+		count(case when km_pr_l <=4 then 1 end)::float/count(*)*100 as low,
+		count(case when km_pr_l < 8 then 1 end)::float/count(*)*100 as medium,
+		100 as high ,
+		count(*) 
+	from """ + TABLE + """ group by round order by round;
+	""").getresult()
+
+	
+	output = open(path + 'data/smallRoad.csv', 'wb')
+	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+	for r in res:
+		writer.writerow(r)
+
+	print "set output '" + path + "images/smallRoad.png';"
+	print "set ylabel 'Class distribution (%)'"
+	print "set xlabel 'Small Road P'"
+	print "set yrange[0:100]"
+	print "set xrange[0:10]"
+	print "set y2tics"
+	print "set y2label 'Number of trips'"
+	print "set key outside"
+	print "plot '" + path + "data/smallRoad.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/smallRoad.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/smallRoad.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/smallRoad.csv' using 1:5 with lines lw 3 title 'Data points' axes x1y2"
+
+elif TYPE == 'moterRoad':
+	res = con.query("""
+	select round((pmoterroad*10)::numeric,0), 
+		count(case when km_pr_l <=4 then 1 end)::float/count(*)*100 as low,
+		count(case when km_pr_l < 8 then 1 end)::float/count(*)*100 as medium,
+		100 as high ,
+		count(*) 
+	from """ + TABLE + """ group by round order by round;
+	""").getresult()
+
+	
+	output = open(path + 'data/moterRoad.csv', 'wb')
+	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+	for r in res:
+		writer.writerow(r)
+
+	print "set output '" + path + "images/moterRoad.png';"
+	print "set ylabel 'Class distribution (%)'"
+	print "set xlabel 'Motor Road P'"
+	print "set yrange[0:100]"
+	print "set xrange[0:10]"
+	print "set y2tics"
+	print "set y2label 'Number of trips'"
+	print "set key outside"
+	print "plot '" + path + "data/moterRoad.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/moterRoad.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/moterRoad.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/moterRoad.csv' using 1:5 with lines lw 3 title 'Data points' axes x1y2"
+
+
+elif TYPE == 'trafficlight':
+	res = con.query("""
+	select round((tlcounter*10)::numeric,0), 
+		count(case when km_pr_l <=4 then 1 end)::float/count(*)*100 as low,
+		count(case when km_pr_l < 8 then 1 end)::float/count(*)*100 as medium,
+		100 as high ,
+		count(*) 
+	from """ + TABLE + """ group by round order by round;
+	""").getresult()
+
+	
+	output = open(path + 'data/trafficlight.csv', 'wb')
+	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+	for r in res:
+		writer.writerow(r)
+
+	print "set output '" + path + "images/trafficlight.png';"
+	print "set ylabel 'Class distribution (%)'"
+	print "set xlabel 'trafficlight '"
+	print "set yrange[0:100]"
+	print "set xrange[0:10]"
+	print "set y2tics"
+	print "set y2label 'Number of trips'"
+	print "set key outside"
+	print "plot '" + path + "data/trafficlight.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/trafficlight.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/trafficlight.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/trafficlight.csv' using 1:5 with lines lw 3 title 'Data points' axes x1y2"
 
 
 
