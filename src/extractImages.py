@@ -97,7 +97,7 @@ elif TYPE == 'idle2':
 	for r in res:
 		writer.writerow(r)
 
-	print "set output '" + path + "/images/idle2.png';"
+	print "set output '" + path + "images/idle2.png';"
 	print "set ylabel 'Class distribution (%)'"
 	print "set xlabel 'Percent of trip in idle (%)'"
 	print "set yrange[0:100]"
@@ -122,7 +122,7 @@ elif TYPE == 'idle3':
 	for r in res:
 		writer.writerow(r)
 
-	print "set output '" + path + "/images/idle3.png';"
+	print "set output '" + path + "images/idle3.png';"
 	print "set ylabel 'Class distribution (%)'"
 	print "set xlabel 'Idle time (s)'"
 	print "set yrange[0:100]"
@@ -148,7 +148,7 @@ elif TYPE == 'normalRoad':
 	for r in res:
 		writer.writerow(r)
 
-	print "set output '" + path + "/images/normalRoad.png';"
+	print "set output '" + path + "images/normalRoad.png';"
 	print "set ylabel 'Class distribution (%)'"
 	print "set xlabel 'Normal Road P'"
 	print "set yrange[0:100]"
