@@ -250,7 +250,7 @@ elif TYPE == 'idleRange':
 elif TYPE == 'idleRange2':
 	vehicles = con.query("select distinct vehicleid from " + TABLE + ";").getresult()
 	for v in vehicles:
-		res = con.query("select (case when round(idleRange/10)*10=0 then 1 else round(idleRange/10)*10 end) as idle, count(*) from "+ TABLE + " where vehicleid =" + str(v[0]) + " group by idle order by idle;").getresult()
+		res = con.query("select (case when round(idleRange/100)*100=0 then 1 else round(idleRange/100)*100 end) as idle, count(*) from "+ TABLE + " where vehicleid =" + str(v[0]) + " group by idle order by idle;").getresult()
 	
 		output = open(path + 'data/'+str(v[0])+'idleRange2.csv', 'w+')
 		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -265,7 +265,7 @@ elif TYPE == 'idleRange2':
 	print "set style fill solid border -1"
 	print "set boxwidth 0.9"
 	print "set xtic rotate by -45 scale 0"
-	print "set logscale y 10"
+	print "set logscale y 2"
 	
 	s = "plot "
 	for v in vehicles:
