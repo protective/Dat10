@@ -55,13 +55,16 @@ while(s):
 	p.Parse(s)
 	s = f.readline()
 
+con.query("COMMIT;")
 con.query("update "+ TL_TABLE +" set geom = ST_SetSRID(ST_MakePoint(lon,lat),4326);")
+con.query("COMMIT;")
 con.query("DROP INDEX IF EXISTS idx_"+TL_TABLE+" CASCADE; create index idx_"+TL_TABLE+" on "+TL_TABLE+" using gist(geom);")
+con.query("COMMIT;")
 
 con.query("alter table " + TABLE + " drop IF EXISTS tl;")
 con.query('alter table ' + TABLE + ' add tl int default null;')
 
-con.query("update a_gps_can_data set tl = (select tlId from trafficLights where ST_DISTANCE(trafficLights.geom,a_gps_can_data.geom) < 100 limit 1);")
+con.query("update "+TABLE+" set tl = (select tlId from trafficLights where ST_DISTANCE(trafficLights.geom,"+TABLE+".geom) < 100 limit 1);")
 
 print "DONE"
 

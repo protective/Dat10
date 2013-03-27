@@ -39,9 +39,9 @@ if (not test):
 	con.query("DROP INDEX IF EXISTS speed_" + NEW_TABLE + "_idx CASCADE; create index speed_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (speed);")
 	con.query("DROP INDEX IF EXISTS rpm_" + NEW_TABLE + "_idx CASCADE; create index rpm_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (rpm);")
 
-con.query("DROP INDEX IF EXISTS idx_"+NEW_TABLE+"_geom CASCADE; create index idx_"+NEW_TABLE+"_geom on "+NEW_TABLE+" using gist(geom);")
+
 con.query("DROP INDEX IF EXISTS idx_"+NEW_TABLE+"_dirty CASCADE; create index idx_"+NEW_TABLE+"_dirty on "+NEW_TABLE+" (dirty)")
-con.query('alter table ' + NEW_TABLE + 'drop IF EXISTS '+TIDTOUPDATE+';')
+con.query('alter table ' + NEW_TABLE + ' drop IF EXISTS '+TIDTOUPDATE+';')
 con.query('alter table ' + NEW_TABLE + ' add column '+TIDTOUPDATE+' int;')
 
 print "Fetching data"

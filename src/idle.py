@@ -16,7 +16,7 @@ if len(sys.argv) > 1:
 
 PREFIX = 'a'
 if len(sys.argv) > 2:
-	PREFIX = sys.argv[1]
+	PREFIX = sys.argv[2]
 DATATABLE = ""+PREFIX+"_gps_can_data"
 TRIPDATA = ""+PREFIX+"_trip_data"
 
