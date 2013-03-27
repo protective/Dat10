@@ -2,6 +2,32 @@
 
 Avoiding idling or minimising idle time is a factor in eco-driving as fuel is still consumed when the engine is running even though the vehicle is not moving.
 The driver is hence consuming unneccesary fuel when idling.
+A vehicle is idling when the engines rounds per minute (RPM) is above zero while the speed is zero for at least 2 recordings.
+A vehicle is hence idling when for example waiting at a red light or in a queue. 
+Figure~\ref{fig:idleRange2} shows how often the vehiceles idle and how long.
+The idle time is split into ranges of ten seconds and displaied on the x-axis, e.g. 10.0 indicates the time range 10-19 seconds. 
+The number of times each vehicle idles in the given time range is displaied on the y-axis in a logarithmic scale. 
+It is clear to see that most of the vehicles idles less that 110 seconds which correlates with the longes circulation times of traffic ligths. 
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.5\textwidth]{../src/images/idleRange2.png}
+\caption{Minimum idle duration}
+\label{fig:idleRange2}
+\end{figure}
+
+Figure~\ref{fig:idleRange3} shows how much fuel has been consumed in the idling periodes of more than 110 seconds. 
+Notice that only four of the vehicles does this.
+Fuel consumption is shown on the y-axis and the number of seconds in the idle period is shown on the x-axis with a logaritmic scale.
+We see that very little fuel is consumed in these idling periods even for the vehicle that idles for several hours.
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.5\textwidth]{../src/images/idleRange3.png}
+\caption{Minimum idle duration}
+\label{fig:idleRange3}
+\end{figure}
+
+
 
 A vehicle is idling when the engines rounds per minute (RPM) is above zero while the speed is zero for at least 50 consecutive recordings. %CHECK
 Let $\vrpm$ and $\vspeed$ be the RPM and speed of vehicle $v$ at time $t$, then a vehicle is ideling when
