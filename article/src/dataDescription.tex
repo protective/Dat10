@@ -1,4 +1,54 @@
 \section{Data Description}
+A number of data sources are avaiable with information about vehicles.
+
+\subsection{Global Positioning System (GPS) Data}
+GPS data is often used when analysing driving behaviour and patterens because it easily be collected with a GPS system and much data therefore exists. 
+The following data types are avialable in the provided data set.
+\vspace{-5mm}
+\begin{description*}
+\item{\var{Timestamp}} is the date and time of each record in the data set with a granularity of oen second. 
+\item{\var{Logitude and latitude}} is the coordinates of the position of the vehicle at the given timestamp.
+\item{\var{Speed}} is the speed of the vehicle in km/h as an integer.
+\item{\var{Compas}} is the direction of the vehicle in degrees where 0 is north, 90 is east, 180 is south and 270 is west.
+\item{\var{Satellites}} is the number of visible satellistes at the given timestamp.
+\end{description*}
+
+\subsection{CANBus Data}
+GPS data alone is not enough when making detailed analysis of driving behaviour.
+CANBus data allows access to more detail information about the state of the vehicle but as of today, little data is available. 
+The following data types are avialable in the provided data set.
+\vspace{-5mm}
+\begin{description*}
+\item{\var{RPM}} is the rounds per minute of the engine.
+\item{\var{kmcounter}} records the total number of kilometers (km) driving by the vehicle. The granularity is 1 decimal.
+\item{\var{Temperature}} is the temperature of the the engine.
+\item{\var{Throttlepos}} is the position of the trottle in percent where 100 \% is flat done. The data is, however, corrupted, and 102 \% in 90 \% of the data records. These data can therefore not be used.%CHECK
+\item{\var{Acceleration}} is the acceleration of the vehicle. The data is, however, corrupted and little correlation between speed, rpm and acceleration exits. This data will hence not used, but can be calculated from the speed.
+\item{\var{Fuellevel}} is the level of fuel in the tank where 100 \% is a full tank.
+\item{\var{Totalconsumed}} is the total amount of fuel consumed i liters. The granularity is 2 decimals (See Section~\ref{??} for comments.) 
+\item{\var{Actualconsumed}}  
+\item{\var{Actual\_km\_l}}  
+\end{description*}
+
+\subsection{Haulier Data}
+\var{Make}, \var{model}, \var{capacity} and \var{weight}    
+
+
+\subsection{Map Data and Map-matching}
+\vspace{-5mm}
+\begin{description*}
+\item{\var{seqmentkey}}
+\item{\var{direction}}  
+\end{description*}
+
+\subsection{Vehicles}
+6 vehicles ~ 2mio. records per vehicle.
+Drop 2 vehicles due to bad data
+Most of the data is recorded with 1 hertz frequency, but some data is collected with a larger frequency.
+The data set contains 6,365,359 records with about 1 mio. records from five vehicles and half a milion from one vehicle.
+All vehicles are assumed to be compareable.%TODO
+
+\begin{comment}
 A number of data sources can be used to gather data.
 GPS data can easily be collected from any vehicle equiped with a GPS system, through which for example a timestamp, longitude, latitude and speed are available.
 CANBus data provides information about the state of the vehicle.  %TODO: Reformulate
@@ -17,3 +67,4 @@ The instantaneous values, i.e. \var{actualconsumed} and \var{actual\_km\_l}, is 
 \var{totalconsumed} only has a granularity of half a liter, which means it can only be used at an agreegated level of at least a trip in order to get usable results.
 
 Non of the data provided by the haulier is available.
+\end{comment}
