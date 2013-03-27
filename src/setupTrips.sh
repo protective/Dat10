@@ -22,7 +22,6 @@ echo "load open streetmap"
 psql -d $DB -f osm_dk_20130214.sql
 psql -d $DB -c "create index osm_dk_20130214_segmentkey_idx on osm_dk_20130214 (segmentkey);"
 psql -d $DB -c "create index osm_dk_20130214_category_idx on osm_dk_20130214 (category);"
-
 fi
 
 
