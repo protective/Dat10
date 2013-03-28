@@ -273,8 +273,7 @@ elif TYPE == 'idleRange2':
 	print s[:-1]
 
 elif TYPE == 'idleRange3':
-	#todo for vehicles
-	res = con.query("select idleRange, fuel, vehicleid from "+TABLE+" where idleRange>110;").getresult()
+	res = con.query("select idleRange, fuel, vehicleid from "+TABLE+" where idleRange>=100;").getresult()
 	vehicles = []
 	for r in range(0, len(res)-1):
 		if r==0 or not res[r][2]==res[r-1][2]:
@@ -286,7 +285,7 @@ elif TYPE == 'idleRange3':
 	print "set output '" + path + "images/idleRange3.png';"
 	print "set ylabel 'Fuel (l)';"
 	print "set xlabel 'Idle seconds (s)'"
-	print "set logscale x 10"
+	print "set xrange[100:]"
 	
 	s = "plot "
 	for v in vehicles:
