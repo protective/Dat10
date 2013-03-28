@@ -62,7 +62,7 @@ prevVhId = res[0][0]
 
 
 print "Processing data"
-for p in range(0,len(res)):		
+for p in range(0,len(res)):
 	curTime = time.mktime(time.strptime(res[p][1], "%Y-%m-%j %H:%M:%S"))
 	curVhId = res[p][0]
 	diff = abs(prevTime - curTime)

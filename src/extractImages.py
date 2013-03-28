@@ -96,7 +96,7 @@ elif TYPE == 'idle2':
 	print "set ylabel 'Class distribution (%)'"
 	print "set xlabel 'Percent of trip in idle (%)'"
 	print "set yrange[0:100]"
-	print "set xrange[0:100]"
+	print "set xrange[0:40]"
 	print "set y2tics"
 	print "set y2label 'Number of trips'"
 	print "set key outside"
@@ -137,10 +137,9 @@ elif TYPE == 'normalRoad':
 	print "set y2label 'Number of trips'"
 	print "set key outside"
 	print "plot '" + path + "data/normalRoad.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/normalRoad.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/normalRoad.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/normalRoad.csv' using 1:5 with lines lw 3 title 'Data points' axes x1y2"
+
 elif TYPE == 'smallRoad':
 	res = con.query("select round((PSmallRoad*10)::numeric,0),count(case when km_pr_l <="+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l <= "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " group by round order by round;").getresult()
-
-	
 	output = open(path + 'data/smallRoad.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 	for r in res:
@@ -158,8 +157,6 @@ elif TYPE == 'smallRoad':
 
 elif TYPE == 'moterRoad':
 	res = con.query("select round((pmoterroad*10)::numeric,0),count(case when km_pr_l <="+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l <= "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " group by round order by round;").getresult()
-
-	
 	output = open(path + 'data/moterRoad.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 	for r in res:
@@ -273,8 +270,7 @@ elif TYPE == 'idleRange2':
 	print s[:-1]
 
 elif TYPE == 'idleRange3':
-	#todo for vehicles
-	res = con.query("select idleRange, fuel, vehicleid from "+TABLE+" where idleRange>110;").getresult()
+	res = con.query("select idleRange, fuel, vehicleid from "+TABLE+" where idleRange>=100;").getresult()
 	vehicles = []
 	for r in range(0, len(res)-1):
 		if r==0 or not res[r][2]==res[r-1][2]:
@@ -286,7 +282,7 @@ elif TYPE == 'idleRange3':
 	print "set output '" + path + "images/idleRange3.png';"
 	print "set ylabel 'Fuel (l)';"
 	print "set xlabel 'Idle seconds (s)'"
-	print "set logscale x 10"
+	print "set xrange[100:]"
 	
 	s = "plot "
 	for v in vehicles:
@@ -315,7 +311,8 @@ elif TYPE == 'idlePercent':
 
 	print "set output '" + path + "images/idlePercent.png';"
 	print "set ylabel 'km/l';"
-	print "set xlabel 'Percent of trip in idle (%)';"
+	print "set xlabel 'Percent of trip in idle (%)'"
+	print "set yrange[:30]"
 
 	s = "plot "
 	s+= "'" + path + "images/" + TYPE + "_high_data.csv' using 1:2:3 with points lt 1 pt 6 ps variable linecolor rgb \"green\" title 'High' , "
