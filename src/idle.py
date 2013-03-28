@@ -5,7 +5,7 @@ DB = 'gps_can'
 
 con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 
-test= False
+test= True
 
 try:
 	DATATABLE = sys.argv[1] + "_gps_can_data"
