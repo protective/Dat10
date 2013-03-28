@@ -2,8 +2,8 @@
 DB=$1
 PREFIX=$2
 TRIPTIME=$3
-
-if ($4="mm") then
+mapmatch="nm"
+if ($4=="mm") then
 mapmatch="mm"
 else
 mapmatch="nm"
@@ -56,7 +56,7 @@ python inRangeOfTl.py $PREFIX
 python TrafficLightCounter.py $PREFIX
 fi
 
-if ($mapmatch="mm") then
+if ($mapmatch=="mm") then
 python roadCategory.py $PREFIX
 fi
 
