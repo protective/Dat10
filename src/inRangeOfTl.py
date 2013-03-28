@@ -11,6 +11,10 @@ TRIPDATA = ""+PREFIX+"_trip_data"
 
 con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 
+
+con.query("alter table " + DATATABLE + " drop IF EXISTS tl;")
+con.query('alter table ' + DATATABLE + ' add tl int default null;')
+
 res = con.query("select max(tid) from "+DATATABLE+"").getresult()
 print res
 
