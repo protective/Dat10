@@ -5,7 +5,8 @@ else
 	PREFIX=$1
 fi
 TRIPS=$PREFIX"_trip_data"
-VEHICLEDATA=$PREFIX'_vehicledata'
+VEHICLEDATA=$PREFIX'_idledata'
+GPSDATA=$PREFIX'_gps_can_data'
 
 scp extractImages.py d103@172.25.26.191:Dat10/src/
 
