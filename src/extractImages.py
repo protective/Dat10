@@ -186,9 +186,9 @@ elif TYPE == 'trafficlight':
 
 	print "set output '" + path + "images/trafficlight.png';"
 	print "set ylabel 'Class distribution (%)'"
-	print "set xlabel 'trafficlight '"
+	print "set xlabel 'traffic lights pr km '"
 	print "set yrange[0:100]"
-	print "set xrange[0:]"
+	print "set xrange[0:2.5]"
 	print "set y2tics"
 	print "set y2label 'Number of trips'"
 	print "set key outside"
