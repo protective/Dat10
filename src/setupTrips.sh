@@ -3,7 +3,7 @@ DB=$1
 PREFIX=$2
 TRIPTIME=$3
 mapmatch="nm"
-if ($4=="mm") then
+if [$4 = "mm"] then
 mapmatch="mm"
 else
 mapmatch="nm"
@@ -21,7 +21,7 @@ temperature=true
 
 if ($getTrajectories) then
 echo "get trajectories"
-python getTrajectories.py $TRIPTIME 30 $PREFIX $mm
+python getTrajectories.py $TRIPTIME 30 $PREFIX $mapmatch
 fi
 
 if ($postgis) then
@@ -56,7 +56,7 @@ python inRangeOfTl.py $PREFIX
 python TrafficLightCounter.py $PREFIX
 fi
 
-if ($mapmatch=="mm") then
+if [$mapmatch = "mm"] then
 python roadCategory.py $PREFIX
 fi
 
