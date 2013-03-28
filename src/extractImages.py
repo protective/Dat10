@@ -85,7 +85,7 @@ elif TYPE == 'TripLengthKml':
 	print "plot '" + path + "data/tripLengthKml.csv' notitle"
 
 elif TYPE == 'idle2':
-	res = con.query("select round((idle_percentage*100)::numeric,1),count(case when km_pr_l <="+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l <= "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " group by round order by round;").getresult()
+	res = con.query("select round((idle_percentage*100)::numeric,0),count(case when km_pr_l <="+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l <= "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " group by round order by round;").getresult()
 	
 	output = open(path + 'data/idle2.csv', 'w+')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -96,14 +96,14 @@ elif TYPE == 'idle2':
 	print "set ylabel 'Class distribution (%)'"
 	print "set xlabel 'Percent of trip in idle (%)'"
 	print "set yrange[0:100]"
-	print "set xrange[0:8]"
+	print "set xrange[0:100]"
 	print "set y2tics"
 	print "set y2label 'Number of trips'"
 	print "set key outside"
 	print "plot '" + path + "data/idle2.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '" + path + "data/idle2.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '" + path + "data/idle2.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/idle2.csv' using 1:5 with lines lw 3 title 'Number of trips' axes x1y2"
 	
 elif TYPE == 'idle3':
-	res = con.query("select round(idle_time/10)*10 as idle, count(case when km_pr_l <="+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l <= "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " group by idle order by idle;").getresult()
+	res = con.query("select round(idle_time::numeric/100,0)*100 as idle, count(case when km_pr_l <="+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l <= "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " group by idle order by idle;").getresult()
 	
 	output = open(path + 'data/idle3.csv', 'w+')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -114,7 +114,7 @@ elif TYPE == 'idle3':
 	print "set ylabel 'Class distribution (%)'"
 	print "set xlabel 'Idle time (s)'"
 	print "set yrange[0:100]"
-	print "set xrange[0:]"
+	print "set xrange[0:1500]"
 	print "set y2tics"
 	print "set y2label 'Number of trips'"
 	print "set key outside"

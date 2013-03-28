@@ -53,7 +53,7 @@ con.query('alter table ' + NEW_TABLE + ' drop IF EXISTS '+TIDTOUPDATE+';')
 con.query('alter table ' + NEW_TABLE + ' add column '+TIDTOUPDATE+' int;')
 
 print "Fetching data"
-res = con.query('select vehicleid, timestamp from ' + TABLE + ' where rpm > 0 order by vehicleid, timestamp').getresult()
+res = con.query('select vehicleid, timestamp from ' + NEW_TABLE + ' where rpm > 0 order by vehicleid, timestamp').getresult()
 
 tid=0
 startTime = res[0][1]
