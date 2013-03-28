@@ -25,7 +25,7 @@ con.query('alter table ' + DATATABLE + ' drop IF EXISTS idle;')
 con.query('alter table ' + DATATABLE + ' add column idle int not null default 0;')
 
 print 'Setting idle state with ' + str(duration) + " seconds duration"
-trips = con.query('select distinct tid from ' + DATATABLE ).getresult()
+trips = con.query('select distinct tid from ' + DATATABLE +' where tid is not null').getresult()
 for t in trips:
 	trip = t[0]
 	res = con.query("select timestamp, speed, rpm from " + DATATABLE + " where tid=" + str(trip) + " and dirty is false order by timestamp;").getresult() #

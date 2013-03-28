@@ -3,14 +3,14 @@ DB=$1
 PREFIX=$2
 TRIPTIME=$3
 mapmatch="nm"
-if [$4 = "mm"] then
+if [ $4 = "mm" ]; then
 mapmatch="mm"
 else
 mapmatch="nm"
 fi
 
 getTrajectories=true
-postgis=true
+postgis=false
 tripData=true
 idle=true
 cruise=true
@@ -24,11 +24,12 @@ echo "get trajectories"
 python getTrajectories.py $TRIPTIME 30 $PREFIX $mapmatch
 fi
 
-if ($postgis) then
+
 echo "Create geom postgis"
 psql -d $DB -c "alter table "$PREFIX"_gps_can_data add column geom geography(POINT,4326);"
 psql -d $DB -c "update "$PREFIX"_gps_can_data set geom = ST_SetSRID(ST_MakePoint(longitude,latitude),4326);"
 psql -d $DB -c "DROP INDEX IF EXISTS idx_"$PREFIX"_gps_can_data_geom CASCADE; create index idx_"$PREFIX"_gps_can_data_geom on "$PREFIX"_gps_can_data using gist(geom);"
+if ($postgis) then
 echo "load open streetmap"
 psql -d $DB -f osm_dk_20130214.sql
 psql -d $DB -c "create index osm_dk_20130214_segmentkey_idx on osm_dk_20130214 (segmentkey);"
@@ -56,7 +57,7 @@ python inRangeOfTl.py $PREFIX
 python TrafficLightCounter.py $PREFIX
 fi
 
-if [$mapmatch = "mm"] then
+if [ $mapmatch = "mm" ]; then
 python roadCategory.py $PREFIX
 fi
 
