@@ -1,39 +1,46 @@
 #!/bin/bash
 DB=$1
 FILEPATH=$2
+TABLE=$3
 FILES=$FILEPATH/*.csv
-TABLE='gps_can_data'
-
 
 resetDatabase=false
-copyData=false
-indexes=false
+loadGPSTable=true
+loadMapTable=false
+copyData=true
 
-
-if $resetDatabase then
+if $resetDatabase 
+then
+echo "Creating database"
 psql -d template1 -c "drop database if exists $DB;"
 psql -d template1 -c "create database $DB;"
-
 psql -d $DB -c "Create EXTENSION postgis;"
+fi
 
+if $loadGPSTable 
+then
+echo "Creating $TABLE"
+psql -d $DB -c "drop table IF EXISTS $TABLE;"
+psql -d $DB -c "create table $TABLE (vehicleid bigint, timestamp timestamp, longitude float, latitude float, speed float, compass int, satellites int, temperature float, rpm int, acceleration float, kmcounter float, fuellevel float, throttlepos float, totalconsumed float, actualconsumed float, actual_km_l float, make float, model int, capacity float, weight float);"
+fi
+
+if $loadMapTable 
+then
+echo "Creating $TABLE"
 psql -d $DB -c "drop table IF EXISTS $TABLE;"
 psql -d $DB -c "create table $TABLE (vehicleid bigint, timestamp timestamp, longitude float, latitude float, speed float, compass int, satellites int, temperature float, rpm int, acceleration float, kmcounter float, fuellevel float, throttlepos float, totalconsumed float, actualconsumed float, actual_km_l float, make float, model int, capacity float, weight float, segmentkey int, direction varchar(8));"
 fi
 
-if $copyData then
+if $copyData 
+then
 echo "Copying data"
 for f in $FILES
 do
 psql -d $DB -c "\copy $TABLE from '$f' DELIMITERS ';' CSV HEADER;"
 echo "Done loading $f"
 done
-fi
 
-
-
-if $indexes then
 echo "Creating indexes"
-
 psql -d $DB -c "DROP INDEX IF EXISTS vehid_idx CASCADE; create index vehid_idx on $TABLE (vehicleid)"
 psql -d $DB -c "DROP INDEX IF EXISTS time_idx CASCADE; create index time_idx on $TABLE (timestamp)"
 psql -d $DB -c "DROP INDEX IF EXISTS lng_idx CASCADE; create index lng_idx on $TABLE (longitude)"
@@ -45,9 +52,12 @@ psql -d $DB -c "DROP INDEX IF EXISTS rpm_idx CASCADE; create index rpm_idx on $T
 psql -d $DB -c "DROP INDEX IF EXISTS acc_idx CASCADE; create index acc_idx on $TABLE (acceleration)"
 psql -d $DB -c "DROP INDEX IF EXISTS kmcounter_idx CASCADE; create index kmcounter_idx on $TABLE (kmcounter)"
 psql -d $DB -c "DROP INDEX IF EXISTS totalconsumed_idx CASCADE; create index totalconsumed_idx on $TABLE (totalconsumed)"
+
+if $loadMapTable 
+then
 psql -d $DB -c "DROP INDEX IF EXISTS segmentkey_idx CASCADE; create index segmentkey_idx on $TABLE (segmentkey)"
 psql -d $DB -c "DROP INDEX IF EXISTS direction_idx CASCADE; create index direction_idx on $TABLE (direction)"
-
+fi
 fi
 
 

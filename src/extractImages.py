@@ -245,7 +245,53 @@ elif TYPE == 'idleRange':
 	print "set ylabel 'Number of records';"
 	print "set xlabel 'Idle range (s)';"
 
-	print "plot '"+ path + "data/idleRange.csv' with bars"
+	print "plot '"+ path + "data/idleRange.csv' with boxes"
+	
+elif TYPE == 'idleRange2':
+	vehicles = con.query("select distinct vehicleid from " + TABLE + ";").getresult()
+	for v in vehicles:
+		res = con.query("select (case when round(idleRange/100)*100=0 then 1 else round(idleRange/100)*100 end) as idle, count(*) from "+ TABLE + " where vehicleid =" + str(v[0]) + " group by idle order by idle;").getresult()
+	
+		output = open(path + 'data/'+str(v[0])+'idleRange2.csv', 'w+')
+		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+		for r in res:
+			writer.writerow(r)
+
+	print "set output '" + path + "images/idleRange2.png';"
+	print "set ylabel 'Number of records';"
+	print "set xlabel 'Idle range (s)'"
+	print "set style data histogram"
+	print "set style histogram cluster gap 1"
+	print "set style fill solid border -1"
+	print "set boxwidth 0.9"
+	print "set xtic rotate by -45 scale 0"
+	print "set logscale y 2"
+	
+	s = "plot "
+	for v in vehicles:
+		s += "'" + path + "data/"+str(v[0]) + "idleRange2.csv' using 2:xtic(1) title '" + str(v[0]) + "',"
+	print s[:-1]
+
+elif TYPE == 'idleRange3':
+	#todo for vehicles
+	res = con.query("select idleRange, fuel, vehicleid from "+TABLE+" where idleRange>110;").getresult()
+	vehicles = []
+	for r in range(0, len(res)-1):
+		if r==0 or not res[r][2]==res[r-1][2]:
+			output = open(path + 'data/'+str(res[r][2])+'idleRange3.csv', 'w+')
+			writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+			vehicles.append(res[r][2])
+		writer.writerow(res[r])
+		
+	print "set output '" + path + "images/idleRange3.png';"
+	print "set ylabel 'Fuel (l)';"
+	print "set xlabel 'Idle seconds (s)'"
+	print "set logscale x 10"
+	
+	s = "plot "
+	for v in vehicles:
+		s += "'" + path + "data/"+str(v) + "idleRange3.csv' using 1:2 title '" + str(v) + "',"
+	print s[:-1]
 
 elif TYPE == 'idlePercent':
 	val = 'idle_percentage*100, km_pr_l as val, |/ (total_fuel/3.14)'
