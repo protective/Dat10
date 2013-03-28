@@ -1,27 +1,27 @@
-python idle.py 0
-python idle.py 10
-python idle.py 20
-python idle.py 30
-python idle.py 40
-python idle.py 50
-python idle.py 60
-python idle.py 70
-python idle.py 80
-python idle.py 90
-python idle.py 100
-python idle.py 110
-python idle.py 120
-python idle.py 150
-python idle.py 200
-python idle.py 250
-python idle.py 300
-python idle.py 350
-python idle.py 400
-python idle.py 450
-python idle.py 500
-python idle.py 600
-python idle.py 700
-python idle.py 800
-python idle.py 900
-python idle.py 1000
-python idle.py 1100
+python idle.py d 0  Test 
+python idle.py d 10 Test 
+python idle.py d 20 Test 
+python idle.py d 30 Test 
+python idle.py d 40 Test 
+python idle.py d 50 Test 
+python idle.py d 60 Test 
+python idle.py d 70 Test 
+python idle.py d 80 Test 
+python idle.py d 90 Test 
+python idle.py d 100 Test 
+python idle.py d 110 Test 
+python idle.py d 120 Test 
+python idle.py d 150 Test 
+python idle.py d 200 Test 
+python idle.py d 250 Test 
+python idle.py d 300 Test 
+python idle.py d 350 Test 
+python idle.py d 400 Test 
+python idle.py d 450 Test 
+python idle.py d 500 Test 
+python idle.py d 600 Test 
+python idle.py d 700 Test 
+python idle.py d 800 Test 
+python idle.py d 900 Test 
+python idle.py d 1000 Test 
+python idle.py d 1100 Test 

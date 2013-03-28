@@ -5,13 +5,15 @@ DB = 'gps_can'
 
 con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 
-test= True
+test= False
 
 try:
 	DATATABLE = sys.argv[1] + "_gps_can_data"
 	IDLEDATA = sys.argv[1] + "_idledata"
 	TRIPDATA = sys.argv[1] + "_trip_data"
 	duration = sys.argv[2]
+	if(len(sys.argv) > 3 and sys.argv[3]=="Test"):
+		test = True
 except:
 	print 'Error: remember the parameters'
 	exit(1)
