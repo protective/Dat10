@@ -55,9 +55,13 @@ Vehicle id & Time ($s$) & Fuel ($l$) &  Fuel ($l/h$)\\\hline
 It will also be interesting to see how much of a trip is an idle period and if this percentage has an influence on the vehicles fuel efficiency.
 Let trips be defined as in Section~\ref{sec:trips}.
 First we need to investigate whether a lower limit on the duration of the idle periods is necessary.
-Figure~\ref{fig:idleDuration} plots the number of 
 
-Lower limit on idle period
+Figure~\ref{fig:idleDuration} plots the number of idle records in the data set as a function over a sequence of minimum duration of the idle periods.
+\[\sum_{v\in \mathbb{V}} | \{v_{idle}\mid\timelength{v_{idle}}> i\}| \mbox{ where } 0\leq i\leq 200\]
+
+TODO: Analyse
+
+Hence, we say that a vehicle, $v$ has a \textit{pure idle period} when $\timelength{v_{idle}}> X$ .
 \begin{figure}[htb]%TODO: not updated
 \centering
 \includegraphics[width=0.5\textwidth]{../src/d_images/idleDuration.png}
@@ -65,7 +69,9 @@ Lower limit on idle period
 \label{fig:idleDuration}
 \end{figure}
 
-Percent of trip is idle.
+Figure~\ref{fig:idlePercent} plots how many percent of the trips are pure idle periods on the x-axis and the class distribution in pecent on the y-axis. 
+The purple line plots the number of trips as a function over the percent of pure idle periods.
+TODO: Analyse
 \begin{figure}[htb]%TODO: not updated
 \centering
 \includegraphics[width=0.5\textwidth]{../src/d_images/idle2.png}
@@ -73,7 +79,8 @@ Percent of trip is idle.
 \label{fig:idlePercent}
 \end{figure}
 
-Idle period duration 
+Figure~\ref{fig:idleTime} plots how many seconds each trip has of pure idle periods on the x-axis and the class distribution in percent on the y-axis.
+The purple line plots the number of trips 
 \begin{figure}[htb]%TODO: not updated
 \centering
 \includegraphics[width=0.5\textwidth]{../src/d_images/idle3.png}

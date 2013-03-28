@@ -198,6 +198,7 @@ elif TYPE == 'idleDuration':
 	print "set output '" + path + "images/idleDuration.png';"
 	print "set ylabel 'Number of idle records"
 	print "set xlabel 'Minimum duration'"
+	print "set logscale y 10"
 	print "plot '" + path + "data/idleDuration.csv' with lines lw 3 notitle"
 
 elif TYPE == 'idleTime':
