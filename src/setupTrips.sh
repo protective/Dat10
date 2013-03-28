@@ -19,6 +19,11 @@ acceleration=true
 temperature=true
 
 
+if ($getTrajectories) then
+echo "get trajectories"
+python getTrajectories.py $TRIPTIME 30 $PREFIX $mm
+fi
+
 if ($postgis) then
 echo "Create geom postgis"
 psql -d $DB -c "alter table "$PREFIX"_gps_can_data add column geom geography(POINT,4326);"
@@ -31,10 +36,7 @@ psql -d $DB -c "create index osm_dk_20130214_category_idx on osm_dk_20130214 (ca
 fi
 
 
-if ($getTrajectories) then
-echo "get trajectories"
-python getTrajectories.py $TRIPTIME 30 $PREFIX $mm
-fi
+
 
 if ($tripData) then
 python tripData.py $PREFIX
