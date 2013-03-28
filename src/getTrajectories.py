@@ -11,13 +11,17 @@ test = False
 filename = ''
 TIDTOUPDATE = 'tid'
 NEW_TABLE = 'a_' + TABLE
+MapMatch = False
 if len(sys.argv) > 1:
 	TIME = int(sys.argv[1])
 	LENGTH = int(sys.argv[2])
 	NEW_TABLE = ''+sys.argv[3]+'_' + TABLE
-	if len(sys.argv)> 4:
-		test = bool(sys.argv[4])
-		filename = str(sys.argv[5])
+	if (sys.argv[4] == "mm"):
+		MapMatch = True
+		print "using mapmatch data"
+	if len(sys.argv)> 5:
+		test = bool(sys.argv[5])
+		filename = str(sys.argv[6])
 print "create table " + NEW_TABLE	
 counter = 0
 	
@@ -30,7 +34,11 @@ con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 if (not test):
 	print "Alter table"
 	con.query('drop table IF EXISTS ' + NEW_TABLE + ';')
-	con.query('create table ' + NEW_TABLE + ' as (select * from ' + TABLE + ' where rpm > 0);')
+	if(MapMatch):
+		con.query('create table ' + NEW_TABLE + ' as (select * from ' + TABLE + ' where rpm > 0);')
+	else:
+		con.query('create table ' + NEW_TABLE + ' as (select * from canbusdata where rpm > 0 and dirty = false);')
+	con.query('alter table ' + NEW_TABLE  + ' drop if exists dirty')
 	con.query('alter table ' + NEW_TABLE + ' add column dirty bool default false;')
 if (not test):
 	print "Creating indexes"

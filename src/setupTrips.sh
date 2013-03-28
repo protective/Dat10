@@ -3,8 +3,14 @@ DB=$1
 PREFIX=$2
 TRIPTIME=$3
 
+if ($4="mm") then
+mapmatch="mm"
+else
+mapmatch="nm"
+fi
+
 getTrajectories=true
-postgis=false
+postgis=true
 tripData=true
 idle=true
 cruise=true
@@ -28,7 +34,7 @@ fi
 
 if ($getTrajectories) then
 echo "get trajectories"
-python getTrajectories.py $TRIPTIME 30 $PREFIX
+python getTrajectories.py $TRIPTIME 30 $PREFIX $mm
 fi
 
 if ($tripData) then
@@ -47,6 +53,9 @@ if ($trafficLights) then
 python extractTrafficLights.py maps/denmark.osm $PREFIX
 python inRangeOfTl.py $PREFIX
 python TrafficLightCounter.py $PREFIX
+fi
+
+if ($mapmatch="mm") then
 python roadCategory.py $PREFIX
 fi
 
