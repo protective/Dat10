@@ -1,0 +1,15 @@
+python inRangeOfTl.py 10 b data/TlCounter.csv
+python inRangeOfTl.py 20 b data/TlCounter.csv
+python inRangeOfTl.py 30 b data/TlCounter.csv
+python inRangeOfTl.py 40 b data/TlCounter.csv
+python inRangeOfTl.py 50 b data/TlCounter.csv
+python inRangeOfTl.py 60 b data/TlCounter.csv
+python inRangeOfTl.py 70 b data/TlCounter.csv
+python inRangeOfTl.py 80 b data/TlCounter.csv
+python inRangeOfTl.py 90 b data/TlCounter.csv
+python inRangeOfTl.py 100 b data/TlCounter.csv
+python inRangeOfTl.py 110 b data/TlCounter.csv
+python inRangeOfTl.py 120 b data/TlCounter.csv
+python inRangeOfTl.py 130 b data/TlCounter.csv
+python inRangeOfTl.py 140 b data/TlCounter.csv
+python inRangeOfTl.py 150 b data/TlCounter.csv
