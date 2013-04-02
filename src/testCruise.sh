@@ -1,0 +1,10 @@
+python cruise.py 1 10 b cruiseCounter.csv
+python cruise.py 1 20 b cruiseCounter.csv
+python cruise.py 1 30 b cruiseCounter.csv
+python cruise.py 1 40 b cruiseCounter.csv
+python cruise.py 1 50 b cruiseCounter.csv
+python cruise.py 1 60 b cruiseCounter.csv
+python cruise.py 1 70 b cruiseCounter.csv
+python cruise.py 1 80 b cruiseCounter.csv
+python cruise.py 1 90 b cruiseCounter.csv
+python cruise.py 1 100 b cruiseCounter.csv

@@ -4,10 +4,19 @@ USER = 'd103'
 DB = 'gps_can'
 
 PREFIX = 'a'
-if len(sys.argv) > 1:
-	PREFIX = sys.argv[1]
+
+SIZE = int(sys.argv[1])
+TIME = int(sys.argv[2])
+if len(sys.argv) > 3:
+	PREFIX = sys.argv[3]
 DATATABLE = ""+PREFIX+"_gps_can_data"
 TRIPDATA = ""+PREFIX+"_trip_data"
+
+test = False
+if len(sys.argv) > 4:
+	test = True
+	filename = str(sys.argv[4])
+
 
 
 print "Connecting to " + DB
@@ -31,12 +40,12 @@ Time = time.mktime(time.strptime(res[0][1], "%Y-%m-%j %H:%M:%S"))
 while cruiseBegin < len(res) -1:
 	cruiseCur += 1
 	noobs += 1
-	if cruiseCur < len(res) and cruiseSpeed <= res[cruiseCur][0] +1 and cruiseSpeed >= res[cruiseCur][0] -1 and cruiseSpeed > 5 and res[cruiseBegin][2] == res[cruiseCur][2]:
+	if cruiseCur < len(res) and cruiseSpeed <= res[cruiseCur][0] +SIZE and cruiseSpeed >= res[cruiseCur][0] -SIZE and cruiseSpeed > 5 and res[cruiseBegin][2] == res[cruiseCur][2]:
 		#we are within thresshold of cruisespeed
 
 		continue
 	else:
-		if (abs(Time-time.mktime(time.strptime(res[cruiseCur-1][1], "%Y-%m-%j %H:%M:%S"))) > 45 and noobs >= 10):
+		if (abs(Time-time.mktime(time.strptime(res[cruiseCur-1][1], "%Y-%m-%j %H:%M:%S"))) > TIME and noobs >= 10):
 			#we have been using cc until now update
 			s = 'update ' + str(DATATABLE) + ' set cruise = true where tid = ' + str(res[cruiseBegin][2]) + ' and timestamp >= \''+str(res[cruiseBegin][1]) + '\' and timestamp <= \''+ str(res[cruiseCur-1][1]) + '\';'  
 			con.query(s)
@@ -52,6 +61,12 @@ con.query('alter table ' + TRIPDATA + ' drop if exists cruise_percentage;')
 con.query('alter table ' + TRIPDATA + ' add cruise_percentage float;')
 con.query('update ' + TRIPDATA + ' set cruise_percentage = p from (select tid, (count(*)-count(case when cruise =false then 1 end))::float/count(*) as p from ' + DATATABLE + ' where dirty is false group by tid)f where ' + TRIPDATA + '.tid=f.tid;')
 
+res = con.query('select avg(cruise_percentage) from ' + TRIPDATA + ';').getresult()
+
+output = open('data/'+filename, 'a')
+ss = str(SIZE) + " " + str(res[0][0]) + ""
+print ss 
+print >> output, ss
 
 
 
