@@ -116,7 +116,7 @@ while i <= len(res):
 		#else: 
 			#s = "update " + TRIPDATA + " set TlCounter = " + str(0) + " , TlRedCounter = " + str(0) + " , TlGreenCounter = " + str(0) + " where tid = " + str(tid) + ";"
 		#print s
-		con.query(s)
+		#con.query(s)
 
 		TlCounter = 0
 		TlRedCounter = 0
@@ -128,9 +128,9 @@ while i <= len(res):
 
 
 output = open('data/'+filename, 'a')
-s = str(SIZE) + " " + str(ttotalcounter/tcounter) + ""
-print s 
-print >> output, s
+ss = str(SIZE) + " " + str(ttotalcounter/tcounter) + ""
+print ss 
+print >> output, ss
 
 
 
