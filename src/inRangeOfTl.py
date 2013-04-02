@@ -128,7 +128,7 @@ while i <= len(res):
 
 
 output = open('data/'+filename, 'a')
-s = str(SIZE) + " " + str(ttotalcounter/tcounter) + "
+s = str(SIZE) + " " + str(ttotalcounter/tcounter) + ""
 print s 
 print >> output, s
 
