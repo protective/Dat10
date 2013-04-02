@@ -28,7 +28,7 @@ res = con.query("select max(tid) from "+DATATABLE+"").getresult()
 print res
 
 for i in range(0,res[0][0]):
-	con.query("update "+DATATABLE+" as "+PREFIX+" set tl = t.tlId from trafficlights as t where ST_Dwithin(t.geom,"+PREFIX+".geom,"+SIZE+") and "+PREFIX+".tid = "+ str(i) + ";")
+	con.query("update "+DATATABLE+" as "+PREFIX+" set tl = t.tlId from trafficlights as t where ST_Dwithin(t.geom,"+PREFIX+".geom,"+str(SIZE)+") and "+PREFIX+".tid = "+ str(i) + ";")
 	print str(i) + " of " + str(res[0][0]) 
 
 
