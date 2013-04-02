@@ -64,7 +64,7 @@ con.query('update ' + TRIPDATA + ' set cruise_percentage = p from (select tid, (
 res = con.query('select avg(cruise_percentage) from ' + TRIPDATA + ';').getresult()
 
 output = open('data/'+filename, 'a')
-ss = str(SIZE) + " " + str(res[0][0]) + ""
+ss = str(TIME) + " " + str(res[0][0]) + ""
 print ss 
 print >> output, ss
 
