@@ -18,12 +18,9 @@ except:
 	print 'Error: remember the parameters'
 	exit(1)
 
-if not test:
-	print "Altering table"
-	con.query('alter table ' + DATATABLE + ' drop IF EXISTS idle;')
-	con.query('alter table ' + DATATABLE + ' add column idle int not null default 0;')
-
-
+print "Altering table"
+con.query('alter table ' + DATATABLE + ' drop IF EXISTS idle;')
+con.query('alter table ' + DATATABLE + ' add column idle int not null default 0;')
 
 print 'Idle state with ' + str(duration) + " seconds duration"
 trips = con.query('select distinct tid from ' + DATATABLE +' where tid is not null').getresult()
@@ -46,17 +43,12 @@ for t in trips:
 			sek = abs(time.mktime(time.strptime(start, "%Y-%m-%j %H:%M:%S")) - time.mktime(time.strptime(end, "%Y-%m-%j %H:%M:%S"))) + 1
 			if sek >= duration:
 				q= "update " + DATATABLE + " set idle=1 where tid="+ str(trip) + " and timestamp >='" +start + "' and timestamp <='" + end +"';"
-				if not test:
-					con.query(q)			
+				con.query(q)			
 				
 			start = ""
-if not test:
-	print "Creating index"
-	con.query("Create index idle_" + DATATABLE + "_idx on " + DATATABLE + " (idle);")
 
-
-
-
+print "Creating index"
+con.query("Create index idle_" + DATATABLE + "_idx on " + DATATABLE + " (idle);")
 if test:
 	print "Counting idle"
 	output = open('data/idleDuration.csv', 'a')
