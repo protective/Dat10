@@ -1,0 +1,26 @@
+\section{Avoid Traffic lights}
+
+\subsection{Detecting when crosing a trafficligh}
+
+Traffic lights data are collected from open street map. A vehicle is sayd to cross a trafficligh if any of the gps-records are within 25 meters of the trafficligh. A vehicle have to leave the trafficligh before it can reenter and be countet as a secound pass. Se algorithm %TODO
+
+The range of 25 meters is determined from the graf in Figure \ref{fig:traffclightsize} where it is clear that after 25 meters the avange number of trafficlight a vehicle crosses is stable hence vehicles crossing a trafficligh witout beening counted is very unlikly.
+
+
+\begin{figure}[htb]
+\centering
+%\includegraphics[width=0.5\textwidth]{../src/images/tlRange.png}
+\caption{Traffic lights size}
+\label{fig:traffclightsize}
+\end{figure}
+
+
+Figure~\ref{fig:traffclight} plots the percentange of trips in the three fule categorys driving through diffrent concentration of trfficlights. From this graph it is clear that the green trips with a high km/l are mostly driving in areas with few traffic lights. Where trips driving in areas with many trafficlights mosly have a medium or low km/l.
+
+
+\begin{figure}[htb]%TODO: not updated
+\centering
+%\includegraphics[width=0.5\textwidth]{../src/d_images/trafficlight.png}
+\caption{Traffic lights per kilometer}
+\label{fig:traffclight}
+\end{figure}

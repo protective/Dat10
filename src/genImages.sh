@@ -15,6 +15,12 @@ if [ ! -d $PREFIX"_images" ]; then
     mkdir $PREFIX"_images"
 fi
 
+ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py cruiseCounter $TRIPS | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/cruiseCounter.png images/cruiseCounter.png
+
+ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py tlRange $TRIPS | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/tlRange.png images/tlRange.png
+
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py idle2 $TRIPS | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/idle2.png $PREFIX"_images"/idle2.png
 

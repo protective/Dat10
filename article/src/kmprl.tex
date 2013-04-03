@@ -1,24 +1,24 @@
 \section{Kilometers per liter fuel}
 
-How many kilometers(km) per liter fuel (km/l) a vehicle drives will indicate how fuel efficient the vehicle is.
+How many kilometers per liter fuel (km/l) a vehicle drives will indicate how fuel efficient the vehicle is.
 The main goal of a vehicle is transportation and hence, the more kilometers one can drive per liter fuel, the cheaper it is.
 
 Let $\kml{t}$ be the total number of km driven in trip $t$ devided by the total fuel consumption of trip $t$, and let $\kml{v}$ be the average of $\kml{t}$ for all trips that vehicle $v$ has driven.
 
-Figure~\ref{fig:kmlTrips} plots all $\kml{t}$ with trips on the x-axis, $\kml{t}$ on the y-axis and a plot symbol for each vehicle.
-We see that the majority of the trips have a $\kml{t}$ between 5 and 10 km/l, but also that many trips have a near zero value.
-The latter is because they do not drive anywhere.
-This is very consistent with what can be expected from minibusses.
+Figure~\ref{fig:kmlTrips} plots all $\kml{t}$ with trips on the x-axis, $\kml{t}$ on the y-axis with a plot symbol for each vehicle.
+We see that the majority of the trips have a $\kml{t}$ between 5 and 10 km/l, but also that many trips have a near zero value and that some have er very high km/l.
+The near zero values is because they do not drive anywhere and the very high values are due to inaccuracies and because the trips are too short.
+Overall, the km/l-values are very consistent with what can be expected from minibusses.
 
 All trips are devided into classes based on their $\kml{t}$, such that we later can classify the different factors. %TODO: Uklart
-All trips with $\kml{t}\leq4$ are in the \fuelLow class. These trips have an distinctively low km/l and lie out side of the normal range. 
+All trips with $\kml{t}\leq6$ are in the \fuelLow class. These trips have an distinctively low km/l and lie out side of the normal range. 
 The remaining trips are grouped in two to classes, \fuelMedium and \fuelHigh in order to distinquish the best from the rest.
-\fuelMedium contains trips with $4 < \kml{t} < 8$ and \fuelHigh contains trips with $\kml{t}\geq8$.
-Had we only used two classes, e.g. 0 to 4 and above 4, will allow us to identify very bad trips but not average versus good. 
-One could also have a class containing trips with more than 10 km/l but only 94 trips will be in this class. %CHECK
+\fuelMedium contains trips with $6 < \kml{t} < 8$ and \fuelHigh contains trips with $\kml{t}\geq8$.
+Had we only used two classes, e.g. 0 to 6 and above 6, will allow us to identify very bad trips but not average versus good. 
+One could also have a class containing trips with more than 15 km/l but only 43 trips will be in this class. %CHECK
 \begin{figure}[htb]
 \centering
-\includegraphics[width=0.5\textwidth]{../src/images/kmlTrips.png}
+\includegraphics[width=0.5\textwidth]{../src/d_images/kmlTrips.png}
 \caption{km/l for all trips}
 \label{fig:kmlTrips}
 \end{figure}
