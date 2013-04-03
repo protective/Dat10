@@ -79,10 +79,10 @@ It is clear that most of the trips in class \fuelLow idles often and that the tr
 \cite{EcoMark} establishes that driving at a constant speed is more fuel echonomic. 
 From observing the data in periods where we think the driver either drivers with cruise control or drives as if he did, we see that the speed varies with $\pm$ 1 km/h.
 Most drivers can drive with a constant speed for a short period. 
-Experienced drivers might be able to drive at a constant speed over a longer time period without cruise control but the speed will generaly vary more. 
-Hence, we say that a driver is using cruise control, or driving as if he did, if the speed does not changes more than $\pm$ 1 km/h in at least 40 seconds. %TODO: Experiments explaining why.
-Let $cruise_t$ be the percentage of the trip $t$ where the car is in an cruise state.
+Experienced drivers might be able to drive at a constant speed over a longer time period without cruise control but we expect the speed to vary more. 
+Hence, we say that a driver is using cruise control, or driving as if he did, if the speed does not changes more than $\pm$ 1 km/h in at least 20 seconds. Figure~\ref{fig:cruiseTripsTime} plots the percentage of records there are in a cruise state. The plot breaks at 20 secounds and it is used as the default minimum cruise time.
 
+Let $cruise_t$ be the percentage of the trip $t$ where the car is in a cruise state.
 Figure~\ref{fig:cruiseTrips} plots $cruise_t$ for each trip $t$ versus the km/l of that trip.
 The size of the plot indicates the amount of fuel used in the trip and the color signals what class it has been asigned to. 
 We see that all trips in the \fuelLow class and many of the trips in the \fuelMedium class never cruises.
@@ -99,6 +99,14 @@ Figure~\ref{fig:cruiseTrips} shows how often the trips cruise.
 Almost all trips never cruise, and all trips classified as having a low km/l never cruise.
 
 \end{comment}
+
+
+\begin{figure}
+\centering
+\includegraphics[width=0.5\textwidth]{../src/images/cruiseCounter.png}
+\caption{Cruise control activation time}
+\label{fig:cruiseTripsTime}
+\end{figure}
 
 \begin{figure}
 \centering

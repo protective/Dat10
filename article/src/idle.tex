@@ -2,88 +2,93 @@
 
 Avoiding idling or minimising idle time is a factor in eco-driving as fuel is still consumed when the engine is running even though the vehicle is not moving.
 The driver is hence consuming unneccesary fuel when idling.
-A vehicle is idling when the engines rounds per minute (RPM) is above zero while the speed is zero for at least 2 recordings.
-A vehicle is hence idling when for example waiting at a red light or in a queue or when parked with the engine running. 
-Let $\vrpm$ and $\vspeed$ be the RPM and speed of vehicle $v$ at timestamp $t$ and let $\vidle$ be true if the vehicle is idling at timestamp $t$.
-Then,
-\[\vidle = true \mbox{\textbf{ iff. }} \vrpm> 0 \wedge \vspeed=0 \]
-An \textit{idle period} is a set of consecutive records where the vehicle is idling,
-\[\vidlep = \{r \mid v_{r.t}^{idle}= true \}\]
-and $\timelength{\vidlep}$ is duration of the idle period in seconds.
+A vehicle is idling when the engines rounds per minute (RPM) is above zero while the speed is zero for at least 2 consecutive recordings.
+A vehicle is hence also idling when for example waiting at a red light or in a queue. 
 
-When analysing idle, we use the un-map-matched data, as many idling records are removed during this process. 
+Let 
 
-Figure~\ref{fig:idleRange2} shows how often the vehiceles idle and for how long.
-The idle periods are split into ranges of 100 seconds and displayed on the x-axis, e.g. 100.0 indicates the range 100-199 seconds. 
-The number of times each vehicle idles in the given time range is displayed on the y-axis in a logarithmic scale. 
-All ranges plotted on the x-axis has at least one occurrence.
+
+Figure~\ref{fig:idleRange2} shows how often the vehiceles idle and how long.
+The idle time is split into ranges of ten seconds and displaied on the x-axis, e.g. 100.0 indicates the time range 100-199 seconds. 
+The number of times each vehicle idles in the given time range is displaied on the y-axis in a logarithmic scale. 
 It is clear to see that most of the vehicles idles less that 100 seconds which correlates with the longest circulation times of traffic ligths. 
 \begin{figure}[htb]
 \centering
 \includegraphics[width=0.5\textwidth]{../src/d_images/idleRange2.png}
-\caption{Number of idle periods in ranges}
+\caption{Minimum idle duration}
 \label{fig:idleRange2}
 \end{figure}
 
-Figure~\ref{fig:idleRange3} shows how much fuel has been consumed in the idling periods of more than 100 seconds. 
+Figure~\ref{fig:idleRange3} shows how much fuel has been consumed in the idling periodes of more than 100 seconds. 
 Fuel consumption is shown on the y-axis and the number of seconds in the idle period is shown on the x-axis.
-We see that little fuel is consumed in these idling periods even for the vehicle that idles for more than an hour.
+We see that few idles for more than 25 minutes and that even these do not use more than 2 liters of fuel.
 \begin{figure}[htb]
 \centering
 \includegraphics[width=0.5\textwidth]{../src/d_images/idleRange3.png}
-\caption{Fuel consumption in idle periods}
+\caption{Minimum idle duration}
 \label{fig:idleRange3}
 \end{figure}
 
-Table~\ref{tb:idleFuelConsumption} list the fuel consumption of the four vehicles while idling.
-Vehicles 67 and 58 idles significantly less than vehicles 40 and 10 and use around 30 liters less.
-On average, they use about 1.1 $l/h$, except vehicle 10 how use a little under 1 $l/h$.
-The variances might be due to small differences in the construction of the vehicles and measuring inaccuracies.
-\begin{table}
-\centering
-\begin{tabular}{l|r|r|r}
-Vehicle id & Time ($s$) & Fuel ($l$) &  Fuel ($l/h$)\\\hline
-67 & 278,119 & 98.175 & 1.275\\\hline
-58 & 273,872 & 98.256 & 1.293\\\hline
-40 & 401,384 & 127.200 & 1.146\\\hline
-10 & 490,721 & 128.754 & 0.947
-\end{tabular}
-\caption{Fuel consumption while idling}
-\label{tb:idleFuelConsumption}
-\end{table}
+It will also be interessting to investigate whether how much of a trip is in an idle state has an infulence on the trips km/l.
+Let $\vrpm$ and $\vspeed$ be the RPM and speed of vehicle $v$ at time $t$
+A vehicle has a \textit{pure idle period} when
 
-It will also be interesting to see how much of a trip is an idle period and if this percentage has an influence on the vehicles fuel efficiency.
-Let trips be defined as in Section~\ref{sec:trips}.
-First we need to investigate whether a lower limit on the duration of the idle periods is necessary.
 
-Figure~\ref{fig:idleDuration} plots the number of idle records in the data set as a function over a sequence of minimum duration of the idle periods.
-\[\sum_{v\in \mathbb{V}} | \{v_{idle}\mid\timelength{v_{idle}}> i\}| \mbox{ where } 0\leq i\leq 200\]
+\[\]
 
-TODO: Analyse
 
-Hence, we say that a vehicle, $v$ has a \textit{pure idle period} when $\timelength{v_{idle}}> X$ .
-\begin{figure}[htb]%TODO: not updated
+\[\mbox{\textbf{for }} i, \dots ,t, \dots, i+50 \mbox{: }\vrpm> 0 \wedge \vspeed=0 \]
+A vehicle must be in idling at least $50$ seconds in order to eliminate involuntary idle times at for example traffic lights or due to small disturbances is the traffic flow.
+Figure~\ref{fig:idleDuration} plots a graph of the number of records in which a vehicle is idling at different minimum durations. 
+
+\begin{figure}[htb]
 \centering
 \includegraphics[width=0.5\textwidth]{../src/d_images/idleDuration.png}
-\caption{Minimum idle period duration}
+\caption{Minimum idle duration}
 \label{fig:idleDuration}
 \end{figure}
 
-Figure~\ref{fig:idlePercent} plots how many percent of the trips are pure idle periods on the x-axis and the class distribution in pecent on the y-axis. 
-The purple line plots the number of trips as a function over the percent of pure idle periods.
-TODO: Analyse
-\begin{figure}[htb]%TODO: not updated
+\begin{comment}
+Figure~\ref{fig:idleTime} plots the km/l for all trips as a function of how many seconds the vehicle has been idling.
+The size of the plot indicates the amount of fuel used in the trip and the color signals what class it has been asigned to.
+TODO: analyse
+\begin{figure}[htb]
 \centering
-\includegraphics[width=0.5\textwidth]{../src/d_images/idle2.png}
+\includegraphics[width=0.5\textwidth]{../src/images/idleTime.png}
+\caption{Idle time}
+\label{fig:idleTime}
+\end{figure}
+
+It might give a more fair result, if the numbers from Figure~\ref{fig:idleTime} are normalised such that the x-axis plots how many percent of the records are an idle state compared to the number of records in the trip.
+Figure~\ref{fig:idlePercent} plots the km/l for all trips as a function of how many percent of the trip the vehicle has been idling.
+The size of the plot indicates the amount of fuel used in the trip and the color signals what class it has been asigned to.
+TODO: analyse
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.5\textwidth]{../src/images/idlePercent.png}
 \caption{Idle percent}
 \label{fig:idlePercent}
 \end{figure}
 
-Figure~\ref{fig:idleTime} plots how many seconds each trip has of pure idle periods on the x-axis and the class distribution in percent on the y-axis.
-The purple line plots the number of trips 
-\begin{figure}[htb]%TODO: not updated
+Figure~\ref{fig:idleClassPercent} abstracts away the actual km/l and only plots the class distibution as a function of he idle percent. 
+The purple line indicates how many trips have this idle percentage. 
+The graph is cut off at 60 \% because of too little data.
+It is evident that the majority of the trips in the \fuelHigh class avoids idling. 
+TODO: analyse
+
+\begin{figure}[htb]
 \centering
-\includegraphics[width=0.5\textwidth]{../src/d_images/idle3.png}
-\caption{Idle time}
-\label{fig:idleTime}
+\includegraphics[width=0.5\textwidth]{../src/images/idle2.png}
+\caption{Class distribution }
+\label{fig:idleClassPercent}
 \end{figure}
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.5\textwidth]{../src/images/idle3.png}
+\caption{Class distribution}
+\label{fig:idleClassTime}
+\end{figure}
+
+\end{comment}
+

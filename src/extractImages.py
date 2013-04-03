@@ -201,6 +201,21 @@ elif TYPE == 'idleDuration':
 	print "set logscale y 10"
 	print "plot '" + path + "data/idleDuration.csv' with lines lw 3 notitle"
 
+elif TYPE == 'tlRange':
+	print "set output '" + path + "images/tlRange.png';"
+	print "set ylabel 'Number of idle records"
+	print "set xlabel 'Radius from Traficlight (m)'"
+	#print "set logscale y 10"
+	print "plot '" + path + "data/TlCounter.csv' with lines lw 3 notitle"
+
+elif TYPE == 'cruiseCounter':
+	print "set output '" + path + "images/cruiseCounter.png';"
+	print "set ylabel 'Percentage of records in cruise state"
+	print "set xlabel 'Minimum cruise length (s)'"
+	#print "set logscale y 10"
+	print "plot '" + path + "data/cruiseCounter.csv' with lines lw 3 notitle"
+
+
 elif TYPE == 'idleTime':
 	val = 'idle_time, km_pr_l as val, |/ (total_fuel/3.14)'
 	res = con.query("select " + val + " from " + TABLE + " where km_pr_l < 4  order by val;").getresult()

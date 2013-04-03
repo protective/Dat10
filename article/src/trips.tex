@@ -1,4 +1,4 @@
-\section{Data Preparation/Trip}\label{sec:trips}
+\section{Generating Trips}\label{sec:trips}
 
 The data set is split into trips by annotating each record with a trip identifier, \tid.
 A trip is defined as a collection of consecutive records with the same vehicle identifier, \vid.
@@ -8,7 +8,7 @@ We therefore need to ensure that records recorded when the vehicle is idling is 
 A trip is hence defined from when the engine of the vehicle is turned on.
 In order not to split a trip into two just because the engine stalls, we say that a trips ends when two consecutive records are more than some timeframe apart.
 Figure~\ref{fig:TimeTrips} shows the number of trips at different timeframes from 5 seconds between two trips to 200 seconds.
-We see that the curve flattens around 20 and we choose this as the timeframe. 
+We see that the curve flattens around 120 seconds and we choose this as the timeframe. 
 \begin{figure}[htb]
 \centering
 \includegraphics[width=0.5\textwidth]{../src/d_images/TimeTrips.png}
@@ -17,10 +17,11 @@ We see that the curve flattens around 20 and we choose this as the timeframe.
 \end{figure}
 
 Too short trips with too few records will not give a usable image of which factors influence fuel consumption.
-Figure~\ref{fig:LengthTrips} show the number of trips with different minimum limits on number of records in a trip.
+Figure~\ref{fig:LengthTrips} show the number of trips with different minimum lengths of the trips in seconds.
+No clear change is apparent, and we use 30 seconds as this is a nice round number. %TODO: Explain better.
 \begin{figure}[htb]
 \centering
-\includegraphics[width=0.5\textwidth]{../src/images/TripsLength.png}
+\includegraphics[width=0.5\textwidth]{../src/d_images/TripsLength.png}
 \caption{Number of trips at different lengths}
 \label{fig:LengthTrips}
 \end{figure}
