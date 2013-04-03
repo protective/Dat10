@@ -217,7 +217,7 @@ elif TYPE == 'cruiseCounter':
 	print "set ylabel 'Percentage of records in cruise state"
 	print "set xlabel 'Minimum cruise length (s)'"
 	#print "set logscale y 10"
-	print "plot '" + path + "data/cruiseCounter.csv' with lines lw 3 notitle"
+	print "plot '" + path + "data/cruiseCounterFinal.csv' with lines lw 3 notitle"
 
 
 elif TYPE == 'idleTime':
