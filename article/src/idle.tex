@@ -5,11 +5,14 @@ The driver is hence consuming unneccesary fuel when idling.
 A vehicle is idling when the engines rounds per minute (RPM) is above zero while the speed is zero for at least 2 consecutive recordings.
 A vehicle is hence also idling when for example waiting at a red light or in a queue. 
 
-Let 
-
+Let $\vrpm$ and $\vspeed$ be the RPM and speed of vehicle $v$ at time $t$ and we say that vehicle $v$ is ideling at timestep $t$ if and only if $\vrpm$ is larger than zero and $\vspeed$ is zero.
+\[\vidle = true \mbox{ iff. } \vrpm > 0 \wegde \vspeed = 0\]
+An \textit{idle period}, $\vidlep$ is a set of consequtive records where the vehicle is idling
+\[\vidlep = \{r \mid v_{r.t}^{idle}=true \}\]
+and $\timelength{\vidlep}$ is the length of the idle period in seconds.
 
 Figure~\ref{fig:idleRange2} shows how often the vehiceles idle and how long.
-The idle time is split into ranges of ten seconds and displaied on the x-axis, e.g. 100.0 indicates the time range 100-199 seconds. 
+The idle periods are combined into ranges of 100 seconds and displaied on the x-axis, e.g. 100.0 indicates the time range 100-199 seconds. 
 The number of times each vehicle idles in the given time range is displaied on the y-axis in a logarithmic scale. 
 It is clear to see that most of the vehicles idles less that 100 seconds which correlates with the longest circulation times of traffic ligths. 
 \begin{figure}[htb]
@@ -30,7 +33,7 @@ We see that few idles for more than 25 minutes and that even these do not use mo
 \end{figure}
 
 It will also be interessting to investigate whether how much of a trip is in an idle state has an infulence on the trips km/l.
-Let $\vrpm$ and $\vspeed$ be the RPM and speed of vehicle $v$ at time $t$
+
 A vehicle has a \textit{pure idle period} when
 
 
