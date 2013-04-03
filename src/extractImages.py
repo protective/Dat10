@@ -33,6 +33,7 @@ if TYPE == 'km_pr_l':
 	print "set output '" + path + "images/kmlTrips.png';"
 	print "set ylabel 'km/l';"
 	print "set xlabel 'Trips';"
+	print "set ytics 5"
 
 	s = "plot "
 	for v in vehicles:
@@ -52,7 +53,7 @@ elif TYPE == 'TimeTrips':
 elif TYPE == 'LengthTrips': 
 	print "set output '" + path + "images/TripsLength.png';"
 	print "set ylabel 'Number of trips"
-	print "set xlabel 'Minimum number of data records'"
+	print "set xlabel 'Minimum trip length (s)'"
 	print "set yrange[0:]"
 
 	print "plot '" + path + "data/trajectoryLength.csv' using 2:3 with lines lw 3 notitle"
@@ -85,7 +86,7 @@ elif TYPE == 'TripLengthKml':
 	print "plot '" + path + "data/tripLengthKml.csv' notitle"
 
 elif TYPE == 'idle2':
-	res = con.query("select round((idle_percentage*100)::numeric,0),count(case when km_pr_l <="+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l <= "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " group by round order by round;").getresult()
+	res = con.query("select round((idle_percentage*100)/5)*5 as round,count(case when km_pr_l <="+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l <= "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " group by round order by round;").getresult()
 	
 	output = open(path + 'data/idle2.csv', 'w+')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -95,10 +96,12 @@ elif TYPE == 'idle2':
 	print "set output '" + path + "images/idle2.png';"
 	print "set ylabel 'Class distribution (%)'"
 	print "set xlabel 'Percent of trip in idle (%)'"
+	print "set xtics 10"
 	print "set yrange[0:100]"
-	print "set xrange[0:40]"
+	#print "set xrange[0:40]"
 	print "set y2tics"
 	print "set y2label 'Number of trips'"
+	print "set logscale y2 10"
 	print "set key outside"
 	print "plot '" + path + "data/idle2.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '" + path + "data/idle2.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '" + path + "data/idle2.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/idle2.csv' using 1:5 with lines lw 3 title 'Number of trips' axes x1y2"
 	
@@ -114,9 +117,10 @@ elif TYPE == 'idle3':
 	print "set ylabel 'Class distribution (%)'"
 	print "set xlabel 'Idle time (s)'"
 	print "set yrange[0:100]"
-	print "set xrange[0:1500]"
+	print "set xrange[500:2500]"
 	print "set y2tics"
 	print "set y2label 'Number of trips'"
+#	print "set logscale y2 10"
 	print "set key outside"
 	print "plot '" + path + "data/idle3.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/idle3.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/idle3.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/idle3.csv' using 1:5 with lines lw 3 title 'Number of trips' axes x1y2"
 
@@ -197,10 +201,10 @@ elif TYPE == 'trafficlight':
 
 elif TYPE == 'idleDuration':
 	print "set output '" + path + "images/idleDuration.png';"
-	print "set ylabel 'Number of idle records"
-	print "set xlabel 'Minimum duration'"
-	print "set logscale y 10"
-	print "plot '" + path + "data/idleDuration.csv' with lines lw 3 notitle"
+	print "set ylabel 'Number of idle records (x 10^3)"
+	print "set xlabel 'Minimum duration (s)'"
+	print "set xtics 50"
+	print "plot '" + path + "data/idleDuration.csv' using 1:($2/1000) with lines lw 3 notitle"
 
 elif TYPE == 'tlRange':
 	print "set output '" + path + "images/tlRange.png';"
@@ -300,6 +304,8 @@ elif TYPE == 'idleRange3':
 	print "set ylabel 'Fuel (l)';"
 	print "set xlabel 'Idle seconds (s)'"
 	print "set xrange[100:]"
+	print "set key left"
+	print "set xtics 500"
 	
 	s = "plot "
 	for v in vehicles:
