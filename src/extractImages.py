@@ -188,6 +188,7 @@ elif TYPE == 'trafficlight':
 	print "set xrange[0:2.5]"
 	print "set y2tics"
 	print "set y2label 'Number of trips'"
+	print "set logscale y2 10 "
 	print "set key outside"
 	print "plot '" + path + "data/trafficlight.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/trafficlight.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/trafficlight.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/trafficlight.csv' using 1:5 with lines lw 3 title 'Data points' axes x1y2"
 
