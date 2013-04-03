@@ -11,7 +11,7 @@ try:
 	DATATABLE = sys.argv[1] + "_gps_can_data"
 	IDLEDATA = sys.argv[1] + "_idledata"
 	TRIPDATA = sys.argv[1] + "_trip_data"
-	duration = sys.argv[2]
+	duration = int(sys.argv[2])
 	if(len(sys.argv) > 3 and sys.argv[3]=="Test"):
 		test = True
 except:
