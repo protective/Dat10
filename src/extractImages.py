@@ -343,6 +343,19 @@ elif TYPE == 'idlePercent':
 	s+= "'" + path + "images/" + TYPE + "_low_data.csv' using 1:2:3 with points lt 1 pt 6 ps variable linecolor rgb \"red\" title 'Low'"
 	print s
 
+elif TYPE == 'acceleration':
+	tid='8'
+	res = con.query("select acceleration2 from "+TABLE+" where tid="+tid+";").getresult()
+	output = open(path + 'data/acceleration'+tid+'.csv', 'wb')
+	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+	for r in res:
+		writer.writerow(r)
+	print "set output '" + path + "images/acceleration"+tid+".png';"
+	print "set ylabel 'Acceleration (m/s^2)';"
+	print "set xlabel 'Time (s)'"#TODO: not sek
+
+	print "plot '" + path + "data/acceleration" + tid + ".csv'"
+
 else:
 	val = TYPE + '*100, km_pr_l as val, |/ (total_fuel/3.14)'
 	where= ''
