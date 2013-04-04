@@ -345,16 +345,17 @@ elif TYPE == 'idlePercent':
 
 elif TYPE == 'acceleration':
 	tid='8'
-	res = con.query("select acceleration2 from "+TABLE+" where tid="+tid+";").getresult()
+	res = con.query("select acceleration2, speed from "+TABLE+" where tid="+tid+";").getresult()
 	output = open(path + 'data/acceleration'+tid+'.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 	for r in res:
 		writer.writerow(r)
 	print "set output '" + path + "images/acceleration"+tid+".png';"
 	print "set ylabel 'Acceleration (m/s^2)';"
+	print "set y2label 'Speed (m/s)';"
 	print "set xlabel 'Time (s)'"#TODO: not sek
 
-	print "plot '" + path + "data/acceleration" + tid + ".csv'"
+	print "plot '" + path + "data/acceleration" + tid + ".csv' using :1 with lines, '"+path+"data/acceleration"+tid+".csv' using :2 with lines axes x1y2"
 
 else:
 	val = TYPE + '*100, km_pr_l as val, |/ (total_fuel/3.14)'
