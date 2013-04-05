@@ -30,7 +30,7 @@ con.query('alter table ' + DATATABLE + ' add tl int default null;')
 #for i in range(0,res[0][0]):
 #	con.query("update "+DATATABLE+" as "+PREFIX+" set tl = t.tlId from trafficlights as t where ST_Dwithin(t.geom,"+PREFIX+".geom,"+str(SIZE)+") and "+PREFIX+".tid = "+ str(i) + ";")
 #	print str(i) + " of " + str(res[0][0]) 
-con.query("update "+PREFIX+"_gps_can_data set tl = te.tlId from (select DISTINCT on("+PREFIX+".timestamp,"+PREFIX+".vehicleid) t.tlId , timestamp,ST_Distance("+PREFIX+".geom,t.geom),vehicleid from "+PREFIX+"_gps_can_data as "+PREFIX+" ,trafficlights as t where ST_Dwithin("+PREFIX+".geom,t.geom,100) order by "+PREFIX+".timestamp,d.vehicleid, ST_Distance("+PREFIX+".geom,t.geom))te where "+PREFIX+"_gps_can_data.timestamp = te.timestamp and "+PREFIX+"_gps_can_data.vehicleid = te.vehicleid;")
+con.query("update "+PREFIX+"_gps_can_data set tl = te.tlId from (select DISTINCT on("+PREFIX+".timestamp,"+PREFIX+".vehicleid) t.tlId , timestamp,ST_Distance("+PREFIX+".geom,t.geom),vehicleid from "+PREFIX+"_gps_can_data as "+PREFIX+" ,trafficlights as t where ST_Dwithin("+PREFIX+".geom,t.geom,"+SIZE+") order by "+PREFIX+".timestamp,"+PREFIX+".vehicleid, ST_Distance("+PREFIX+".geom,t.geom))te where "+PREFIX+"_gps_can_data.timestamp = te.timestamp and "+PREFIX+"_gps_can_data.vehicleid = te.vehicleid;")
 
 #"update a_gps_can_data as a set tl = t.tlId from trafficlights as t where ST_Dwithin(t.geom,a.geom,100)"
 
