@@ -93,11 +93,11 @@ while i <= len(res):
 			if stopping == 2:
 				TlRedCounter+= 1
 		
-		if inlight == True and stopping <= 1 and (not res[i][3] or oldlight != res[i][3]):
+		if inlight == True and stopping <= 1 and (not res[i][3]):
 			inlight = False
 			TlGreenCounter +=1
 			
-		if not res[i][3] or oldlight != res[i][3]:
+		if not res[i][3]:
 			inlight = False
 			stopping = 0
 
