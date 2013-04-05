@@ -103,7 +103,7 @@ while i <= len(res):
 
 			
 	else:
-		print "tid >" str(tid) 
+		print "tid >" + str(tid) 
 		print "conunter " + str(TlCounter) + " green " + str(TlGreenCounter) + " red " + str(TlRedCounter)
 
 		temp = con.query('select total_km from ' + TRIPDATA + ' where tid = '+ str(tid) ).getresult()
