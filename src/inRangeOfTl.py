@@ -103,20 +103,23 @@ while i <= len(res):
 
 			
 	else:
-		#print "conunter " + str(TlCounter) + " green " + str(TlGreenCounter) + " red " + str(TlRedCounter)
+		print "tid >" str(tid) 
+		print "conunter " + str(TlCounter) + " green " + str(TlGreenCounter) + " red " + str(TlRedCounter)
 
 		temp = con.query('select total_km from ' + TRIPDATA + ' where tid = '+ str(tid) ).getresult()
 		total = 0		
 		if(float(temp[0][0] != 0)):
 			total = float(temp[0][0])
 		if total > 0:
-			#s = "update " + TRIPDATA + " set TlCounter = " + str(TlCounter/total) + " , TlRedCounter = " + str(TlRedCounter/total) + " , TlGreenCounter = " + str(TlGreenCounter/total) + " where tid = " + str(tid) + ";"
+			s = "update " + TRIPDATA + " set TlCounter = " + str(TlCounter/total) + " , TlRedCounter = " + str(TlRedCounter/total) + " , TlGreenCounter = " + str(TlGreenCounter/total) + " where tid = " + str(tid) + ";"
 			tcounter +=1
+			
 			ttotalcounter += TlCounter/total
-		#else: 
-			#s = "update " + TRIPDATA + " set TlCounter = " + str(0) + " , TlRedCounter = " + str(0) + " , TlGreenCounter = " + str(0) + " where tid = " + str(tid) + ";"
+		else: 
+			s = "update " + TRIPDATA + " set TlCounter = " + str(0) + " , TlRedCounter = " + str(0) + " , TlGreenCounter = " + str(0) + " where tid = " + str(tid) + ";"
 		#print s
-		#con.query(s)
+		if not test:
+			con.query(s)
 
 		TlCounter = 0
 		TlRedCounter = 0
@@ -125,12 +128,11 @@ while i <= len(res):
 			tid = res[i][2]
 	i+=1
 
-
-
-output = open('data/'+filename, 'a')
-ss = str(SIZE) + " " + str(ttotalcounter/tcounter) + ""
-print ss 
-print >> output, ss
+if not test:
+	output = open('data/'+filename, 'a')
+	ss = str(SIZE) + " " + str(ttotalcounter/tcounter) + ""
+	print ss 
+	print >> output, ss
 
 
 
