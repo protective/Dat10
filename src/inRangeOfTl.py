@@ -24,13 +24,13 @@ con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 con.query("alter table " + DATATABLE + " drop IF EXISTS tl;")
 con.query('alter table ' + DATATABLE + ' add tl int default null;')
 
-res = con.query("select max(tid) from "+DATATABLE+"").getresult()
-print res
+#res = con.query("select max(tid) from "+DATATABLE+"").getresult()
+#print res
 
-for i in range(0,res[0][0]):
-	con.query("update "+DATATABLE+" as "+PREFIX+" set tl = t.tlId from trafficlights as t where ST_Dwithin(t.geom,"+PREFIX+".geom,"+str(SIZE)+") and "+PREFIX+".tid = "+ str(i) + ";")
-	print str(i) + " of " + str(res[0][0]) 
-
+#for i in range(0,res[0][0]):
+#	con.query("update "+DATATABLE+" as "+PREFIX+" set tl = t.tlId from trafficlights as t where ST_Dwithin(t.geom,"+PREFIX+".geom,"+str(SIZE)+") and "+PREFIX+".tid = "+ str(i) + ";")
+#	print str(i) + " of " + str(res[0][0]) 
+con.query("update "+PREFIX+"_gps_can_data set tl = te.tlId from (select DISTINCT on("+PREFIX+".timestamp,"+PREFIX+".vehicleid) t.tlId , timestamp,ST_Distance("+PREFIX+".geom,t.geom),vehicleid from "+PREFIX+"_gps_can_data as "+PREFIX+" ,trafficlights as t where ST_Dwithin("+PREFIX+".geom,t.geom,100) order by "+PREFIX+".timestamp,d.vehicleid, ST_Distance("+PREFIX+".geom,t.geom))te where "+PREFIX+"_gps_can_data.timestamp = te.timestamp and "+PREFIX+"_gps_can_data.vehicleid = te.vehicleid;")
 
 #"update a_gps_can_data as a set tl = t.tlId from trafficlights as t where ST_Dwithin(t.geom,a.geom,100)"
 
@@ -103,8 +103,8 @@ while i <= len(res):
 
 			
 	else:
-		print "tid >" + str(tid) 
-		print "conunter " + str(TlCounter) + " green " + str(TlGreenCounter) + " red " + str(TlRedCounter)
+		#print "tid >" + str(tid) 
+		#print "conunter " + str(TlCounter) + " green " + str(TlGreenCounter) + " red " + str(TlRedCounter)
 
 		temp = con.query('select total_km from ' + TRIPDATA + ' where tid = '+ str(tid) ).getresult()
 		total = 0		
