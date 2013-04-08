@@ -24,13 +24,13 @@ con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 con.query("alter table " + DATATABLE + " drop IF EXISTS tl;")
 con.query('alter table ' + DATATABLE + ' add tl int default null;')
 
-res = con.query("select max(tid) from "+DATATABLE+"").getresult()
-print res
+#res = con.query("select max(tid) from "+DATATABLE+"").getresult()
+#print res
 
-for i in range(0,res[0][0]):
-	con.query("update "+DATATABLE+" as "+PREFIX+" set tl = t.tlId from trafficlights as t where ST_Dwithin(t.geom,"+PREFIX+".geom,"+str(SIZE)+") and "+PREFIX+".tid = "+ str(i) + ";")
-	print str(i) + " of " + str(res[0][0]) 
-
+#for i in range(0,res[0][0]):
+#	con.query("update "+DATATABLE+" as "+PREFIX+" set tl = t.tlId from trafficlights as t where ST_Dwithin(t.geom,"+PREFIX+".geom,"+str(SIZE)+") and "+PREFIX+".tid = "+ str(i) + ";")
+#	print str(i) + " of " + str(res[0][0]) 
+con.query("update "+PREFIX+"_gps_can_data set tl = te.tlId from (select DISTINCT on("+PREFIX+".timestamp,"+PREFIX+".vehicleid) t.tlId , timestamp,ST_Distance("+PREFIX+".geom,t.geom),vehicleid from "+PREFIX+"_gps_can_data as "+PREFIX+" ,trafficlights as t where ST_Dwithin("+PREFIX+".geom,t.geom,"+str(SIZE)+") order by "+PREFIX+".timestamp,"+PREFIX+".vehicleid, ST_Distance("+PREFIX+".geom,t.geom))te where "+PREFIX+"_gps_can_data.timestamp = te.timestamp and "+PREFIX+"_gps_can_data.vehicleid = te.vehicleid;")
 
 #"update a_gps_can_data as a set tl = t.tlId from trafficlights as t where ST_Dwithin(t.geom,a.geom,100)"
 
@@ -93,16 +93,17 @@ while i <= len(res):
 			if stopping == 2:
 				TlRedCounter+= 1
 		
-		if inlight == True and stopping <= 1 and (not res[i][3] or oldlight != res[i][3]):
+		if inlight == True and stopping <= 1 and (not res[i][3]):
 			inlight = False
 			TlGreenCounter +=1
 			
-		if not res[i][3] or oldlight != res[i][3]:
+		if not res[i][3]:
 			inlight = False
 			stopping = 0
 
 			
 	else:
+		#print "tid >" + str(tid) 
 		#print "conunter " + str(TlCounter) + " green " + str(TlGreenCounter) + " red " + str(TlRedCounter)
 
 		temp = con.query('select total_km from ' + TRIPDATA + ' where tid = '+ str(tid) ).getresult()
@@ -110,13 +111,15 @@ while i <= len(res):
 		if(float(temp[0][0] != 0)):
 			total = float(temp[0][0])
 		if total > 0:
-			#s = "update " + TRIPDATA + " set TlCounter = " + str(TlCounter/total) + " , TlRedCounter = " + str(TlRedCounter/total) + " , TlGreenCounter = " + str(TlGreenCounter/total) + " where tid = " + str(tid) + ";"
+			s = "update " + TRIPDATA + " set TlCounter = " + str(TlCounter/total) + " , TlRedCounter = " + str(TlRedCounter/total) + " , TlGreenCounter = " + str(TlGreenCounter/total) + " where tid = " + str(tid) + ";"
 			tcounter +=1
+			
 			ttotalcounter += TlCounter/total
-		#else: 
-			#s = "update " + TRIPDATA + " set TlCounter = " + str(0) + " , TlRedCounter = " + str(0) + " , TlGreenCounter = " + str(0) + " where tid = " + str(tid) + ";"
+		else: 
+			s = "update " + TRIPDATA + " set TlCounter = " + str(0) + " , TlRedCounter = " + str(0) + " , TlGreenCounter = " + str(0) + " where tid = " + str(tid) + ";"
 		#print s
-		#con.query(s)
+		if not test:
+			con.query(s)
 
 		TlCounter = 0
 		TlRedCounter = 0
@@ -125,12 +128,11 @@ while i <= len(res):
 			tid = res[i][2]
 	i+=1
 
-
-
-output = open('data/'+filename, 'a')
-ss = str(SIZE) + " " + str(ttotalcounter/tcounter) + ""
-print ss 
-print >> output, ss
+if not test:
+	output = open('data/'+filename, 'a')
+	ss = str(SIZE) + " " + str(ttotalcounter/tcounter) + ""
+	print ss 
+	print >> output, ss
 
 
 
