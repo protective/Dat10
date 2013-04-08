@@ -179,7 +179,7 @@ elif TYPE == 'moterRoad':
 
 elif TYPE == 'trafficlight':
 	
-	res = con.query("select round((tlcounter)::numeric,1),count(case when km_pr_l <="+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l <= "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " group by round order by round;").getresult()
+	res = con.query("select round((tlcounter)::numeric,1),count(case when km_pr_l <="+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l <= "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " where group by round order by round;").getresult()
 	output = open(path + 'data/trafficlight.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 	for r in res:
@@ -218,7 +218,7 @@ elif TYPE == 'cruiseCounter':
 	print "set ylabel 'Percentage of records in cruise state"
 	print "set xlabel 'Minimum cruise length (s)'"
 	#print "set logscale y 10"
-	print "plot '" + path + "data/cruiseCounter0.csv' with lines lw 3 notitle,'" + path + "data/cruiseCounter1.csv' with lines lw 3 notitle,'" + path + "data/cruiseCounter2.csv' with lines lw 3 notitle"
+	print "plot '" + path + "data/cruiseCounter0.csv' with lines lw 3 notitle,'" + path + "data/cruiseCounter1.csv' with lines lw 3 notitle,'" + path + "data/cruiseCounter2.csv' with lines lw 3 notitle,'" + path + "data/cruiseCounter1.csv' with lines lw 3 notitle,'" + path + "data/cruiseCounter2.csv' with lines lw 3 notitle,'" + path + "data/cruiseCounter3.csv' with lines lw 3 notitle,'" + path + "data/cruiseCounter4.csv' with lines lw 3 notitle"
 
 
 elif TYPE == 'idleTime':

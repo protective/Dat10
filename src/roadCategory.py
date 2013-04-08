@@ -17,16 +17,16 @@ MAP_TABLE = "osm_dk_20130214"
 
 con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 
-con.query("alter table " + QUERY_TABLE + " drop IF EXISTS roadCategory;")
-con.query('alter table ' + QUERY_TABLE + ' add roadCategory int;')
+#con.query("alter table " + QUERY_TABLE + " drop IF EXISTS roadCategory;")
+#con.query('alter table ' + QUERY_TABLE + ' add roadCategory int;')
 
 #con.query("create index "+MAP_TABLE+"_segmentkey_idx on "+MAP_TABLE+" (segmentkey);")
 #con.query("create index "+MAP_TABLE+"_category_idx on "+MAP_TABLE+" (category);")
 
 
-s = 'update ' + QUERY_TABLE + ' set roadCategory = (case when category in ( \'11\',\'12\')  then 1 when category in( \'13\',\'14\',\'15\',\'21\',\'31\') then 2 when category in (\'41\',\'42\',\'51\',\'63\') then 3 end) from ' + MAP_TABLE + ' where ' + MAP_TABLE + '.segmentkey=' + QUERY_TABLE + '.segmentkey;'
-print s
-con.query(s)
+#s = 'update ' + QUERY_TABLE + ' set roadCategory = (case when category in ( \'11\',\'12\')  then 1 when category in( \'13\',\'14\',\'15\',\'21\',\'31\') then 2 when category in (\'41\',\'42\',\'51\',\'63\') then 3 end) from ' + MAP_TABLE + ' where ' + MAP_TABLE + '.segmentkey=' + QUERY_TABLE + '.segmentkey;'
+#print s
+#con.query(s)
 
 
 con.query("alter table " + TABLE + " drop IF EXISTS PMoterRoad;")
