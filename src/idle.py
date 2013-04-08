@@ -62,26 +62,26 @@ if test:
 	
 if not test:
 	print "Altering table"
-	con.query('alter table ' + DATATABLE + ' drop IF EXISTS idleRange;')
-	con.query('alter table ' + DATATABLE + ' add column idleRange int not null default 0;')
+	con.query('alter table ' + DATATABLE + ' drop IF EXISTS stopped;')
+	con.query('alter table ' + DATATABLE + ' add column stopped int not null default 0;')
 
-	con.query('update ' + DATATABLE + ' set idleRange = 1 where rpm>0 and speed = 0;')
+	con.query('update ' + DATATABLE + ' set stopped = 1 where rpm>0 and speed = 0;')
 
 	print "Creating index"
 	con.query("DROP INDEX IF EXISTS idle_" + DATATABLE + "_idx;")
-	con.query("Create index idle_" + DATATABLE + "_idx on " + DATATABLE + " (idleRange);")
+	con.query("Create index idle_" + DATATABLE + "_idx on " + DATATABLE + " (stopped);")
 
 
 
 
 
 	con.query("drop table if exists "+IDLEDATA+";")
-	con.query("create table "+IDLEDATA+" (vehicleid bigint, idleRange int, fuel float, starTime timestamp);")
+	con.query("create table "+IDLEDATA+" (vehicleid bigint, stopped int, fuel float, startTime timestamp);")
 	print "Calculating"
 	vehicles = con.query("select distinct vehicleid from "+ DATATABLE + ";").getresult()
 
 	for v in vehicles:
-		res = con.query("select timestamp, idleRange, totalconsumed, tid from " + DATATABLE + " where vehicleid=" + str(v[0]) +" and dirty is false order by timestamp;").getresult()
+		res = con.query("select timestamp, stopped, totalconsumed, tid from " + DATATABLE + " where vehicleid=" + str(v[0]) +" and dirty is false order by timestamp;").getresult()
 		s = -1
 		fuel = 0
 		for r in range(0, len(res)-1):		

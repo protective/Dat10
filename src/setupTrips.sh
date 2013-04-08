@@ -2,8 +2,9 @@
 DB=$1
 PREFIX=$2
 TRIPTIME=$3
+TRIPLENGTH=$4
 mapmatch="nm"
-if [ $4 = "mm" ]; then
+if [ $5 = "mm" ]; then
 mapmatch="mm"
 else
 mapmatch="nm"
@@ -12,16 +13,16 @@ fi
 getTrajectories=true
 postgis=false
 tripData=true
-idle=true
-cruise=true
-trafficLights=true
-acceleration=true
-temperature=true
+idle=false
+cruise=false
+trafficLights=false
+acceleration=false
+temperature=false
 
 
 if ($getTrajectories) then
 echo "get trajectories"
-python getTrajectories.py $TRIPTIME 30 $PREFIX $mapmatch
+python getTrajectories.py $TRIPTIME 0 $TRIPLENGTH $PREFIX $mapmatch
 fi
 
 
