@@ -22,7 +22,7 @@ con.query('alter table ' + QUERY_TABLE + ' add roadCategory int;')
 
 con.query('update '+PREFIX+'_gps_can_data as '+PREFIX+'  set roadcategory = (case when category in ( \'11\',\'12\')  then 1 when category in( \'13\',\'14\',\'15\',\'21\',\'31\') then 2 when category in (\'32\',\'33\',\'41\',\'42\',\'51\',\'63\') then 3 end) from gps_can_data as aa inner join ' + MAP_TABLE + ' on '+MAP_TABLE+'.segmentkey= aa.segmentkey where '+PREFIX+'.vehicleid= aa.vehicleid and '+PREFIX+'.timestamp=aa.timestamp;')
 
-con.query("create index "+MAP_TABLE+"_category_idx on "+MAP_TABLE+" (category);")
+#con.query("create index "+MAP_TABLE+"_category_idx on "+MAP_TABLE+" (category);")
 
 
 #s = 'update ' + QUERY_TABLE + ' set roadCategory = (case when category in ( \'11\',\'12\')  then 1 when category in( \'13\',\'14\',\'15\',\'21\',\'31\') then 2 when category in (\'41\',\'42\',\'51\',\'63\') then 3 end) from ' + MAP_TABLE + ' where ' + MAP_TABLE + '.segmentkey=' + QUERY_TABLE + '.segmentkey;'
