@@ -42,6 +42,9 @@ scp d103@172.25.26.191:Dat10/src/images/kmlTrips.png $PREFIX"_images"/kmlTrips.p
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py LengthTrips $TRIPS | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/TripsLength.png $PREFIX"_images"/TripsLength.png
 
+ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py LengthTrips2 $TRIPS | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/TripsLength2.png $PREFIX"_images"/TripsLength2.png
+
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py idleRange2 $VEHICLEDATA | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/idleRange2.png $PREFIX"_images"/idleRange2.png
 

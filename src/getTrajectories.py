@@ -5,28 +5,32 @@ DB = 'gps_can'
 TABLE = 'gps_can_data'
 
 
-TIME = 20
+TIME = 120
 LENGTH = 30
+LENGTHCount = 30
 test = False
 filename = ''
 TIDTOUPDATE = 'tid'
 NEW_TABLE = 'a_' + TABLE
 MapMatch = False
+
 if len(sys.argv) > 1:
 	TIME = int(sys.argv[1])
 	LENGTH = int(sys.argv[2])
-	NEW_TABLE = ''+sys.argv[3]+'_' + TABLE
-	if (sys.argv[4] == "mm"):
+	LENGTHCount = int(sys.argv[3])
+	NEW_TABLE = ''+sys.argv[4]+'_' + TABLE
+	if (sys.argv[5] == "mm"):
 		MapMatch = True
 		print "using mapmatch data"
-	if len(sys.argv)> 5:
-		test = bool(sys.argv[5])
-		filename = str(sys.argv[6])
+	if len(sys.argv)> 6:
+		test = bool(sys.argv[6])
+		filename = str(sys.argv[7])
 print "create table " + NEW_TABLE	
 counter = 0
+lengthCounter = 0
 	
 
-print str(TIME) + " seconds timeframe and " + str(LENGTH) + " length."
+print str(TIME) + " seconds timeframe and " + str(LENGTH) + " length time and " + str(LENGTHCount) + " length number."
 
 print "Connecting to " + DB
 con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
@@ -66,23 +70,23 @@ for p in range(0,len(res)):
 	curTime = time.mktime(time.strptime(res[p][1], "%Y-%m-%j %H:%M:%S"))
 	curVhId = res[p][0]
 	diff = abs(prevTime - curTime)
-	
+	lengthCounter +=1
 
 	if diff > TIME or prevVhId != curVhId:
 		length = abs(time.mktime(time.strptime(startTime, "%Y-%m-%j %H:%M:%S")) - time.mktime(time.strptime(res[p-1][1], "%Y-%m-%j %H:%M:%S")))
-		if length >= LENGTH:
+		if length >= LENGTH and lengthCounter >= LENGTHCount:
 			query = 'update ' + NEW_TABLE + ' set '+TIDTOUPDATE+'=' + str(tid)
 			counter +=1
 		else:
 			query = 'update ' + NEW_TABLE + ' set '+TIDTOUPDATE+'='+ str(tid) + ', dirty=true '
 	
 		query += " where timestamp>='" + startTime + "' and timestamp<='" + res[p-1][1] + "' and vehicleid=" + str(res[p-1][0]) + ";"
-
 		if( not test):
 			con.query(query)
 			
 		startTime = res[p][1]
 		tid += 1
+		lengthCounter = 0
 	
 	prevTime = curTime
 	prevVhId = curVhId
@@ -92,7 +96,7 @@ for p in range(0,len(res)):
 
 length = abs(time.mktime(time.strptime(startTime, "%Y-%m-%j %H:%M:%S")) - time.mktime(time.strptime(res[p-1][1], "%Y-%m-%j %H:%M:%S")))
 print length
-if length >= LENGTH:
+if length >= LENGTH and lengthCounter >= LENGTHCount:
 	query = 'update ' + NEW_TABLE + ' set '+TIDTOUPDATE+'=' + str(tid)
 	counter +=1
 else:
@@ -108,7 +112,7 @@ if not test:
 
 if(test):
 	output = open('data/'+filename, 'a')
-	s = str(TIME) + " " + str(LENGTH) + " " + str(counter)
+	s = str(TIME) + " " + str(LENGTH) + " " + str(LENGTHCount) + " " + str(counter)
 	print s 
 	print >> output, s
 
