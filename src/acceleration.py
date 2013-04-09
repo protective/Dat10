@@ -2,11 +2,14 @@ import os, pg, math, sys, time
 USER = 'd103'
 DB = 'gps_can'
 
+
+
 con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 
 test= False
 try:
-	DATATABLE = sys.argv[1]
+	DATATABLE = sys.argv[1] + "_gps_can_data"
+	ACCDATA = sys.argv[1] + "_accdata"
 except:
 	print 'Error: remember the parameters'
 	exit(1)
@@ -16,6 +19,7 @@ def getTime(t):
 
 if True:
 	print "Altering table"
+	con.query('set synchronous_commit = on;')
 	con.query('alter table ' + DATATABLE + ' drop IF EXISTS acceleration2;')
 	con.query('alter table ' + DATATABLE + ' add column acceleration2 float not null default 0;')
 
@@ -32,16 +36,28 @@ if True:
 			curTime = res[r][0]
 			curSpeed = float(res[r][1])
 			curTid = int(res[r][2])
-			
+		
 			acc = 0
 			if curTid == oldTid:
 				acc = (oldSpeed-curSpeed)/(getTime(oldTime)-getTime(curTime))
-			
+		
 			q = "update " + DATATABLE + " set acceleration2 = " + str(acc) + " where vehicleid=" + str(v[0]) + " and timestamp='"+ str(curTime) + "';"
 			con.query(q)
 			#print str(curTid)  + "\t" + str(acc) + "\t" + str(curTime) + "\t" + str(curSpeed) + "\t" + str(abs(oldSpeed-curSpeed)) + "\t" + str(abs(getTime(oldTime)-getTime(curTime)))
-			
+		
 			oldTime = curTime
 			oldSpeed = curSpeed
 			oldTid = curTid
-			
+
+	con.query("DROP INDEX IF EXISTS acceleration2_" + DATATABLE + "_idx CASCADE; create index acceleration2_" + DATATABLE + "_idx on " + DATATABLE + " (acceleration2);")
+
+if False:
+	con.query("drop table if exists "+ACCDATA+";")
+	con.query("create table "+ACCDATA+" (vehicleid bigint, acceleration int, fuel float, startTime timestamp);")
+
+	print "Calculating"
+	vehicles = con.query("select distinct vehicleid from "+ DATATABLE + ";").getresult()
+	for v in vehicles:
+		res = con.query("select timestamp, acceleration2, totalconsumed, tid from " + DATATABLE + " where vehicleid=" + str(v[0]) +" and dirty is false order by timestamp;").getresult()
+		print res
+		break;
