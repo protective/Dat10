@@ -5,8 +5,8 @@ TABLE=$3
 FILES=$FILEPATH/*.csv
 
 resetDatabase=false
-loadGPSTable=true
-loadMapTable=false
+loadGPSTable=false
+loadMapTable=true
 copyData=true
 
 if $resetDatabase 

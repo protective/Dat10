@@ -11,14 +11,12 @@ TABLE = ""+PREFIX+"_trip_data"
 
 con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 #
-res = con.query("""select vehicleid, idle_percentage,idle_wo_tl_percentage,idle_w_tl_percentage, km_pr_l, acckm, acckmweight, stopngo, cruise_percentage, total_km, temperature_percentage, tlCounter, tlRedcounter,tlGreencounter,PmoterRoad,PNormalRoad,PSmallRoad,
 
-	(case 
-		when km_pr_l < 4 then 'low' 
-		when km_pr_l >= 4 and km_pr_l< 8 then 'medium'
-		when km_pr_l >= 8 then 'high'
-	end)
-from """ + TABLE).getresult()
+clusters = []
+clusters.append(con.query('select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+ TABLE + ';').getresult()[0][0])
+clusters.append(con.query('select avg(km_pr_l) from '+TABLE+' where km_pr_l > (select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+TABLE+')').getresult()[0][0])
+
+res = con.query("select vehicleid, idle_percentage,idle_wo_tl_percentage,idle_w_tl_percentage, km_pr_l, acckm, acckmweight, stopngo, cruise_percentage, total_km, temperature_percentage, tlCounter, tlRedcounter,tlGreencounter,PmoterRoad,PNormalRoad,PSmallRoad, (case when km_pr_l < "+ clusters[0] + " then 'low' when km_pr_l >= "+ clusters[0] + " and km_pr_l< "+ clusters[1] + " then 'medium' when km_pr_l >= "+ clusters[1] + " then 'high'	end)from " + TABLE).getresult()
 
 output = open('weka/' + TABLE + '.arff', 'wb')
 
