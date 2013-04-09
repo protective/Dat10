@@ -128,7 +128,7 @@ while i <= len(res):
 			tid = res[i][2]
 	i+=1
 
-if not test:
+if test:
 	output = open('data/'+filename, 'a')
 	ss = str(SIZE) + " " + str(ttotalcounter/tcounter) + ""
 	print ss 
