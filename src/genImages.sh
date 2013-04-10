@@ -66,6 +66,14 @@ scp d103@172.25.26.191:Dat10/src/images/moterRoad.png $PREFIX"_images"/moterRoad
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py trafficlight $TRIPS | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/trafficlight.png $PREFIX"_images"/trafficlight.png
 
+ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py trafficlightgreen $TRIPS | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/trafficlightgreen.png $PREFIX"_images"/trafficlightgreen.png
+
+ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py trafficlightred $TRIPS | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/trafficlightred.png $PREFIX"_images"/trafficlightred.png
+
+ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py trafficlightratio $TRIPS | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/trafficlightratio.png $PREFIX"_images"/trafficlightratio.png
 
 
 

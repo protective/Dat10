@@ -236,6 +236,72 @@ elif TYPE == 'trafficlight':
 	print "set key opaque"
 	print "plot '" + path + "data/trafficlight.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/trafficlight.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/trafficlight.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/trafficlight.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Data points' axes x1y2"
 
+elif TYPE == 'trafficlightgreen':
+	clusters = []
+	clusters.append(con.query('select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+ TABLE + ';').getresult()[0][0])
+	clusters.append(con.query('select avg(km_pr_l) from '+TABLE+' where km_pr_l > (select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+TABLE+')').getresult()[0][0])
+	
+	res = con.query("select round((tlgreencounter)::numeric,1),count(case when km_pr_l <="+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l <= "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " where total_km >= 0.1 group by round order by round;").getresult()
+	output = open(path + 'data/trafficlightgreen.csv', 'wb')
+	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+	for r in res:
+		writer.writerow(r)
+
+	print "set output '" + path + "images/trafficlightgreen.png';"
+	print "set ylabel 'Class distribution (%)'"
+	print "set xlabel 'traffic lights drive through pr km '"
+	print "set yrange[0:100]"
+	print "set xrange[0:2.5]"
+	print "set y2tics"
+	print "set y2label 'Number of trips'"
+	print "set logscale y2 10 "
+	print "set key opaque"
+	print "plot '" + path + "data/trafficlightgreen.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/trafficlightgreen.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/trafficlightgreen.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/trafficlightgreen.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Data points' axes x1y2"
+
+elif TYPE == 'trafficlightred':
+	clusters = []
+	clusters.append(con.query('select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+ TABLE + ';').getresult()[0][0])
+	clusters.append(con.query('select avg(km_pr_l) from '+TABLE+' where km_pr_l > (select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+TABLE+')').getresult()[0][0])
+	
+	res = con.query("select round((tlredcounter)::numeric,1),count(case when km_pr_l <="+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l <= "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " where total_km >= 0.1 group by round order by round;").getresult()
+	output = open(path + 'data/trafficlightred.csv', 'wb')
+	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+	for r in res:
+		writer.writerow(r)
+
+	print "set output '" + path + "images/trafficlightred.png';"
+	print "set ylabel 'Class distribution (%)'"
+	print "set xlabel 'traffic lights related stops pr km '"
+	print "set yrange[0:100]"
+	print "set xrange[0:2.5]"
+	print "set y2tics"
+	print "set y2label 'Number of trips'"
+	print "set logscale y2 10 "
+	print "set key opaque"
+	print "plot '" + path + "data/trafficlightred.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/trafficlightred.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/trafficlightred.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/trafficlightred.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Data points' axes x1y2"
+
+elif TYPE == 'trafficlightratio':
+	clusters = []
+	clusters.append(con.query('select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+ TABLE + ';').getresult()[0][0])
+	clusters.append(con.query('select avg(km_pr_l) from '+TABLE+' where km_pr_l > (select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+TABLE+')').getresult()[0][0])
+	
+	res = con.query("select round((tlredcounter/tlcounter)::numeric,1),count(case when km_pr_l <="+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l <= "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " where total_km >= 0.1 and tlcounter > 0 group by round order by round;").getresult()
+	output = open(path + 'data/trafficlightratio.csv', 'wb')
+	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+	for r in res:
+		writer.writerow(r)
+
+	print "set output '" + path + "images/trafficlightratio.png';"
+	print "set ylabel 'Class distribution (%)'"
+	print "set xlabel 'percentage traffic lights related stops'"
+	print "set yrange[0:100]"
+	print "set xrange[0:]"
+	print "set y2tics"
+	print "set y2label 'Number of trips'"
+	#print "set logscale y2 10 "
+	print "set key opaque"
+	print "plot '" + path + "data/trafficlightratio.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/trafficlightratio.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/trafficlightratio.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/trafficlightratio.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Data points' axes x1y2"
+
 
 
 

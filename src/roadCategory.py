@@ -19,9 +19,9 @@ con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 
 con.query("alter table " + QUERY_TABLE + " drop IF EXISTS roadCategory;")
 con.query('alter table ' + QUERY_TABLE + ' add roadCategory int;')
-
+print "begin update"
 con.query('update '+PREFIX+'_gps_can_data as '+PREFIX+'  set roadcategory = (case when category in ( \'11\',\'12\')  then 1 when category in( \'13\',\'14\',\'15\',\'21\',\'22\',\'31\') then 2 when category in (\'32\',\'33\',\'41\',\'42\',\'51\',\'63\') then 3 end) from gps_can_data as aa inner join ' + MAP_TABLE + ' on '+MAP_TABLE+'.segmentkey= aa.segmentkey where '+PREFIX+'.vehicleid= aa.vehicleid and '+PREFIX+'.timestamp=aa.timestamp;')
-
+print "done update"
 #con.query("create index "+MAP_TABLE+"_category_idx on "+MAP_TABLE+" (category);")
 
 
