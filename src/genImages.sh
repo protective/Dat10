@@ -15,6 +15,9 @@ if [ ! -d $PREFIX"_images" ]; then
     mkdir $PREFIX"_images"
 fi
 
+ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py idleRange2 $VEHICLEDATA | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/idleRange2.png $PREFIX"_images"/idleRange2.png
+
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py rpmRanges $GPSDATA | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/rpmRanges.png $PREFIX"_images"/rpmRanges.png
 
@@ -50,9 +53,6 @@ scp d103@172.25.26.191:Dat10/src/images/TripsLength.png $PREFIX"_images"/TripsLe
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py LengthTrips2 $TRIPS | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/TripsLength2.png $PREFIX"_images"/TripsLength2.png
-
-ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py idleRange2 $VEHICLEDATA | gnuplot"
-scp d103@172.25.26.191:Dat10/src/images/idleRange2.png $PREFIX"_images"/idleRange2.png
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py idleRange3 $VEHICLEDATA | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/idleRange3.png $PREFIX"_images"/idleRange3.png

@@ -323,19 +323,22 @@ elif TYPE == 'idleRange2':
 		for r in res:
 			writer.writerow(r)
 
+	boxwidth= 100.0/(len(vehicles)+1)
 	print "set output '" + path + "images/idleRange2.png';"
 	print "set ylabel 'Number of records';"
 	print "set xlabel 'Idle range (s)'"
-	print "set style data histogram"
-	print "set style histogram cluster gap 1"
 	print "set style fill solid border -1"
-	print "set boxwidth 0.9"
+	print "set boxwidth " + str(boxwidth)
 	print "set xtic rotate by -45 scale 0"
 	print "set logscale y 10"
+	print "set xr [-10:]"
+	print "set xtics 100"
 	
+	offset = 0
 	s = "plot "
 	for v in vehicles:
-		s += "'" + path + "data/"+str(v[0]) + "idleRange2.csv' using 2:xtic(1) title '" + str(v[0]) + "',"
+		s += "'" + path + "data/"+str(v[0]) + "idleRange2.csv' using ($1+"+ str(offset) + "):2 with boxes title '" + str(v[0]) + "',"
+		offset+=boxwidth
 	print s[:-1]
 
 elif TYPE == 'idleRange3':
@@ -393,52 +396,55 @@ elif TYPE == 'idlePercent':
 elif TYPE == 'rpmRanges':
 	vehicles = con.query("select distinct vehicleid from " + TABLE + ";").getresult()
 	for v in vehicles:
-		res = con.query("select round(rpm/100)*100 as r, count(*) from "+ TABLE + " where vehicleid =" + str(v[0]) + " group by r order by r;").getresult()
+		res = con.query("select * from (select round(rpm/100)*100 as r, count(*)::float as c from "+ TABLE + " where vehicleid =" + str(v[0]) + " group by r order by r)a where c>50;").getresult()
 	
 		output = open(path + 'data/'+str(v[0])+'rpmRanges.csv', 'w+')
 		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 		for r in res:
 			writer.writerow(r)
-
+			
+	boxwidth= 100.0/(len(vehicles)+1)
 	print "set output '" + path + "images/rpmRanges.png';"
 	print "set ylabel 'Number of records';"
 	print "set xlabel 'Round per minut';"
-	print "set style data histogram"
-	print "set style histogram cluster gap 1"
 	print "set style fill solid border -1"
-	print "set boxwidth 0.9"
+	print "set boxwidth " + str(boxwidth)
 	print "set xtic rotate by -45 scale 0"
-	print "set logscale y 10"
+	#print "set logscale y 10"
+	print "set xr [600:]"
+	print "set xtics 100"
 	
+	offset = 0
 	s = "plot "
 	for v in vehicles:
-		s += "'" + path + "data/"+str(v[0]) + "rpmRanges.csv' using 2:xtic(1) title '" + str(v[0]) + "',"
+		s += "'" + path + "data/"+str(v[0]) + "rpmRanges.csv' using ($1+"+ str(offset) + "):2 with boxes title '" + str(v[0]) + "',"
+		offset+=boxwidth
 	print s[:-1]	
 	
 
 elif TYPE == 'accelerationRanges':
 	vehicles = con.query("select distinct vehicleid from " + TABLE + ";").getresult()
 	for v in vehicles:
-		res = con.query("select round(acceleration2/10)*10::integer as acc, count(*) from "+ TABLE + " where vehicleid =" + str(v[0]) + " group by acc order by acc;").getresult()
-	
+		res = con.query("select * from (select round(acceleration2/1)*1::integer as acc, count(*)::float/1000 as c from "+ TABLE + " where vehicleid =" + str(v[0]) + " group by acc order by acc)a where c>10;").getresult()
 		output = open(path + 'data/'+str(v[0])+'accelerationRanges.csv', 'w+')
 		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 		for r in res:
 			writer.writerow(r)
 
+	boxwidth= 1.0/(len(vehicles)+1)
 	print "set output '" + path + "images/accelerationRanges.png';"
-	print "set ylabel 'Number of records';"
-	print "set xlabel 'Acceleration (m/s^2)';"
-	print "set style data histogram"
-	print "set style histogram cluster gap 1"
+	print "set ylabel 'Number of records (10^3)'"
+	print "set xlabel 'Acceleration (m/s^2)'"
 	print "set style fill solid border -1"
-	print "set boxwidth 0.9"
+	print "set boxwidth " + str(boxwidth)
 	print "set xtic rotate by -45 scale 0"
-	print "set logscale y 10"
+	print "set xtics 1"
 	
+	offset = 0
 	s = "plot "
 	for v in vehicles:
-		s += "'" + path + "data/"+str(v[0]) + "accelerationRanges.csv' using 2:xtic(1) title '" + str(v[0]) + "',"
+		s += "'" + path + "data/"+str(v[0]) + "accelerationRanges.csv' using ($1+"+ str(offset) + "):2 with boxes title '" + str(v[0]) + "',"
+		offset+=boxwidth
 	print s[:-1]
 
 elif TYPE == 'accelerationRangesFuel':#Not done
