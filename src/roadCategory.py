@@ -20,7 +20,25 @@ con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 con.query("alter table " + QUERY_TABLE + " drop IF EXISTS roadCategory;")
 con.query('alter table ' + QUERY_TABLE + ' add roadCategory int;')
 print "begin update"
-con.query('update '+PREFIX+'_gps_can_data as '+PREFIX+'  set roadcategory = (case when category in ( \'11\',\'12\')  then 1 when category in( \'13\',\'14\',\'15\',\'21\',\'22\',\'31\') then 2 when category in (\'32\',\'33\',\'41\',\'42\',\'51\',\'63\') then 3 end) from gps_can_data as aa inner join ' + MAP_TABLE + ' on '+MAP_TABLE+'.segmentkey= aa.segmentkey where '+PREFIX+'.vehicleid= aa.vehicleid and '+PREFIX+'.timestamp=aa.timestamp;')
+
+
+
+res = con.query('select vehicleid, timestamp,segmentkey from gps_can_data').getresult()
+count = 0
+for i in res:
+	if(count%1000==0):
+		print count
+	count +=1
+	if(i[2]):
+		res2 = con.query("select (case when category in ( \'11\',\'12\')  then 1 when category in( \'13\',\'14\',\'15\',\'21\',\'22\',\'31\') then 2 when category in (\'32\',\'33\',\'41\',\'42\',\'51\',\'63\') then 3 end) from "+MAP_TABLE+" where segmentkey = " + str(i[2]) + ";").getresult()
+		if(len(res2)>0 and res2[0][0]):
+			con.query("update "+PREFIX+"_gps_can_data set roadcategory = "+str(res2[0][0]) + " where timestamp = '" + str(i[1]) + "' and vehicleid = " + str(i[0]) + ";")
+
+#con.query("update "+PREFIX+"_gps_can_data as e1 set roadcategory = (case when category in ( \'11\',\'12\')  then 1 when category in( \'13\',\'14\',\'15\',\'21\',\'22\',\'31\') then 2 when category in (\'32\',\'33\',\'41\',\'42\',\'51\',\'63\') then 3 end) from "+PREFIX+"_gps_can_data as "+PREFIX+" inner join gps_can_data as aa on "+PREFIX+".vehicleid= aa.vehicleid and "+PREFIX+".timestamp=aa.timestamp inner join "+MAP_TABLE+" as o on o.segmentkey= aa.segmentkey;")
+
+
+
+
 print "done update"
 #con.query("create index "+MAP_TABLE+"_category_idx on "+MAP_TABLE+" (category);")
 
