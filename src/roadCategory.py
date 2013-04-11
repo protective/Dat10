@@ -23,8 +23,20 @@ print "begin update"
 
 
 
+res = con.query('select vehicleid, timestamp,segmentkey from gps_can_data').getresult()
+count = 0
+for i in res:
+	print count
+	count +=1
+	res2 = con.query("select (case when category in ( \'11\',\'12\')  then 1 when category in( \'13\',\'14\',\'15\',\'21\',\'22\',\'31\') then 2 when category in (\'32\',\'33\',\'41\',\'42\',\'51\',\'63\') then 3 end) from "+PREFIX+"_gps_can_data where segmentkey = " + str(res[2]) + ";"
 
-con.query("update "+PREFIX+"_gps_can_data as e1 set roadcategory = (case when category in ( \'11\',\'12\')  then 1 when category in( \'13\',\'14\',\'15\',\'21\',\'22\',\'31\') then 2 when category in (\'32\',\'33\',\'41\',\'42\',\'51\',\'63\') then 3 end) from "+PREFIX+"_gps_can_data as "+PREFIX+" inner join gps_can_data as aa on "+PREFIX+".vehicleid= aa.vehicleid and "+PREFIX+".timestamp=aa.timestamp inner join "+MAP_TABLE+" as o on o.segmentkey= aa.segmentkey;")
+	con.query("update "+PREFIX+"_gps_can_data set roadcategory = "+str(res2[0]) + " where timestamp = " + str(res[1]) + " and vehicleid = " + str(res[0]) + ";"
+
+#con.query("update "+PREFIX+"_gps_can_data as e1 set roadcategory = (case when category in ( \'11\',\'12\')  then 1 when category in( \'13\',\'14\',\'15\',\'21\',\'22\',\'31\') then 2 when category in (\'32\',\'33\',\'41\',\'42\',\'51\',\'63\') then 3 end) from "+PREFIX+"_gps_can_data as "+PREFIX+" inner join gps_can_data as aa on "+PREFIX+".vehicleid= aa.vehicleid and "+PREFIX+".timestamp=aa.timestamp inner join "+MAP_TABLE+" as o on o.segmentkey= aa.segmentkey;")
+
+
+
+
 print "done update"
 #con.query("create index "+MAP_TABLE+"_category_idx on "+MAP_TABLE+" (category);")
 
