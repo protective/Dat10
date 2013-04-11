@@ -278,7 +278,7 @@ elif TYPE == 'trafficlightred':
 	print "set ylabel 'Class distribution (%)'"
 	print "set xlabel 'traffic lights related stops pr km '"
 	print "set yrange[0:100]"
-	print "set xrange[0:2.5]"
+	print "set xrange[0:]"
 	print "set y2tics"
 	print "set y2label 'Number of trips'"
 	print "set logscale y2 10 "
