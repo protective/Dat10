@@ -29,7 +29,7 @@ for i in res:
 	print count
 	count +=1
 	if(i[2]):
-		res2 = con.query("select (case when category in ( \'11\',\'12\')  then 1 when category in( \'13\',\'14\',\'15\',\'21\',\'22\',\'31\') then 2 when category in (\'32\',\'33\',\'41\',\'42\',\'51\',\'63\') then 3 end) from "+MAP_TABLE+" where segmentkey = " + str(i[2]) + ";")
+		res2 = con.query("select (case when category in ( \'11\',\'12\')  then 1 when category in( \'13\',\'14\',\'15\',\'21\',\'22\',\'31\') then 2 when category in (\'32\',\'33\',\'41\',\'42\',\'51\',\'63\') then 3 end) from "+MAP_TABLE+" where segmentkey = " + str(i[2]) + ";").getresult()
 		if(len(res2)>0):
 			con.query("update "+PREFIX+"_gps_can_data set roadcategory = "+str(res2[0][0]) + " where timestamp = " + str(i[1]) + " and vehicleid = " + str(i[0]) + ";")
 
