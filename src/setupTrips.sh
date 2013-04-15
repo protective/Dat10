@@ -4,11 +4,7 @@ PREFIX=$2
 TRIPTIME=$3
 TRIPLENGTH=$4
 mapmatch="nm"
-if [ $5 = "mm" ]; then
-mapmatch="mm"
-else
-mapmatch="nm"
-fi
+
 
 getTrajectories=true
 postgis=false
@@ -22,7 +18,7 @@ temperature=false
 
 if ($getTrajectories) then
 echo "get trajectories"
-python getTrajectories.py $TRIPTIME 0 $TRIPLENGTH $PREFIX $mapmatch
+python getTrajectories.py $TRIPTIME 0 $TRIPLENGTH $PREFIX
 fi
 
 
@@ -37,34 +33,27 @@ psql -d $DB -c "create index osm_dk_20130214_segmentkey_idx on osm_dk_20130214 (
 psql -d $DB -c "create index osm_dk_20130214_category_idx on osm_dk_20130214 (category);"
 fi
 
-
-
-
 if ($tripData) then
 python tripData.py $PREFIX
 fi
 
 if ($idle) then
-python idle.py 0 $PREFIX
+python idle.py $PREFIX 0 
 fi
 
 if ($cruise) then
-python cruise.py $PREFIX
+python cruise.py 1 20 $PREFIX
 fi
 
 if ($trafficLights) then
 python extractTrafficLights.py maps/denmark.osm $PREFIX
-python inRangeOfTl.py $PREFIX
-python TrafficLightCounter.py $PREFIX
+python inRangeOfTl.py 20 $PREFIX
 fi
 
-if [ $mapmatch = "mm" ]; then
 python roadCategory.py $PREFIX
-fi
 
 if ($acceleration) then
-python noAcceleration.py $PREFIX
-python noAccelerationW.py $PREFIX
+python acceleration.py $PREFIX
 python stopngo.py $PREFIX
 fi
 
