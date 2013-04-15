@@ -32,7 +32,7 @@ if True:
 	avgnumber = 3	
 
 	for v in tids:
-		print "Vehicle " + str(v[0])
+		print "tid " + str(v[0])
 		res = con.query("select timestamp, speed, tid from " + DATATABLE + " where tid=" + str(v[0]) +" and dirty is false order by timestamp;").getresult()
 		#oldTime = res[0][0]
 		#oldSpeed = float(res[0][1])
