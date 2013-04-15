@@ -9,10 +9,10 @@ mapmatch="nm"
 getTrajectories=true
 postgis=false
 tripData=true
-idle=false
-cruise=false
-trafficLights=false
-acceleration=false
+idle=true
+cruise=true
+trafficLights=true
+acceleration=true
 temperature=false
 
 
