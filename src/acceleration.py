@@ -17,11 +17,12 @@ except:
 def getTime(t):
 	return float(time.mktime(time.strptime(t, "%Y-%m-%j %H:%M:%S")))
 
-if False:
+if True:
+	interval = 3
 	print "Altering table"
 	con.query('set synchronous_commit = on;')
-	con.query('alter table ' + DATATABLE + ' drop IF EXISTS acceleration2;')
-	con.query('alter table ' + DATATABLE + ' add column acceleration2 float not null default 0;')
+	con.query('alter table ' + DATATABLE + ' drop IF EXISTS acceleration' + str(interval) + ';')
+	con.query('alter table ' + DATATABLE + ' add column acceleration' + str(interval) + ' float not null default 0;')
 
 	print "Calculating acceleration profiles"
 	vehicles = con.query("select distinct vehicleid from "+ DATATABLE + ";").getresult()
@@ -41,7 +42,7 @@ if False:
 			if curTid == oldTid:
 				acc = (oldSpeed-curSpeed)/(getTime(oldTime)-getTime(curTime))
 		
-			q = "update " + DATATABLE + " set acceleration2 = " + str(acc) + " where vehicleid=" + str(v[0]) + " and timestamp='"+ str(curTime) + "';"
+			q = "update " + DATATABLE + " set acceleration" + str(interval) + " = " + str(acc) + " where vehicleid=" + str(v[0]) + " and timestamp='"+ str(curTime) + "';"
 			con.query(q)
 			#print str(curTid)  + "\t" + str(acc) + "\t" + str(curTime) + "\t" + str(curSpeed) + "\t" + str(abs(oldSpeed-curSpeed)) + "\t" + str(abs(getTime(oldTime)-getTime(curTime)))
 		
@@ -49,11 +50,11 @@ if False:
 			oldSpeed = curSpeed
 			oldTid = curTid
 
-	con.query("DROP INDEX IF EXISTS acceleration2_" + DATATABLE + "_idx CASCADE; create index acceleration2_" + DATATABLE + "_idx on " + DATATABLE + " (acceleration2);")
+	con.query("DROP INDEX IF EXISTS acceleration" + str(interval) + "_" + DATATABLE + "_idx CASCADE; create index acceleration" + str(interval) + "_" + DATATABLE + "_idx on " + DATATABLE + " (acceleration" + str(interval) + ");")
 
-if True:
+if False:
 	con.query("drop table if exists "+ACCDATA+";")
-	con.query("create table "+ACCDATA+" (vehicleid bigint, acceleration int, fuel float, int time, startTime timestamp);")
+	con.query("create table "+ACCDATA+" (vehicleid bigint, acceleration float, fuel float, int time, startTime timestamp);")
 
 	print "Calculating"
 	vehicles = con.query("select distinct vehicleid from "+ DATATABLE + ";").getresult()
