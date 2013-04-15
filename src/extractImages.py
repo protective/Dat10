@@ -536,6 +536,13 @@ elif TYPE == 'accelerationFast':
 	for v in vehicles:
 		s += "'" + path + "data/"+str(v[0]) + "accelerationFast.csv' title '" + str(v[0]) + "',"
 	print s + "2 notitle"
+
+elif TYPE == 'testSpeed':
+	print "set output '" + path + "images/testSpeed.png';"
+	print "set ylabel 'Number of records"
+	print "set xlabel 'Speed Difference'"
+	print "set xtics 5"
+	print "plot '" + path + "data/testSpeed.csv' with lines lw 3 notitle"
 	
 else:
 	val = TYPE + '*100, km_pr_l as val, |/ (total_fuel/3.14)'
