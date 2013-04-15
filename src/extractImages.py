@@ -490,21 +490,23 @@ elif TYPE == 'rpmRanges':
 
 elif TYPE == 'accelerationRanges':
 	vehicles = con.query("select distinct vehicleid from " + TABLE + ";").getresult()
+	
+	granularity = 10
 	for v in vehicles:
-		res = con.query("select * from (select round(acceleration2/1)*1::integer as acc, count(*)::float/1000 as c from "+ TABLE + " where vehicleid =" + str(v[0]) + " group by acc order by acc)a where c>10;").getresult()
+		res = con.query("select * from (select round(acceleration2/"+str(granularity)+")*"+str(granularity)+"::integer as acc, count(*)::float as c from "+ TABLE + " where vehicleid =" + str(v[0]) + " group by acc order by acc)a where acc != 0 and c > 10;").getresult()
 		output = open(path + 'data/'+str(v[0])+'accelerationRanges.csv', 'w+')
 		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 		for r in res:
 			writer.writerow(r)
 
-	boxwidth= 1.0/(len(vehicles)+1)
+	boxwidth= float(granularity)/(len(vehicles)+1)
 	print "set output '" + path + "images/accelerationRanges.png';"
-	print "set ylabel 'Number of records (10^3)'"
+	print "set ylabel 'Number of records'"
 	print "set xlabel 'Acceleration (m/s^2)'"
 	print "set style fill solid border -1"
 	print "set boxwidth " + str(boxwidth)
 	print "set xtic rotate by -45 scale 0"
-	print "set xtics 1"
+	print "set xtics " + str(granularity)
 	
 	offset = 0
 	s = "plot "
@@ -513,30 +515,27 @@ elif TYPE == 'accelerationRanges':
 		offset+=boxwidth
 	print s[:-1]
 
-elif TYPE == 'accelerationRangesFuel':#Not done
+elif TYPE == 'accelerationFast':
 	vehicles = con.query("select distinct vehicleid from " + TABLE + ";").getresult()
+	i = 0
 	for v in vehicles:
-		res = con.query("select acceleration as acc from "+ TABLE + " where vehicleid =" + str(v[0]) + " group by acc order by acc;)f").getresult()
-	
-		output = open(path + 'data/'+str(v[0])+'accelerationRanges.csv', 'w+')
-		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+		vid = str(v[0])
+		res = con.query("select acceleration2 as acc from "+ TABLE + " where vehicleid =" + vid + " order by tid, timestamp;").getresult()
+		output = open(path + 'data/'+str(v[0])+'accelerationFast.csv', 'w+')
 		for r in res:
-			writer.writerow(r)
+			print>> output, str(i) + " " + str(r[0])
+			i+=1
 
-	print "set output '" + path + "images/accelerationRanges.png';"
-	print "set ylabel 'Number of records';"
-	print "set xlabel 'Acceleration (m/s^2)';"
-	print "set style data histogram"
-	print "set style histogram cluster gap 1"
-	print "set style fill solid border -1"
-	print "set boxwidth 0.9"
-	print "set xtic rotate by -45 scale 0"
-	print "set logscale y 10"
+
+	print "set output '" + path + "images/accelerationFast.png';"
+	print "set ylabel 'Acceleration (m/s^2)'"
+	print "set ytics 10"
+	#print "set yrange[:100]"
 	
 	s = "plot "
 	for v in vehicles:
-		s += "'" + path + "data/"+str(v[0]) + "accelerationRanges.csv' using 2:xtic(1) title '" + str(v[0]) + "',"
-	print s[:-1]
+		s += "'" + path + "data/"+str(v[0]) + "accelerationFast.csv' title '" + str(v[0]) + "',"
+	print s + "2 notitle"
 	
 else:
 	val = TYPE + '*100, km_pr_l as val, |/ (total_fuel/3.14)'
