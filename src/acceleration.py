@@ -48,7 +48,7 @@ if True:
 					counter+=1
 			if(counter > 0):
 				avg/=counter
-				q = "update " + DATATABLE + " set acceleration = " + str(avg) + " where tid=" + str(v[2]) + " and timestamp='"+ str(red[r]) + "';"
+				q = "update " + DATATABLE + " set acceleration = " + str(avg) + " where tid=" + str(v[2]) + " and timestamp='"+ str(res[r]) + "';"
 				con.query(q)
 
 
