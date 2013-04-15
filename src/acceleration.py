@@ -7,6 +7,8 @@ DB = 'gps_can'
 con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 
 test= False
+
+errormargin = 40
 try:
 	DATATABLE = sys.argv[1] + "_gps_can_data"
 	ACCDATA = sys.argv[1] + "_accdata2"
@@ -21,18 +23,36 @@ if True:
 	interval = 3
 	print "Altering table"
 	con.query('set synchronous_commit = on;')
-	con.query('alter table ' + DATATABLE + ' drop IF EXISTS acceleration' + str(interval) + ';')
-	con.query('alter table ' + DATATABLE + ' add column acceleration' + str(interval) + ' float not null default 0;')
+	con.query('alter table ' + DATATABLE + ' drop IF EXISTS acceleration;')
+	con.query('alter table ' + DATATABLE + ' add column acceleration float not null default 0;')
 
 	print "Calculating acceleration profiles"
-	vehicles = con.query("select distinct vehicleid from "+ DATATABLE + ";").getresult()
+	tids = con.query("select distinct tid from "+ DATATABLE + ";").getresult()
 
-	for v in vehicles:
+	avgnumber = 3	
+
+	for v in tids:
 		print "Vehicle " + str(v[0])
-		res = con.query("select timestamp, speed, tid from " + DATATABLE + " where vehicleid=" + str(v[0]) +" and dirty is false order by timestamp;").getresult()
+		res = con.query("select timestamp, speed, tid from " + DATATABLE + " where tid=" + str(v[0]) +" and dirty is false order by timestamp;").getresult()
 		oldTime = res[0][0]
 		oldSpeed = float(res[0][1])
 		oldTid = int(res[0][2])
+
+		avg = 0
+		for r in range(0,len(res)-1):
+			avg = 0
+			counter = 0
+			for a in range( max((r-avgnumber)+1,0),r):
+				if(abs(res[a][1]) < errormargin):
+					avg+=res[a][1]
+					counter+=1
+			if(counter > 0):
+				avg/=counter
+				q = "update " + DATATABLE + " set acceleration = " + str(avg) + " where tid=" + str(v[2]) + " and timestamp='"+ str(red[r]) + "';"
+				con.query(q)
+
+
+"""
 		for r in range(1, len(res)-1):
 			curTime = res[r][0]
 			curSpeed = float(res[r][1])
@@ -42,13 +62,14 @@ if True:
 			if curTid == oldTid:
 				acc = (oldSpeed-curSpeed)/(getTime(oldTime)-getTime(curTime))
 		
-			q = "update " + DATATABLE + " set acceleration" + str(interval) + " = " + str(acc) + " where vehicleid=" + str(v[0]) + " and timestamp='"+ str(curTime) + "';"
+			q = "update " + DATATABLE + " set acceleration = " + str(acc) + " where vehicleid=" + str(v[0]) + " and timestamp='"+ str(curTime) + "';"
 			con.query(q)
 			#print str(curTid)  + "\t" + str(acc) + "\t" + str(curTime) + "\t" + str(curSpeed) + "\t" + str(abs(oldSpeed-curSpeed)) + "\t" + str(abs(getTime(oldTime)-getTime(curTime)))
 		
 			oldTime = curTime
 			oldSpeed = curSpeed
 			oldTid = curTid
+"""
 
 	con.query("DROP INDEX IF EXISTS acceleration" + str(interval) + "_" + DATATABLE + "_idx CASCADE; create index acceleration" + str(interval) + "_" + DATATABLE + "_idx on " + DATATABLE + " (acceleration" + str(interval) + ");")
 
