@@ -34,9 +34,9 @@ if True:
 	for v in tids:
 		print "Vehicle " + str(v[0])
 		res = con.query("select timestamp, speed, tid from " + DATATABLE + " where tid=" + str(v[0]) +" and dirty is false order by timestamp;").getresult()
-		oldTime = res[0][0]
-		oldSpeed = float(res[0][1])
-		oldTid = int(res[0][2])
+		#oldTime = res[0][0]
+		#oldSpeed = float(res[0][1])
+		#oldTid = int(res[0][2])
 
 		avg = 0
 		for r in range(0,len(res)-1):
