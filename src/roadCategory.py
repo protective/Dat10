@@ -29,8 +29,8 @@ for i in res:
 	if(count%1000==0):
 		print str(count) + "of " + str(len(res))
 	count +=1
-
-	con.query("update "+PREFIX+"_gps_can_data set roadcategory = "+str(i[1]) + " where segmentkey = " + str(i[0]) + ";")
+	if (i[0]):
+		con.query("update "+PREFIX+"_gps_can_data set roadcategory = "+str(i[1]) + " where segmentkey = " + str(i[0]) + ";")
 
 #con.query("update "+PREFIX+"_gps_can_data as e1 set roadcategory = (case when category in ( \'11\',\'12\')  then 1 when category in( \'13\',\'14\',\'15\',\'21\',\'22\',\'31\') then 2 when category in (\'32\',\'33\',\'41\',\'42\',\'51\',\'63\') then 3 end) from "+PREFIX+"_gps_can_data as "+PREFIX+" inner join gps_can_data as aa on "+PREFIX+".vehicleid= aa.vehicleid and "+PREFIX+".timestamp=aa.timestamp inner join "+MAP_TABLE+" as o on o.segmentkey= aa.segmentkey;")
 
