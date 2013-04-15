@@ -52,24 +52,24 @@ if True:
 				con.query(q)
 
 
-"""
-		for r in range(1, len(res)-1):
-			curTime = res[r][0]
-			curSpeed = float(res[r][1])
-			curTid = int(res[r][2])
+
+#		for r in range(1, len(res)-1):
+#			curTime = res[r][0]
+#			curSpeed = float(res[r][1])
+	#		curTid = int(res[r][2])
 		
-			acc = 0
-			if curTid == oldTid:
-				acc = (oldSpeed-curSpeed)/(getTime(oldTime)-getTime(curTime))
+	#		acc = 0
+#			if curTid == oldTid:
+#				acc = (oldSpeed-curSpeed)/(getTime(oldTime)-getTime(curTime))
 		
-			q = "update " + DATATABLE + " set acceleration = " + str(acc) + " where vehicleid=" + str(v[0]) + " and timestamp='"+ str(curTime) + "';"
-			con.query(q)
+#			q = "update " + DATATABLE + " set acceleration = " + str(acc) + " where vehicleid=" + str(v[0]) + " and timestamp='"+ str(curTime) + "';"
+#			con.query(q)
 			#print str(curTid)  + "\t" + str(acc) + "\t" + str(curTime) + "\t" + str(curSpeed) + "\t" + str(abs(oldSpeed-curSpeed)) + "\t" + str(abs(getTime(oldTime)-getTime(curTime)))
 		
-			oldTime = curTime
-			oldSpeed = curSpeed
-			oldTid = curTid
-"""
+#			oldTime = curTime
+#			oldSpeed = curSpeed
+#			oldTid = curTid
+
 
 	con.query("DROP INDEX IF EXISTS acceleration" + str(interval) + "_" + DATATABLE + "_idx CASCADE; create index acceleration" + str(interval) + "_" + DATATABLE + "_idx on " + DATATABLE + " (acceleration" + str(interval) + ");")
 
