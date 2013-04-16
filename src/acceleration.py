@@ -40,26 +40,27 @@ if True:
 
 		avg = 0
 		oldavg = 0
-		oldTime = res[0][0]
-		for r in range(0,len(res)-1):
-			avg = 0
-			counter = 0
-			for a in range( max((r-avgnumber)+1,0),r):
-				if(abs(res[a][1]) < errormargin):
-					avg+=res[a][1]
-					counter+=1
-			if(counter > 0):
-				avg/=counter
-				curTime = res[r][0]
-				acc = 0
-				if(getTime(oldTime)-getTime(curTime) > 0):
-					acc = (oldavg - avg )/(getTime(oldTime)-getTime(curTime))
+		if len(res) > 0:
+			oldTime = res[0][0]
+			for r in range(0,len(res)-1):
+				avg = 0
+				counter = 0
+				for a in range( max((r-avgnumber)+1,0),r):
+					if(abs(res[a][1]) < errormargin):
+						avg+=res[a][1]
+						counter+=1
+				if(counter > 0):
+					avg/=counter
+					curTime = res[r][0]
+					acc = 0
+					if(getTime(oldTime)-getTime(curTime) > 0):
+						acc = (oldavg - avg )/(getTime(oldTime)-getTime(curTime))
 				
-				oldavg = avg
-				oldTime = res[r][0]
+					oldavg = avg
+					oldTime = res[r][0]
 				
-				q = "update " + DATATABLE + " set acceleration2 = " + str(acc) + " where tid=" + str(res[2][2]) + " and timestamp='"+ str(res[r][0]) + "';"
-				con.query(q)
+					q = "update " + DATATABLE + " set acceleration2 = " + str(acc) + " where tid=" + str(res[2][2]) + " and timestamp='"+ str(res[r][0]) + "';"
+					con.query(q)
 
 
 
