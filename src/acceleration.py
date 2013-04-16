@@ -23,11 +23,11 @@ if True:
 	interval = 3
 	print "Altering table"
 	con.query('set synchronous_commit = on;')
-	con.query('alter table ' + DATATABLE + ' drop IF EXISTS acceleration;')
-	con.query('alter table ' + DATATABLE + ' add column acceleration float not null default 0;')
+	con.query('alter table ' + DATATABLE + ' drop IF EXISTS acceleration2;')
+	con.query('alter table ' + DATATABLE + ' add column acceleration2 float not null default 0;')
 
 	print "Calculating acceleration profiles"
-	tids = con.query("select distinct tid from "+ DATATABLE + ";").getresult()
+	tids = con.query("select distinct tid from "+ DATATABLE + " order by tid;").getresult()
 
 	avgnumber = 3	
 
@@ -39,6 +39,8 @@ if True:
 		#oldTid = int(res[0][2])
 
 		avg = 0
+		oldavg = 0
+		oldTime = res[0][0]
 		for r in range(0,len(res)-1):
 			avg = 0
 			counter = 0
@@ -48,7 +50,15 @@ if True:
 					counter+=1
 			if(counter > 0):
 				avg/=counter
-				q = "update " + DATATABLE + " set acceleration = " + str(avg) + " where tid=" + str(res[2][2]) + " and timestamp='"+ str(res[r][0]) + "';"
+				curTime = res[r][0]
+				acc = 0
+				if(getTime(oldTime)-getTime(curTime) > 0):
+					acc = (oldavg - avg )/(getTime(oldTime)-getTime(curTime))
+				
+				oldavg = avg
+				oldTime = res[r][0]
+				
+				q = "update " + DATATABLE + " set acceleration2 = " + str(acc) + " where tid=" + str(res[2][2]) + " and timestamp='"+ str(res[r][0]) + "';"
 				con.query(q)
 
 

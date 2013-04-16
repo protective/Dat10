@@ -159,7 +159,7 @@ elif TYPE == 'normalRoad':
 	clusters.append(con.query('select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+ TABLE + ';').getresult()[0][0])
 	clusters.append(con.query('select avg(km_pr_l) from '+TABLE+' where km_pr_l > (select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+TABLE+')').getresult()[0][0])
 	
-	res = con.query("select round((PNormalRoad*10)::numeric,0),count(case when km_pr_l <="+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l <= "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " where total_km >= 0.1 and PNormalRoad is not null  group by round order by round;").getresult()
+	res = con.query("select round((PNormalRoad)::numeric,2),count(case when km_pr_l <="+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l <= "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " where total_km >= 0.1 and PNormalRoad is not null  group by round order by round;").getresult()
 	
 	output = open(path + 'data/normalRoad.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -181,7 +181,7 @@ elif TYPE == 'smallRoad':
 	clusters.append(con.query('select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+ TABLE + ';').getresult()[0][0])
 	clusters.append(con.query('select avg(km_pr_l) from '+TABLE+' where km_pr_l > (select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+TABLE+')').getresult()[0][0])
 	
-	res = con.query("select round((PSmallRoad*10)::numeric,0),count(case when km_pr_l <="+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l <= "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " where total_km >= 0.1 and PSmallRoad is not null group by round order by round;").getresult()
+	res = con.query("select round((PSmallRoad)::numeric,2),count(case when km_pr_l <="+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l <= "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " where total_km >= 0.1 and PSmallRoad is not null group by round order by round;").getresult()
 	output = open(path + 'data/smallRoad.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 	for r in res:
@@ -202,7 +202,7 @@ elif TYPE == 'moterRoad':
 	clusters.append(con.query('select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+ TABLE + ';').getresult()[0][0])
 	clusters.append(con.query('select avg(km_pr_l) from '+TABLE+' where km_pr_l > (select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+TABLE+')').getresult()[0][0])
 	
-	res = con.query("select round((pmoterroad*10)::numeric,0),count(case when km_pr_l <="+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l <= "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " where total_km >= 0.1 and pmoterroad is not null group by round order by round;").getresult()
+	res = con.query("select round((pmoterroad)::numeric,2),count(case when km_pr_l <="+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l <= "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " where total_km >= 0.1 and pmoterroad is not null group by round order by round;").getresult()
 	output = open(path + 'data/moterRoad.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 	for r in res:
@@ -493,7 +493,7 @@ elif TYPE == 'accelerationRanges':
 	
 	granularity = 10
 	for v in vehicles:
-		res = con.query("select * from (select round(acceleration2/"+str(granularity)+")*"+str(granularity)+"::integer as acc, count(*)::float as c from "+ TABLE + " where vehicleid =" + str(v[0]) + " group by acc order by acc)a where acc != 0 and c > 10;").getresult()
+		res = con.query("select * from (select round(acceleration/"+str(granularity)+")*"+str(granularity)+"::integer as acc, count(*)::float as c from "+ TABLE + " where vehicleid =" + str(v[0]) + " group by acc order by acc)a where acc != 0 and c > 10;").getresult()
 		output = open(path + 'data/'+str(v[0])+'accelerationRanges.csv', 'w+')
 		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 		for r in res:
@@ -520,7 +520,7 @@ elif TYPE == 'accelerationFast':
 	i = 0
 	for v in vehicles:
 		vid = str(v[0])
-		res = con.query("select acceleration2 as acc from "+ TABLE + " where vehicleid =" + vid + " order by tid, timestamp;").getresult()
+		res = con.query("select acceleration as acc from "+ TABLE + " where vehicleid =" + vid + " order by tid, timestamp;").getresult()
 		output = open(path + 'data/'+str(v[0])+'accelerationFast.csv', 'w+')
 		for r in res:
 			print>> output, str(i) + " " + str(r[0])
