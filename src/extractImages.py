@@ -218,6 +218,30 @@ elif TYPE == 'moterRoad':
 	print "set key opaque"
 	print "plot '" + path + "data/moterRoad.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/moterRoad.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/moterRoad.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/moterRoad.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Data points' axes x1y2"
 
+elif TYPE == 'testRoad':
+
+	res = con.query("select pmoterroad, km_pr_l, vehicleid from "+TABLE+" where pmoterroad is not null order by vehicleid;").getresult()
+	vehicles = []
+	for r in range(0, len(res)-1):
+		if r==0 or not res[r][2]==res[r-1][2]:
+			output = open(path + 'data/'+str(res[r][2])+'testRoad.csv', 'w+')
+			writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+			vehicles.append(res[r][2])
+		writer.writerow(res[r])
+		
+	print "set output '" + path + "images/testRoad.png';"
+	print "set ylabel 'Fuel (km/l)';"
+	print "set xlabel 'P normal Road '"
+	
+	s = "plot "
+	for v in vehicles:
+		s += "'" + path + "data/"+str(v) + "testRoad.csv' using 1:2 title '" + str(v) + "',"
+	print s[:-1]
+
+
+
+
+
 
 elif TYPE == 'trafficlight':
 	clusters = []
@@ -408,7 +432,7 @@ elif TYPE == 'idleRange2':
 	print s[:-1]
 
 elif TYPE == 'idleRange3':
-	res = con.query("select stopped, fuel, vehicleid from "+TABLE+" where stopped>=100;").getresult()
+	res = con.query("select stopped, fuel, vehicleid from "+TABLE+" where stopped>=100 order by vehicleid;").getresult()
 	vehicles = []
 	for r in range(0, len(res)-1):
 		if r==0 or not res[r][2]==res[r-1][2]:
