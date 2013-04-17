@@ -86,7 +86,7 @@ if True:
 #			oldTid = curTid
 
 
-	con.query("DROP INDEX IF EXISTS acceleration" + str(interval) + "_" + DATATABLE + "_idx CASCADE; create index acceleration" + str(interval) + "_" + DATATABLE + "_idx on " + DATATABLE + " (acceleration" + str(interval) + ");")
+	con.query("DROP INDEX IF EXISTS acceleration2_" + DATATABLE + "_idx CASCADE; create index acceleration2_" + DATATABLE + "_idx on " + DATATABLE + " (acceleration2);")
 
 if False:
 	con.query("drop table if exists "+ACCDATA+";")
