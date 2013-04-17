@@ -220,7 +220,7 @@ elif TYPE == 'moterRoad':
 
 elif TYPE == 'testRoad':
 
-	res = con.query("select pmoterroad, km_pr_l, vehicleid from "+TABLE+" where pmoterroad is not null order by vehicleid;").getresult()
+	res = con.query("select moterroad, km_pr_l, vehicleid from "+TABLE+" where pmoterroad is not null order by vehicleid;").getresult()
 	vehicles = []
 	for r in range(0, len(res)-1):
 		if r==0 or not res[r][2]==res[r-1][2]:
@@ -517,7 +517,7 @@ elif TYPE == 'accelerationRanges':
 	
 	granularity = 10
 	for v in vehicles:
-		res = con.query("select * from (select round(acceleration/"+str(granularity)+")*"+str(granularity)+"::integer as acc, count(*)::float as c from "+ TABLE + " where vehicleid =" + str(v[0]) + " group by acc order by acc)a where acc != 0 and c > 10;").getresult()
+		res = con.query("select * from (select round(acceleration2/"+str(granularity)+")*"+str(granularity)+"::integer as acc, count(*)::float as c from "+ TABLE + " where vehicleid =" + str(v[0]) + " group by acc order by acc)a where acc != 0 and c > 10;").getresult()
 		output = open(path + 'data/'+str(v[0])+'accelerationRanges.csv', 'w+')
 		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 		for r in res:
@@ -544,7 +544,7 @@ elif TYPE == 'accelerationFast':
 	i = 0
 	for v in vehicles:
 		vid = str(v[0])
-		res = con.query("select acceleration as acc from "+ TABLE + " where vehicleid =" + vid + " order by tid, timestamp;").getresult()
+		res = con.query("select acceleration2 as acc from "+ TABLE + " where vehicleid =" + vid + " order by tid, timestamp;").getresult()
 		output = open(path + 'data/'+str(v[0])+'accelerationFast.csv', 'w+')
 		for r in res:
 			print>> output, str(i) + " " + str(r[0])

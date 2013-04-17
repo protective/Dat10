@@ -53,8 +53,12 @@ if True:
 					avg/=counter
 					curTime = res[r][0]
 					acc = 0
+					#print oldTime
+					#print curTime
+					#print str(getTime(curTime)) + " " + str( getTime(oldTime))
 					if(getTime(oldTime)-getTime(curTime) > 0):
-						acc = (oldavg - avg )/(getTime(oldTime)-getTime(curTime))
+						
+						acc = (oldavg - avg )/(getTime(curTime)-getTime(oldTime))
 				
 					oldavg = avg
 					oldTime = res[r][0]
