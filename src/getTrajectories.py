@@ -19,12 +19,9 @@ if len(sys.argv) > 1:
 	LENGTH = int(sys.argv[2])
 	LENGTHCount = int(sys.argv[3])
 	NEW_TABLE = ''+sys.argv[4]+'_' + TABLE
-	if (sys.argv[5] == "mm"):
-		MapMatch = True
-		print "using mapmatch data"
-	if len(sys.argv)> 6:
-		test = bool(sys.argv[6])
-		filename = str(sys.argv[7])
+	if len(sys.argv)> 5:
+		test = bool(sys.argv[5])
+		filename = str(sys.argv[6])
 print "create table " + NEW_TABLE	
 counter = 0
 lengthCounter = 0
@@ -38,10 +35,8 @@ con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 if (not test):
 	print "Alter table"
 	con.query('drop table IF EXISTS ' + NEW_TABLE + ';')
-	if(MapMatch):
-		con.query('create table ' + NEW_TABLE + ' as (select * from ' + TABLE + ' where rpm > 0);')
-	else:
-		con.query('create table ' + NEW_TABLE + ' as (select * from canbusdata where rpm > 0 and dirty = false);')
+	con.query('create table ' + NEW_TABLE + ' as (select * from ' + TABLE + ' where rpm > 0);')
+
 	con.query('alter table ' + NEW_TABLE  + ' drop if exists dirty')
 	con.query('alter table ' + NEW_TABLE + ' add column dirty bool default false;')
 if (not test):
@@ -50,7 +45,7 @@ if (not test):
 	con.query("DROP INDEX IF EXISTS time_" + NEW_TABLE + "_idx CASCADE; create index time_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (timestamp);")
 	con.query("DROP INDEX IF EXISTS speed_" + NEW_TABLE + "_idx CASCADE; create index speed_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (speed);")
 	con.query("DROP INDEX IF EXISTS rpm_" + NEW_TABLE + "_idx CASCADE; create index rpm_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (rpm);")
-
+	con.query("DROP INDEX IF EXISTS segmentkey_" + NEW_TABLE + "_idx CASCADE; create index segmentkey_" + NEW_TABLE + "_idx on " + NEW_TABLE + " (segmentkey);")
 
 	con.query("DROP INDEX IF EXISTS idx_"+NEW_TABLE+"_dirty CASCADE; create index idx_"+NEW_TABLE+"_dirty on "+NEW_TABLE+" (dirty)")
 	con.query('alter table ' + NEW_TABLE + ' drop IF EXISTS '+TIDTOUPDATE+';')
