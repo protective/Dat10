@@ -14,6 +14,9 @@ scp extractImages.py d103@172.25.26.191:Dat10/src/
 if [ ! -d $PREFIX"_images" ]; then
     mkdir $PREFIX"_images"
 fi
+ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py cruisep $TRIPS | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/cruisep.png $PREFIX"_images"/cruisep.png
+
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py testRoad $TRIPS | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/testRoad.png $PREFIX"_images"/testRoad.png
@@ -87,8 +90,6 @@ scp d103@172.25.26.191:Dat10/src/images/trafficlightred.png $PREFIX"_images"/tra
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py trafficlightratio $TRIPS | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/trafficlightratio.png $PREFIX"_images"/trafficlightratio.png
-
-
 
 
 
