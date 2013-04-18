@@ -55,15 +55,17 @@ if True:
 					acc = 0
 					#print oldTime
 					#print curTime
-					#print str(getTime(curTime)) + " " + str( getTime(oldTime))
+					print str(getTime(oldTime)-getTime(curTime))
 					if(getTime(oldTime)-getTime(curTime) > 0):
-						
+						print "x " + str(oldavg - avg )
+						print "y " + str(getTime(curTime)-getTime(oldTime))
 						acc = (oldavg - avg )/(getTime(curTime)-getTime(oldTime))
-				
+						print "acc " + str(acc)
 					oldavg = avg
 					oldTime = res[r][0]
 				
 					q = "update " + DATATABLE + " set acceleration2 = " + str(acc) + " where tid=" + str(res[2][2]) + " and timestamp='"+ str(res[r][0]) + "';"
+					print q					
 					con.query(q)
 
 

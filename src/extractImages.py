@@ -243,6 +243,29 @@ elif TYPE == 'testRoad':
 
 
 
+elif TYPE == 'cruisep':
+	clusters = []
+	clusters.append(con.query('select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+ TABLE + ';').getresult()[0][0])
+	clusters.append(con.query('select avg(km_pr_l) from '+TABLE+' where km_pr_l > (select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+TABLE+')').getresult()[0][0])
+	
+	res = con.query("select * from (select round((cruise_percentage)::numeric,2),count(case when km_pr_l <="+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l <= "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) as c from " + TABLE + " where total_km >= 0.1 group by round order by round)a where c > 10;").getresult()
+	output = open(path + 'data/cruisep.csv', 'wb')
+	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+	for r in res:
+		writer.writerow(r)
+
+	print "set output '" + path + "images/cruisep.png';"
+	print "set ylabel 'Class distribution (%)'"
+	print "set xlabel 'cruise percentage '"
+	print "set yrange[0:100]"
+	print "set xrange[0:]"
+	print "set y2tics"
+	print "set y2label 'Number of trips'"
+	print "set logscale y2 10 "
+	print "set key opaque"
+	print "plot '" + path + "data/cruisep.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/cruisep.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/cruisep.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/cruisep.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Data points' axes x1y2"
+
+
 
 
 elif TYPE == 'trafficlight':
