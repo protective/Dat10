@@ -1,0 +1,856 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.3.1 r9886"
+   sodipodi:docname="groupings.svg"
+   inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+   inkscape:export-xdpi="241.90477"
+   inkscape:export-ydpi="241.90477">
+  <defs
+     id="defs4">
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="StopL"
+       style="overflow:visible">
+      <path
+         id="path4108"
+         d="M 0.0,5.65 L 0.0,-5.65"
+         style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="DistanceEnd"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="DistanceEnd">
+      <g
+         id="g2301">
+        <path
+           style="fill:none;stroke:#ffffff;stroke-width:1.15;stroke-linecap:square"
+           d="M 0,0 L -2,0"
+           id="path2316" />
+        <path
+           style="fill:#000000;fill-rule:evenodd;stroke:none"
+           d="M 0,0 L -13,4 L -9,0 -13,-4 L 0,0 z "
+           id="path2312" />
+        <path
+           style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:square"
+           d="M 0,-4 L 0,40"
+           id="path2314" />
+      </g>
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="DistanceStart"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="DistanceStart">
+      <g
+         id="g2300">
+        <path
+           style="fill:none;stroke:#ffffff;stroke-width:1.15;stroke-linecap:square"
+           d="M 0,0 L 2,0"
+           id="path2306" />
+        <path
+           style="fill:#000000;fill-rule:evenodd;stroke:none"
+           d="M 0,0 L 13,4 L 9,0 13,-4 L 0,0 z "
+           id="path2302" />
+        <path
+           style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:square"
+           d="M 0,-4 L 0,40"
+           id="path2304" />
+      </g>
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Lend"
+       style="overflow:visible;">
+      <path
+         id="path3942"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;"
+         transform="scale(0.8) rotate(180) translate(12.5,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="StopL-9"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4108-7"
+         d="M 0,5.65 0,-5.65"
+         style="fill:none;stroke:#000000;stroke-width:1pt"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker5742"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5744"
+         d="M 0,5.65 0,-5.65"
+         style="fill:none;stroke:#000000;stroke-width:1pt"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="StopL-5"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4108-2"
+         d="M 0,5.65 0,-5.65"
+         style="fill:none;stroke:#000000;stroke-width:1pt"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker5742-1"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5744-2"
+         d="M 0,5.65 0,-5.65"
+         style="fill:none;stroke:#000000;stroke-width:1pt"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="StopL-1"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4108-4"
+         d="M 0,5.65 0,-5.65"
+         style="fill:none;stroke:#000000;stroke-width:1pt"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker5742-12"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5744-3"
+         d="M 0,5.65 0,-5.65"
+         style="fill:none;stroke:#000000;stroke-width:1pt"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="StopL-2"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4108-1"
+         d="M 0,5.65 0,-5.65"
+         style="fill:none;stroke:#000000;stroke-width:1pt"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker5851"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5853"
+         d="M 0,5.65 0,-5.65"
+         style="fill:none;stroke:#000000;stroke-width:1pt"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker5855"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5857"
+         d="M 0,5.65 0,-5.65"
+         style="fill:none;stroke:#000000;stroke-width:1pt"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker5859"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5861"
+         d="M 0,5.65 0,-5.65"
+         style="fill:none;stroke:#000000;stroke-width:1pt"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker5863"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5865"
+         d="M 0,5.65 0,-5.65"
+         style="fill:none;stroke:#000000;stroke-width:1pt"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker5867"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5869"
+         d="M 0,5.65 0,-5.65"
+         style="fill:none;stroke:#000000;stroke-width:1pt"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker5871"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5873"
+         d="M 0,5.65 0,-5.65"
+         style="fill:none;stroke:#000000;stroke-width:1pt"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker5875"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5877"
+         d="M 0,5.65 0,-5.65"
+         style="fill:none;stroke:#000000;stroke-width:1pt"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="StopL-94"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4108-47"
+         d="M 0,5.65 0,-5.65"
+         style="fill:none;stroke:#000000;stroke-width:1pt"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker5956"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5958"
+         d="M 0,5.65 0,-5.65"
+         style="fill:none;stroke:#000000;stroke-width:1pt"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker5960"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5962"
+         d="M 0,5.65 0,-5.65"
+         style="fill:none;stroke:#000000;stroke-width:1pt"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker5964"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5966"
+         d="M 0,5.65 0,-5.65"
+         style="fill:none;stroke:#000000;stroke-width:1pt"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker5968"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5970"
+         d="M 0,5.65 0,-5.65"
+         style="fill:none;stroke:#000000;stroke-width:1pt"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker5972"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5974"
+         d="M 0,5.65 0,-5.65"
+         style="fill:none;stroke:#000000;stroke-width:1pt"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker5976"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5978"
+         d="M 0,5.65 0,-5.65"
+         style="fill:none;stroke:#000000;stroke-width:1pt"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker5980"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5982"
+         d="M 0,5.65 0,-5.65"
+         style="fill:none;stroke:#000000;stroke-width:1pt"
+         transform="scale(0.8,0.8)" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.7"
+     inkscape:cx="242.55999"
+     inkscape:cy="427.02475"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1366"
+     inkscape:window-height="718"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none;marker-end:url(#Arrow1Lend)"
+       d="m 71.428571,546.07647 837.142859,0"
+       id="path2985"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#StopL);marker-end:url(#StopL)"
+       d="m 73.714286,381.41429 c 142.857134,0 142.857134,0 142.857134,0"
+       id="path4561"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#StopL);marker-end:url(#StopL)"
+       d="m 279.42858,381.41429 c 86.4357,0 86.4357,0 86.4357,0"
+       id="path4561-5"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#StopL);marker-end:url(#StopL)"
+       d="m 476.57144,381.41429 c 207.87447,0 207.87447,0 207.87447,0"
+       id="path4561-1"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#StopL);marker-end:url(#StopL)"
+       d="m 705.14286,381.41429 c 142.85714,0 142.85714,0 142.85714,0"
+       id="path4561-4"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#StopL);marker-end:url(#StopL)"
+       d="m 73.714286,495.55713 c 142.857144,0 142.857144,0 142.857144,0"
+       id="path4561-41"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#StopL);marker-end:url(#StopL)"
+       d="m 279.42858,495.55713 c 86.4357,0 86.4357,0 86.4357,0"
+       id="path4561-5-4"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#StopL);marker-end:url(#StopL)"
+       d="m 476.57144,495.55713 c 207.87447,0 207.87447,0 207.87447,0"
+       id="path4561-1-1"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#StopL);marker-end:url(#StopL)"
+       d="m 705.14286,495.55713 c 142.85714,0 142.85714,0 142.85714,0"
+       id="path4561-4-6"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="838.57141"
+       y="584.64795"
+       id="text5928"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100"><tspan
+         sodipodi:role="line"
+         id="tspan5930"
+         x="838.57141"
+         y="584.64795"
+         style="font-size:30px">time</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="-68.571426"
+       y="389.69067"
+       id="text5932"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100"><tspan
+         sodipodi:role="line"
+         id="tspan5934"
+         x="-68.571426"
+         y="389.69067"
+         style="font-size:30px">Trips</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="-71.603653"
+       y="503.8335"
+       id="text5936"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100"><tspan
+         sodipodi:role="line"
+         id="tspan5938"
+         x="-71.603653"
+         y="503.8335"
+         style="font-size:30px">Period j</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="-71.603653"
+       y="446.45551"
+       id="text5940"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100"><tspan
+         sodipodi:role="line"
+         id="tspan5942"
+         x="-71.603653"
+         y="446.45551"
+         style="font-size:30px">Period i</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#StopL);marker-end:url(#StopL)"
+       d="m 73.714286,435.27142 c 142.857144,0 142.857144,0 142.857144,0"
+       id="path4561-41-9"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#StopL);marker-end:url(#StopL)"
+       d="m 279.42858,435.27142 c 86.4357,0 86.4357,0 86.4357,0"
+       id="path4561-5-4-4"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#StopL);marker-end:url(#StopL)"
+       d="m 476.57144,435.27142 c 207.87447,0 207.87447,0 207.87447,0"
+       id="path4561-1-1-3"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#StopL);marker-end:url(#StopL)"
+       d="m 705.14286,435.27142 c 142.85714,0 142.85714,0 142.85714,0"
+       id="path4561-4-6-5"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect6033"
+       width="42.857143"
+       height="12.857142"
+       x="81.428574"
+       y="489.12857"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.96413219;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect6033-5"
+       width="41.333729"
+       height="12.857142"
+       x="128.95198"
+       y="489.12857"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.55777621;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect6033-7"
+       width="26.000002"
+       height="12.857142"
+       x="186.14287"
+       y="489.12857"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.37920618;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect6033-52"
+       width="20.380817"
+       height="12.857142"
+       x="279.28571"
+       y="489.12857"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.69884276;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect6033-4"
+       width="5.232656"
+       height="12.857142"
+       x="481.42859"
+       y="489.12857"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.69712847;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect6033-0"
+       width="5.2070155"
+       height="12.857142"
+       x="490"
+       y="489.12857"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.69884276;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect6033-4-7"
+       width="5.232656"
+       height="12.857142"
+       x="499.53979"
+       y="489.12857"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.69712847;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect6033-0-5"
+       width="5.2070155"
+       height="12.857142"
+       x="508.11121"
+       y="489.12857"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.69884276;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect6033-4-4"
+       width="5.232656"
+       height="12.857142"
+       x="516.68262"
+       y="489.12857"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.69712847;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect6033-0-0"
+       width="5.2070155"
+       height="12.857142"
+       x="525.25403"
+       y="489.12857"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.69884276;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect6033-4-8"
+       width="5.232656"
+       height="12.857142"
+       x="535.96838"
+       y="489.12857"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.69712847;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect6033-0-8"
+       width="5.2070155"
+       height="12.857142"
+       x="544.53979"
+       y="489.12857"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.19670045;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect6033-4-3"
+       width="15.343843"
+       height="12.857142"
+       x="658.46838"
+       y="489.12857"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:2.05147457;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect6033-4-3-7"
+       width="45.091587"
+       height="12.857142"
+       x="481.97089"
+       y="428.84286"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.88969588;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect6033-4-3-7-2"
+       width="38.260185"
+       height="12.857142"
+       x="639.64276"
+       y="428.84286"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:2.82453108;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect6033-4-3-7-5"
+       width="85.478325"
+       height="12.857142"
+       x="279.59705"
+       y="428.84286"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.91666675;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect6033-4-3-7-4"
+       width="39.360123"
+       height="12.857142"
+       x="314.97141"
+       y="489.12857"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.92999387;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect6033-4-3-7-3"
+       width="9.2666636"
+       height="12.857142"
+       x="76.739922"
+       y="428.84286"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:2.05147457;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect6033-4-3-7-9"
+       width="45.091587"
+       height="12.857142"
+       x="166.73991"
+       y="428.84286"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.04432082;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect6033-4-3-7-7"
+       width="11.685065"
+       height="12.857142"
+       x="709.81482"
+       y="489.12857"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.65119517;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect6033-4-3-7-0"
+       width="29.211918"
+       height="12.857142"
+       x="746.68536"
+       y="489.12857"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.2877816;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect6033-4-3-7-01"
+       width="17.768372"
+       height="12.857142"
+       x="825.27386"
+       y="489.12857"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.07045472;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect6033-4-3-7-6"
+       width="12.277214"
+       height="12.857142"
+       x="708.047"
+       y="428.84286"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.3415097;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect6033-4-3-7-02"
+       width="19.281948"
+       height="12.857142"
+       x="822.245"
+       y="428.84286"
+       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+  </g>
+</svg>
