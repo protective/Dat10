@@ -29,7 +29,7 @@ if True:
 	print "Calculating acceleration profiles"
 	tids = con.query("select distinct tid from "+ DATATABLE + " order by tid;").getresult()
 
-	avgnumber = 3	
+	avgnumber = 1	
 
 	for v in tids:
 		print "tid " + str(v[0])
@@ -42,14 +42,19 @@ if True:
 		oldavg = 0
 		if len(res) > 0:
 			oldTime = res[0][0]
+			
 			for r in range(0,len(res)-1):
+				#print res[r]
 				avg = 0
 				counter = 0
-				for a in range( max((r-avgnumber)+1,0),r):
-					if(abs(res[a][1]) < errormargin):
-						avg+=res[a][1]
-						counter+=1
+				#print "r " + str(r)
+				for a in range( max((r-avgnumber)+1,0),r+1):
+					#print "a " + str(a)
+					#if(abs(res[a][1]) < errormargin):
+					avg+=res[a][1]
+					counter+=1
 				if(counter > 0):
+					#print "counter " + str(counter) + " avg " + str(avg) 
 					avg/=counter
 					curTime = res[r][0]
 					acc = 0
@@ -59,7 +64,8 @@ if True:
 					if(getTime(curTime)-getTime(oldTime) > 0):
 						#print "x " + str(oldavg - avg )
 						#print "y " + str(getTime(curTime)-getTime(oldTime))
-						acc = (oldavg - avg )/(getTime(curTime)-getTime(oldTime))
+						#print "old avg " + str(oldavg) + " avg " + str(avg)
+						acc = ((avg-oldavg)/(getTime(curTime)-getTime(oldTime))/3.6)
 						#print "acc " + str(acc)
 					oldavg = avg
 					oldTime = res[r][0]
