@@ -16,7 +16,7 @@ except:
 	print 'Error: remember the parameters'
 	exit(1)
 
-if False:
+if True:
 	print "Finding stopped records"
 	con.query('alter table ' + DATATABLE + ' drop IF EXISTS stopped;')
 	con.query('alter table ' + DATATABLE + ' add column stopped int not null default 0;')
