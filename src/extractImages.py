@@ -523,12 +523,12 @@ elif TYPE == 'accelerationRanges':
 	offset = 0
 	s = "plot "
 	for v in vehicles:
-		s += "'" + path + "data/"+str(v[0]) + "accelerationRanges.csv' using ($1+"+ str(offset) + "):2 with boxes title '" + str(v[0]) + "',"
+		s += "'" + path + "data/"+str(v[0]) + "accelerationRanges.csv' using ($1+"+ str(offset) + "):2 with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + "  title '" + str(v[0]) + "',"
 		offset+=boxwidth
 	print s[:-1]
 
 elif TYPE == 'accelerationFast':
-	vehicles = con.query("select distinct vehicleid from " + TABLE + ";").getresult()
+	vehicles = con.query("select distinct vehicleid from " + TABLE + " order by vehicleid;").getresult()
 	i = 0
 	for v in vehicles:
 		vid = str(v[0])
@@ -546,7 +546,7 @@ elif TYPE == 'accelerationFast':
 	
 	s = "plot "
 	for v in vehicles:
-		s += "'" + path + "data/"+str(v[0]) + "accelerationFast.csv' title '" + str(v[0]) + "',"
+		s += "'" + path + "data/"+str(v[0]) + "accelerationFast.csv' lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + " title '" + str(v[0]) + "',"
 	print s + "2 notitle"
 
 elif TYPE == 'testSpeed':
