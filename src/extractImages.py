@@ -45,7 +45,7 @@ if TYPE == 'km_pr_l':
 	s = "plot "
 	for v in vehicles:
 		vid = str(v[0])
-		s+= "'"+path + "data/" + vid + "_kmldata.csv' lc rgb '" + patterns[vid]][1]+ "' title '" + vid + "', "
+		s+= "'"+path + "data/" + vid + "_kmldata.csv' lc rgb '" + patterns[v[0]][1]+ "' title '" + vid + "', "
 
 	print s + ""+str(clusters[0])+" lw 2 lc rgb \"black\" notitle, "+str(clusters[1])+" lw 2 lc rgb \"black\" notitle"
 	
@@ -495,7 +495,7 @@ elif TYPE == 'rpmRanges':
 	offset = 0
 	s = "plot "
 	for v in vehicles:
-		s += "'" + path + "data/"+str(v[0]) + "rpmRanges.csv' using ($1+"+ str(offset) + "):2 with boxes title '" + str(v[0]) + "',"
+		s += "'" + path + "data/"+str(v[0]) + "rpmRanges.csv' using ($1+"+ str(offset) + "):2 with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + " title '" + str(v[0]) + "',"
 		offset+=boxwidth
 	print s[:-1]	
 	
