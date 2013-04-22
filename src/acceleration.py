@@ -33,7 +33,7 @@ if True:
 
 	for v in tids:
 		print "tid " + str(v[0])
-		res = con.query("select timestamp, speed, tid from " + DATATABLE + " where tid=" + str(v[0]) +" and dirty is false order by timestamp;").getresult()
+		res = con.query("select timestamp, speedMod, tid from " + DATATABLE + " where tid=" + str(v[0]) +" and dirty is false order by timestamp;").getresult()
 		#oldTime = res[0][0]
 		#oldSpeed = float(res[0][1])
 		#oldTid = int(res[0][2])

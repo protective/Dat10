@@ -34,27 +34,28 @@ psql -d $DB -c "create index osm_dk_20130214_category_idx on osm_dk_20130214 (ca
 fi
 
 if ($tripData) then
-python tripData.py $PREFIX
+python tripData.py $PREFIX 
 fi
 
 if ($idle) then
-python idle.py $PREFIX 250 
+screen -S idle -d -m python idle.py $PREFIX 250
 fi
 
 if ($cruise) then
-python cruise.py 1 20 $PREFIX
+screen -S cruise -d -m python cruise.py 1 20 $PREFIX
 fi
 
 if ($trafficLights) then
 python extractTrafficLights.py maps/denmark.osm $PREFIX
-python inRangeOfTl.py 20 $PREFIX
+screen -S tl -d -m python inRangeOfTl.py 20 $PREFIX
 fi
 
-python roadCategory.py $PREFIX
+screen -S road -d -m python roadCategory.py $PREFIX
 
 if ($acceleration) then
-python acceleration.py $PREFIX
-python stopngo.py $PREFIX
+python adjustSpeed.py $PREFIX
+screen -S acc -d -m python acceleration.py $PREFIX
+screen -S stopngo -d -m python stopngo.py $PREFIX
 fi
 
 #if ($temperature) then
