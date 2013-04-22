@@ -29,8 +29,8 @@ for t in trips:
 	for r in range (1, len(res)-2):
 		acc = 0
 		if r > 0:
-			acc = ((res[r][1]-res[r-1][1])/(getTime(curTime)-getTime(oldTime))/3.6)
-
+			acc = ((res[r][1]-res[r-1][1])/(getTime(res[r][0])-getTime(res[r-1][0]))/3.6)
+		print acc
 		if acc > 3 or acc < 10:
 			print res[r]
 			s1 = float(res[r-1][1])
