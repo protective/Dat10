@@ -38,7 +38,7 @@ python tripData.py $PREFIX
 fi
 
 if ($idle) then
-python idle.py $PREFIX 0 
+python idle.py $PREFIX 250 
 fi
 
 if ($cruise) then
