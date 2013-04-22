@@ -30,9 +30,9 @@ for t in trips:
 		acc = 0
 		if r > 0:
 			acc = ((res[r][1]-res[r-1][1])/(getTime(res[r][0])-getTime(res[r-1][0]))/3.6)
-		print acc
+		#print acc
 		if acc > 3 or acc < -10:
-			print res[r]
+			#print res[r]
 			s1 = float(res[r-1][1])
 			s3 = float(res[r+1][1])
 			t1 = float(time.mktime(time.strptime(res[r-1][0], "%Y-%m-%j %H:%M:%S")))

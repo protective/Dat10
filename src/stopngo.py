@@ -18,7 +18,7 @@ con.query("alter table " + TABLE + " drop IF EXISTS stopngo;")
 con.query('alter table ' + TABLE + ' add stopngo float not null default 0;')
 
 print "Retreive data"
-res = con.query("select tid, speed, timestamp, kmcounter from " + QUERY_TABLE + " where tid in (select tid from " + TABLE + ") and dirty is false order by tid, timestamp;").getresult()
+res = con.query("select tid, speedMod, timestamp, kmcounter from " + QUERY_TABLE + " where tid in (select tid from " + TABLE + ") and dirty is false order by tid, timestamp;").getresult()
 
 print "Process data"
 oldTid = res[0][0]
