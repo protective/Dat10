@@ -47,15 +47,15 @@ fi
 
 if ($trafficLights) then
 python extractTrafficLights.py maps/denmark.osm $PREFIX
-screen -S tl python -d -m inRangeOfTl.py 20 $PREFIX
+screen -S tl -d -m python inRangeOfTl.py 20 $PREFIX
 fi
 
-screen -S road python -d -m roadCategory.py $PREFIX
+screen -S road -d -m python roadCategory.py $PREFIX
 
 if ($acceleration) then
 python adjustSpeed.py $PREFIX
-screen -S acc python -d -m acceleration.py $PREFIX
-screen -S stopngo python -d -m stopngo.py $PREFIX
+screen -S acc -d -m python acceleration.py $PREFIX
+screen -S stopngo -d -m python stopngo.py $PREFIX
 fi
 
 #if ($temperature) then
