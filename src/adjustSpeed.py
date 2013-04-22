@@ -19,7 +19,7 @@ def getTime(t):
 
 con.query('alter table ' + DATATABLE + ' drop IF EXISTS speedMod;')
 con.query('alter table ' + DATATABLE + ' add column speedMod integer not null default 0;')
-#con.query('update ' + DATATABLE + ' set speedOld= speed;')
+con.query('update ' + DATATABLE + ' set speedMod= speed;')
 
 counter = 0
 trips = con.query('select distinct tid from ' + DATATABLE +' where tid is not null').getresult()
@@ -30,9 +30,9 @@ for t in trips:
 		acc = 0
 		if r > 0:
 			acc = ((res[r][1]-res[r-1][1])/(getTime(res[r][0])-getTime(res[r-1][0]))/3.6)
-		print acc
+		#print acc
 		if acc > 3 or acc < -10:
-			print res[r]
+			#print res[r]
 			s1 = float(res[r-1][1])
 			s3 = float(res[r+1][1])
 			t1 = float(time.mktime(time.strptime(res[r-1][0], "%Y-%m-%j %H:%M:%S")))
