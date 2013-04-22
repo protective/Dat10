@@ -396,10 +396,10 @@ elif TYPE == 'tlRange':
 
 elif TYPE == 'cruiseCounter':
 	print "set output '" + path + "images/cruiseCounter.png';"
-	print "set ylabel 'Percentage of records in cruise state"
-	print "set xlabel 'Minimum cruise length (s)'"
+	print "set ylabel 'Number of records with steady speed"
+	print "set xlabel 'Minimum length (s)'"
 	#print "set logscale y 10"
-	print "plot '" + path + "data/cruiseCounter0.csv' with lines lw 3 notitle,'" + path + "data/cruiseCounter1.csv' with lines lw 3 notitle,'" + path + "data/cruiseCounter2.csv' with lines lw 3 notitle,'" + path + "data/cruiseCounter1.csv' with lines lw 3 notitle,'" + path + "data/cruiseCounter2.csv' with lines lw 3 notitle,'" + path + "data/cruiseCounter3.csv' with lines lw 3 notitle,'" + path + "data/cruiseCounter4.csv' with lines lw 3 notitle"
+	print "plot '" + path + "data/cruiseCounter0.csv' with lines lw 3 title '0 seconds','" + path + "data/cruiseCounter1.csv' with lines lw 3 title '1 second','" + path + "data/cruiseCounter2.csv' with lines lw 3 title '2 seconds', '" + path + "data/cruiseCounter3.csv' with lines lw 3 title '3 seconds','" + path + "data/cruiseCounter4.csv' with lines lw 3 title '4 seconds'"
 	
 elif TYPE == 'idleRange':
 	res = con.query("select idle, count(*) from (select round(count(case when stopped=1 then 1 end)/10)*10 as idle from " + TABLE + " group by tid)a group by idle order by idle;").getresult()
