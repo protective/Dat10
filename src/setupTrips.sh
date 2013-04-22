@@ -41,9 +41,7 @@ if ($idle) then
 screen -S idle -d -m python idle.py $PREFIX 250
 fi
 
-if ($cruise) then
-screen -S cruise -d -m python cruise.py 1 20 $PREFIX
-fi
+
 
 if ($trafficLights) then
 python extractTrafficLights.py maps/denmark.osm $PREFIX
@@ -56,6 +54,10 @@ if ($acceleration) then
 python adjustSpeed.py $PREFIX
 screen -S acc -d -m python acceleration.py $PREFIX
 screen -S stopngo -d -m python stopngo.py $PREFIX
+fi
+
+if ($cruise) then
+screen -S cruise -d -m python cruise.py 1 20 $PREFIX
 fi
 
 #if ($temperature) then
