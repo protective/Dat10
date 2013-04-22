@@ -39,7 +39,7 @@ for t in trips:
 			t2 = float(time.mktime(time.strptime(res[r][0], "%Y-%m-%j %H:%M:%S")))
 			t3 = float(time.mktime(time.strptime(res[r+1][0], "%Y-%m-%j %H:%M:%S")))
 			newSpeed = s1 + (((s3-s1)/(t3-t1))*(t2-t1))
-			q = "update " + DATATABLE + " set speedMod = " + str(newSpeed) + " where timestamp = " + res[r][0] + " and tid=" + str(trip) + ";"
+			q = "update " + DATATABLE + " set speedMod = " + str(newSpeed) + " where timestamp = '" + res[r][0] + "' and tid=" + str(trip) + ";"
 			print q
 			con.query(q)
 			
