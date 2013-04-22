@@ -40,10 +40,10 @@ psql -d $DB -c "\copy $TABLE from '$f' DELIMITERS ';' CSV HEADER;"
 echo "Done loading $f"
 done
 echo "Renaming"
-psql -d $DB -c "update $TABLE set vehicleid=58 where vehicleid=354330030714458;"
-psql -d $DB -c "update $TABLE set vehicleid=67 where vehicleid=354330030804267;"
-psql -d $DB -c "update $TABLE set vehicleid=40 where vehicleid=354330030793940;"
-psql -d $DB -c "update $TABLE set vehicleid=10 where vehicleid=354330030781010;"
+psql -d $DB -c "update $TABLE set vehicleid=3 where vehicleid=354330030714458;"
+psql -d $DB -c "update $TABLE set vehicleid=4 where vehicleid=354330030804267;"
+psql -d $DB -c "update $TABLE set vehicleid=2 where vehicleid=354330030793940;"
+psql -d $DB -c "update $TABLE set vehicleid=1 where vehicleid=354330030781010;"
 
 
 echo "Creating indexes"
