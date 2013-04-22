@@ -34,7 +34,6 @@ res = con.query('select speedMod, timestamp, tid  from ' + DATATABLE + ' where d
 cruiseBegin = 0
 cruiseCur = 0
 cruiseSpeed = 0
-noobs = 0
 
 counter = 0
 masterCounter = 0
@@ -42,13 +41,12 @@ masterCounter = 0
 Time = time.mktime(time.strptime(res[0][1], "%Y-%m-%j %H:%M:%S"))
 while cruiseBegin < len(res) -1:
 	cruiseCur += 1
-	noobs += 1
 	if cruiseCur < len(res) and cruiseSpeed <= res[cruiseCur][0] +SIZE and cruiseSpeed >= res[cruiseCur][0] -SIZE and cruiseSpeed > 0 and res[cruiseBegin][2] == res[cruiseCur][2]:
 		#we are within thresshold of cruisespeed
 		counter += 1
 		continue
 	else:
-		if abs(Time-time.mktime(time.strptime(res[cruiseCur-1][1], "%Y-%m-%j %H:%M:%S"))) > TIME and noobs >= 10: #  
+		if abs(Time-time.mktime(time.strptime(res[cruiseCur-1][1], "%Y-%m-%j %H:%M:%S"))) > TIME: #  
 			#we have been using cc until now update
 			s = 'update ' + str(DATATABLE) + ' set cruise = true where tid = ' + str(res[cruiseBegin][2]) + ' and timestamp >= \''+str(res[cruiseBegin][1]) + '\' and timestamp <= \''+ str(res[cruiseCur-1][1]) + '\';'  
 			if test:
@@ -59,7 +57,6 @@ while cruiseBegin < len(res) -1:
 		cruiseBegin = cruiseCur
 		cruiseSpeed = res[cruiseBegin][0]
 		Time = time.mktime(time.strptime(res[cruiseBegin][1], "%Y-%m-%j %H:%M:%S"))
-		noobs = 0
 		counter = 0
 
 output = open('data/'+filename, 'a')
