@@ -18,7 +18,7 @@ con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 #clusters = [4,7.7]
 
 #Letter, color, pattern
-patterns = {10: ['b', 'red', '1'], 40: ['c', 'blue', '2'], 58: ['a', 'green', '4'], 67: ['d', '#BB00FF', '5']}
+patterns = {1: ['b', 'red', '1'], 2: ['c', 'blue', '2'], 3: ['a', 'green', '4'], 4: ['d', '#BB00FF', '5']}
 
 print "set terminal png size 1000,500;"
 
