@@ -29,7 +29,7 @@ con.query('alter table '+DATATABLE+' add column cruise bool default false;')
 
 
 print "Extracting data"
-res = con.query('select speed, timestamp, tid  from ' + DATATABLE + ' where dirty is false order by vehicleid, timestamp').getresult()
+res = con.query('select speedMod, timestamp, tid  from ' + DATATABLE + ' where dirty is false order by vehicleid, timestamp').getresult()
 print "all done"
 
 cruiseBegin = 0
