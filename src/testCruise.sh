@@ -1,4 +1,4 @@
-rm cruiseCounter0.csv
+rm data/cruiseCounter0.csv
 python cruise.py 0 10 g cruiseCounter0.csv
 python cruise.py 0 20 g cruiseCounter0.csv
 python cruise.py 0 30 g cruiseCounter0.csv
@@ -10,7 +10,7 @@ python cruise.py 0 80 g cruiseCounter0.csv
 python cruise.py 0 90 g cruiseCounter0.csv
 python cruise.py 0 100 g cruiseCounter0.csv
 
-rm cruiseCounter1.csv
+rm data/cruiseCounter1.csv
 python cruise.py 1 10 g cruiseCounter1.csv
 python cruise.py 1 20 g cruiseCounter1.csv
 python cruise.py 1 30 g cruiseCounter1.csv
@@ -22,7 +22,7 @@ python cruise.py 1 80 g cruiseCounter1.csv
 python cruise.py 1 90 g cruiseCounter1.csv
 python cruise.py 1 100 g cruiseCounter1.csv
 
-rm cruiseCounter2.csv
+rm data/cruiseCounter2.csv
 python cruise.py 2 10 g cruiseCounter2.csv
 python cruise.py 2 20 g cruiseCounter2.csv
 python cruise.py 2 30 g cruiseCounter2.csv
@@ -34,7 +34,7 @@ python cruise.py 2 80 g cruiseCounter2.csv
 python cruise.py 2 90 g cruiseCounter2.csv
 python cruise.py 2 100 g cruiseCounter2.csv
 
-rm cruiseCounter3.csv
+rm data/cruiseCounter3.csv
 python cruise.py 3 10 g cruiseCounter3.csv
 python cruise.py 3 20 g cruiseCounter3.csv
 python cruise.py 3 30 g cruiseCounter3.csv
@@ -46,7 +46,7 @@ python cruise.py 3 80 g cruiseCounter3.csv
 python cruise.py 3 90 g cruiseCounter3.csv
 python cruise.py 3 100 g cruiseCounter3.csv
 
-rm cruiseCounter4.csv
+rm data/cruiseCounter4.csv
 python cruise.py 4 10 g cruiseCounter4.csv
 python cruise.py 4 20 g cruiseCounter4.csv
 python cruise.py 4 30 g cruiseCounter4.csv
