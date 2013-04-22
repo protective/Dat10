@@ -17,6 +17,9 @@ con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 
 #clusters = [4,7.7]
 
+#Letter, color, pattern
+patterns = {10: ['b', 'red', '1'], 40: ['c', 'blue', '2'], 58: ['a', 'green', '4'], 67: ['d', '#BB00FF', '5']}
+
 print "set terminal png size 1000,500;"
 
 if TYPE == 'km_pr_l':
@@ -39,11 +42,10 @@ if TYPE == 'km_pr_l':
 	print "set ylabel 'km/l'"
 	print "set xlabel 'Trips'"
 	print "set yrange[0:12]"
-
 	s = "plot "
 	for v in vehicles:
 		vid = str(v[0])
-		s+= "'"+path + "data/" + vid + "_kmldata.csv' title '" + vid + "', "
+		s+= "'"+path + "data/" + vid + "_kmldata.csv' lc rgb '" + patterns[vid]][1]+ "' title '" + vid + "', "
 
 	print s + ""+str(clusters[0])+" lw 2 lc rgb \"black\" notitle, "+str(clusters[1])+" lw 2 lc rgb \"black\" notitle"
 	
@@ -398,38 +400,6 @@ elif TYPE == 'cruiseCounter':
 	print "set xlabel 'Minimum cruise length (s)'"
 	#print "set logscale y 10"
 	print "plot '" + path + "data/cruiseCounter0.csv' with lines lw 3 notitle,'" + path + "data/cruiseCounter1.csv' with lines lw 3 notitle,'" + path + "data/cruiseCounter2.csv' with lines lw 3 notitle,'" + path + "data/cruiseCounter1.csv' with lines lw 3 notitle,'" + path + "data/cruiseCounter2.csv' with lines lw 3 notitle,'" + path + "data/cruiseCounter3.csv' with lines lw 3 notitle,'" + path + "data/cruiseCounter4.csv' with lines lw 3 notitle"
-
-
-elif TYPE == 'idleTime':
-	#TODO: Do not work
-	val = 'idle_time, km_pr_l as val, |/ (total_fuel/3.14)'
-	res = con.query("select " + val + " from " + TABLE + " where km_pr_l < 4  order by val;").getresult()
-	output = open(path + 'data/' + TYPE + '_low_data.csv', 'wb')
-	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-	for r in res:
-		writer.writerow(r)
-
-	res = con.query("select " + val + " from " + TABLE + " where km_pr_l >= 4 and km_pr_l < 8 order by val;").getresult()
-	output = open(path + 'data/' + TYPE + '_medium_data.csv', 'wb')
-	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-	for r in res:
-		writer.writerow(r)
-
-	res = con.query("select " + val + " from " + TABLE + " where km_pr_l > 8 order by val;").getresult()
-	output = open(path + 'data/' + TYPE + '_high_data.csv', 'wb')
-	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-	for r in res:
-		writer.writerow(r)
-
-	print "set output '" + path + "images/idleTime.png';"
-	print "set ylabel 'km/l';"
-	print "set xlabel 'Idle time (s)';"
-
-	s = "plot "
-	s+= "'" + path + "data/" + TYPE + "_high_data.csv' using 1:2:3 with points lt 1 pt 6 ps variable linecolor rgb \"green\" title 'High' , "
-	s+= "'" + path + "data/" + TYPE + "_medium_data.csv' using 1:2:3 with points lt 1 pt 6 ps variable linecolor rgb \"blue\" title 'Medium', "
-	s+= "'" + path + "data/" + TYPE + "_low_data.csv' using 1:2:3 with points lt 1 pt 6 ps variable linecolor rgb \"red\" title 'Low'"
-	print s
 	
 elif TYPE == 'idleRange':
 	res = con.query("select idle, count(*) from (select round(count(case when stopped=1 then 1 end)/10)*10 as idle from " + TABLE + " group by tid)a group by idle order by idle;").getresult()
@@ -469,7 +439,7 @@ elif TYPE == 'idleRange2':
 	offset = 0
 	s = "plot "
 	for v in vehicles:
-		s += "'" + path + "data/"+str(v[0]) + "idleRange2.csv' using ($1+"+ str(offset) + "):2 with boxes title '" + str(v[0]) + "',"
+		s += "'" + path + "data/"+str(v[0]) + "idleRange2.csv' using ($1+"+ str(offset) + "):2 with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + " title '" + str(v[0]) + "' ,"
 		offset+=boxwidth
 	print s[:-1]
 
@@ -492,46 +462,14 @@ elif TYPE == 'idleRange3':
 	print "set xtics 250"
 	print "set ytics 0.1"
 	
-	temp = {58: ['a', 'green'], 10: ['b', 'purple'], 40: ['c', 'red'], 67: ['d', 'blue']}
 	s = "plot "
 	for v in vehicles:
-		print temp[v][0] + "(x) = a" + str(v) + "*x + b"+str(v)
-		print "fit " + temp[v][0] + "(x) '" + path + "data/"+str(v) + "idleRange3.csv' using 1:2 via a"+str(v)+"," +"b" +str(v)
-		print "set arrow from 3600,0 to 3600,"+temp[v][0]+"(3600) lw 1 nohead"
-		print "set arrow from "+xstart+","+temp[v][0]+"(3600) to 3600,"+temp[v][0]+"(3600) lw 1 nohead"
-		s += "'" + path + "data/"+str(v) + "idleRange3.csv' using 1:2 title '" + str(v) + "' lc rgb '"+ temp[v][1] +"', " + temp[v][0] + "(x) notitle lc rgb '"+ temp[v][1] +"',"
+		print patterns[v][0] + "(x) = a" + str(v) + "*x + b"+str(v)
+		print "fit " + patterns[v][0] + "(x) '" + path + "data/"+str(v) + "idleRange3.csv' using 1:2 via a"+str(v)+"," +"b" +str(v)
+		print "set arrow from 3600,0 to 3600,"+patterns[v][0]+"(3600) lw 1 nohead"
+		print "set arrow from "+xstart+","+patterns[v][0]+"(3600) to 3600,"+patterns[v][0]+"(3600) lw 1 nohead"
+		s += "'" + path + "data/"+str(v) + "idleRange3.csv' using 1:2 title '" + str(v) + "' lc rgb '"+ patterns[v][1] +"', " + patterns[v][0] + "(x) notitle lc rgb '"+ patterns[v][1] +"',"
 	print s[:-1]
-
-elif TYPE == 'idlePercent':
-	#TODO: Do not work
-	val = 'idle_percentage*100, km_pr_l as val, |/ (total_fuel/3.14)'
-	res = con.query("select " + val + " from " + TABLE + " where km_pr_l < 4  order by val;").getresult()
-	output = open(path + 'images/' + TYPE + '_low_data.csv', 'wb')
-	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-	for r in res:
-		writer.writerow(r)
-
-	res = con.query("select " + val + " from " + TABLE + " where km_pr_l >= 4 and km_pr_l < 8 order by val;").getresult()
-	output = open(path + 'images/' + TYPE + '_medium_data.csv', 'wb')
-	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-	for r in res:
-		writer.writerow(r)
-
-	res = con.query("select " + val + " from " + TABLE + " where km_pr_l > 8 order by val;").getresult()
-	output = open(path + 'images/' + TYPE + '_high_data.csv', 'wb')
-	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-	for r in res:
-		writer.writerow(r)
-
-	print "set output '" + path + "images/idlePercent.png';"
-	print "set ylabel 'km/l';"
-	print "set xlabel 'Percent of trip in idle (%)'"
-
-	s = "plot "
-	s+= "'" + path + "images/" + TYPE + "_high_data.csv' using 1:2:3 with points lt 1 pt 6 ps variable linecolor rgb \"green\" title 'High' , "
-	s+= "'" + path + "images/" + TYPE + "_medium_data.csv' using 1:2:3 with points lt 1 pt 6 ps variable linecolor rgb \"blue\" title 'Medium', "
-	s+= "'" + path + "images/" + TYPE + "_low_data.csv' using 1:2:3 with points lt 1 pt 6 ps variable linecolor rgb \"red\" title 'Low'"
-	print s
 	
 elif TYPE == 'rpmRanges':
 	vehicles = con.query("select distinct vehicleid from " + TABLE + ";").getresult()
@@ -617,6 +555,69 @@ elif TYPE == 'testSpeed':
 	print "set xlabel 'Speed Difference'"
 	print "set xtics 5"
 	print "plot '" + path + "data/testSpeed.csv' with lines lw 3 notitle"
+
+
+elif TYPE == 'idleTime':
+	#TODO: Do not work
+	val = 'idle_time, km_pr_l as val, |/ (total_fuel/3.14)'
+	res = con.query("select " + val + " from " + TABLE + " where km_pr_l < 4  order by val;").getresult()
+	output = open(path + 'data/' + TYPE + '_low_data.csv', 'wb')
+	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+	for r in res:
+		writer.writerow(r)
+
+	res = con.query("select " + val + " from " + TABLE + " where km_pr_l >= 4 and km_pr_l < 8 order by val;").getresult()
+	output = open(path + 'data/' + TYPE + '_medium_data.csv', 'wb')
+	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+	for r in res:
+		writer.writerow(r)
+
+	res = con.query("select " + val + " from " + TABLE + " where km_pr_l > 8 order by val;").getresult()
+	output = open(path + 'data/' + TYPE + '_high_data.csv', 'wb')
+	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+	for r in res:
+		writer.writerow(r)
+
+	print "set output '" + path + "images/idleTime.png';"
+	print "set ylabel 'km/l';"
+	print "set xlabel 'Idle time (s)';"
+
+	s = "plot "
+	s+= "'" + path + "data/" + TYPE + "_high_data.csv' using 1:2:3 with points lt 1 pt 6 ps variable linecolor rgb \"green\" title 'High' , "
+	s+= "'" + path + "data/" + TYPE + "_medium_data.csv' using 1:2:3 with points lt 1 pt 6 ps variable linecolor rgb \"blue\" title 'Medium', "
+	s+= "'" + path + "data/" + TYPE + "_low_data.csv' using 1:2:3 with points lt 1 pt 6 ps variable linecolor rgb \"red\" title 'Low'"
+	print s
 	
+elif TYPE == 'idlePercent':
+	#TODO: Do not work
+	val = 'idle_percentage*100, km_pr_l as val, |/ (total_fuel/3.14)'
+	res = con.query("select " + val + " from " + TABLE + " where km_pr_l < 4  order by val;").getresult()
+	output = open(path + 'images/' + TYPE + '_low_data.csv', 'wb')
+	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+	for r in res:
+		writer.writerow(r)
+
+	res = con.query("select " + val + " from " + TABLE + " where km_pr_l >= 4 and km_pr_l < 8 order by val;").getresult()
+	output = open(path + 'images/' + TYPE + '_medium_data.csv', 'wb')
+	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+	for r in res:
+		writer.writerow(r)
+
+	res = con.query("select " + val + " from " + TABLE + " where km_pr_l > 8 order by val;").getresult()
+	output = open(path + 'images/' + TYPE + '_high_data.csv', 'wb')
+	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+	for r in res:
+		writer.writerow(r)
+
+	print "set output '" + path + "images/idlePercent.png';"
+	print "set ylabel 'km/l';"
+	print "set xlabel 'Percent of trip in idle (%)'"
+
+	s = "plot "
+	s+= "'" + path + "images/" + TYPE + "_high_data.csv' using 1:2:3 with points lt 1 pt 6 ps variable linecolor rgb \"green\" title 'High' , "
+	s+= "'" + path + "images/" + TYPE + "_medium_data.csv' using 1:2:3 with points lt 1 pt 6 ps variable linecolor rgb \"blue\" title 'Medium', "
+	s+= "'" + path + "images/" + TYPE + "_low_data.csv' using 1:2:3 with points lt 1 pt 6 ps variable linecolor rgb \"red\" title 'Low'"
+	print s
+
 else:
 	print "Nothing"
