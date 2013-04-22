@@ -32,13 +32,6 @@ scp d103@172.25.26.191:Dat10/src/images/idle2.png $PREFIX"_images"/idle2.png
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py idle3 $TRIPS | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/idle3.png $PREFIX"_images"/idle3.png
 
-ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py idlePercent $TRIPS | gnuplot"
-scp d103@172.25.26.191:Dat10/src/images/idlePercent.png $PREFIX"_images"/idlePercent.png
-
-ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py idleTime $TRIPS | gnuplot"
-scp d103@172.25.26.191:Dat10/src/images/idleTime.png $PREFIX"_images"/idleTime.png
-
-
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py accelerationFast $GPSDATA | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/accelerationFast.png $PREFIX"_images"/accelerationFast.png
