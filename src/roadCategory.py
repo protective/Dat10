@@ -44,19 +44,19 @@ print "done update"
 
 
 con.query("alter table " + TABLE + " drop IF EXISTS PMoterRoad;")
-con.query('alter table ' + TABLE + ' add PMoterRoad float;')
+con.query('alter table ' + TABLE + ' add PMoterRoad float not null default 0;')
 con.query("alter table " + TABLE + " drop IF EXISTS PNormalRoad;")
-con.query('alter table ' + TABLE + ' add PNormalRoad float;')
+con.query('alter table ' + TABLE + ' add PNormalRoad float not null default 0;')
 con.query("alter table " + TABLE + " drop IF EXISTS PSmallRoad;")
-con.query('alter table ' + TABLE + ' add PSmallRoad float;')
+con.query('alter table ' + TABLE + ' add PSmallRoad float not null default 0;')
 
 
 con.query("alter table " + TABLE + " drop IF EXISTS MoterRoad;")
-con.query('alter table ' + TABLE + ' add MoterRoad float;')
+con.query('alter table ' + TABLE + ' add MoterRoad float not null default 0;')
 con.query("alter table " + TABLE + " drop IF EXISTS NormalRoad;")
-con.query('alter table ' + TABLE + ' add NormalRoad float;')
+con.query('alter table ' + TABLE + ' add NormalRoad float not null default 0;')
 con.query("alter table " + TABLE + " drop IF EXISTS SmallRoad;")
-con.query('alter table ' + TABLE + ' add SmallRoad float;')
+con.query('alter table ' + TABLE + ' add SmallRoad float not null default 0;')
 
 
 s = 'update ' + TABLE + '  set MoterRoad = p from (select tid, count(case when roadCategory=1 then 1 end)::float as p from ' + QUERY_TABLE + ' where dirty is false and stopped = 0 and roadCategory is not null group by tid)f where ' + TABLE + '.tid=f.tid;'

@@ -16,7 +16,7 @@ clusters = []
 clusters.append(con.query('select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+ TABLE + ';').getresult()[0][0])
 clusters.append(con.query('select avg(km_pr_l) from '+TABLE+' where km_pr_l > (select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+TABLE+')').getresult()[0][0])
 
-res = con.query("select vehicleid, idle_percentage, km_pr_l, acceleration2, stopngo, cruise_percentage,  tlCounter,PmoterRoad,PNormalRoad,PSmallRoad, (case when km_pr_l < "+ str(clusters[0]) + " then 'low' when km_pr_l >= "+ str(clusters[0]) + " and km_pr_l< "+ str(clusters[1]) + " then 'medium' when km_pr_l >= "+ str(clusters[1]) + " then 'high'	end)from " + TABLE).getresult()
+res = con.query("select vehicleid, idle_percentage, km_pr_l, stopngo, cruise_percentage,  tlCounter,PmoterRoad,PNormalRoad,PSmallRoad, (case when km_pr_l < "+ str(clusters[0]) + " then 'low' when km_pr_l >= "+ str(clusters[0]) + " and km_pr_l< "+ str(clusters[1]) + " then 'medium' when km_pr_l >= "+ str(clusters[1]) + " then 'high'	end)from " + TABLE).getresult()
 
 output = open('weka/' + TABLE + '.arff', 'wb')
 
@@ -24,7 +24,6 @@ output.write("""@RELATION iris
 @ATTRIBUTE id	REAL
 @ATTRIBUTE idle	REAL
 @ATTRIBUTE fuel	REAL
-@ATTRIBUTE accel REAL
 @ATTRIBUTE stopngo REAL
 @ATTRIBUTE cruise REAL
 @ATTRIBUTE tlcounter REAL
