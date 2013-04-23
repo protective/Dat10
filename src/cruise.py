@@ -60,10 +60,11 @@ while cruiseBegin < len(res) -1:
 		Time = time.mktime(time.strptime(res[cruiseBegin][1], "%Y-%m-%j %H:%M:%S"))
 		counter = 0
 
-output = open('data/'+filename, 'a')
-ss = str(TIME) + " " + str(masterCounter)
-print ss 
-print >> output, ss
+if test:
+	output = open('data/'+filename, 'a')
+	ss = str(TIME) + " " + str(masterCounter)
+	print ss 
+	print >> output, ss
 
 if not test:
 	print 'Percentage in cruise'
