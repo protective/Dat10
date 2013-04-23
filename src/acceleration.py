@@ -38,8 +38,8 @@ if True:
 		#oldSpeed = float(res[0][1])
 		#oldTid = int(res[0][2])
 
-		avg = 0
-		oldavg = 0
+		avg = float(0)
+		oldavg = float(0)
 		if len(res) > 0:
 			oldTime = res[0][0]
 			
@@ -65,7 +65,7 @@ if True:
 						#print "x " + str(oldavg - avg )
 						#print "y " + str(getTime(curTime)-getTime(oldTime))
 						#print "old avg " + str(oldavg) + " avg " + str(avg)
-						acc = ((avg-oldavg)/(getTime(curTime)-getTime(oldTime))/3.6)
+						acc = ((avg-oldavg)/float(getTime(curTime)-getTime(oldTime)))/3.6
 						#print "acc " + str(acc)
 					oldavg = avg
 					oldTime = res[r][0]
