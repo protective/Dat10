@@ -1,34 +1,43 @@
 \section{Introduction}
 
-Reducing fuel consumption and greenhouse gas emissions is important and at least two main techniques exist.
-Eco-routing aims to propose the most fuel efficient routes by looking at historic recordings of fuel consumptions and by heuristics.
-Eco-driving aims to changes the driving behaviour in order to use as little fuel as possible.
-Much research has been done on eco-routing\cite{}, %TODO: many citations.
-but little has been done on eco-driving. %TODO: citations or something 
-The authors of \cite{EcodrivingAdvice} list a number of advices for eco-driving that will reduce fuel consumption. 
-\begin{enumerate*}
-\item Shift up the gear as soon as possible \label{intro.advice.gear}
-\item Maintain a steady speed \label{intro.advice.speed}
-\item Anticipate traffic flow \label{intro.advice.flow}
-\item Decelerate smoothly \label{intro.advice.deceleration}
-\item Avoid idling \label{intro.advice.idling}
-\item Avoid pressing the accelerator when switching on the engine \label{intro.advice.accelerator}
-\item Minimise additional weight \label{intro.advice.weight}
-\item Minimise air resistance \label{intro.advice.air}
-\item Maintain correct tyre pressures \label{intro.advice.tyre}
-\item Avoid fuel consuming accessories, e.g. air-conditioning\label{intro.advice.accessories}
-\item Use fuel saving in-car devices as revolution counter and cruise control \label{intro.advice.cruise}
-\end{enumerate*}
+Reducing fuel consumption and greenhouse gas (GHG) emissions is a major approach towards controling global warming. 
+The focus has mainly been on large consumers as power plants, air planes, etc. but regular people will have to contribute if the goals for GHG reductions shall be met. %TODO: Reformulate and cite?
+About one fifth of EU total emission of CO$_2$ comes from road transportation and has increased with about 23 \% from 1990 to 2010 \cite{RoadTransport}.
+Politians are focusing on setting guidelines and requirements for improving vehicular technologies such as engine performance and alternaive fuels, but the individual drivers can contribute by driving more fuel efficient.
+This will not only help reduce GHG emissions but also fuel expenditure for the drivers. 
 
-Some of these advices, especially \ref{intro.advice.gear} through \ref{intro.advice.deceleration}, needs practice, while other advices, especially \ref{intro.advice.idling} though \ref{intro.advice.cruise} can be implemented without much practise. %TODO: refomulate
+Eco-driving aims to changes the driving behaviour by giving simple advices such as maintain a steady speed, accelerate moderatly, do not drive too fast, anticipate traffic flow and maintain your vehicle \cite{EcodrivingAdvice,KorGront}.
+The advices are designed to reduce fuel consumption and hence reduce GHG emmisions, but traffic safety and improvement of traffic flow have shown to be possitive side effects.
 
-It is imperative to receive useful feadback in order to improve ones eco-driving performance.
-This can either be by an in-car device that shows the instantanious and aggregated fuel consumption or by provided individual advice on which factors the driver should improve.
-Both require detailed information of past driving patterns.
+Feedback on ones eco-driving performance is imparative for improvement. 
+This can either be simple visulisations of fuel consumption or more elaborate observations.
+These observations could for example be whether the driver accelerates too much, idles too often. 
+In order to make these observations one would need access to detailed information of driving patterns. 
 GPS data provides location, speed and direction at a high frequence, and the data is easy and cheap to collect.
-Additional data is, however, needed to evaluate many of the advices given above.
-CANBus data can provide some of this, but the data is not yet avaiable in the same amount as GPS data.
+Additional data is, however, needed in order to evaluate if many of the eco-driving advices are followed.
+CANBus data can provide more detailed information about the dynamic state of the vehicle, e.g. rounds per minute, kilometers driven and more.
+As of today the data is not yet avaiable in the same amount as GPS data, and the quallity varies. %TODO: More or leave it out.
 
-We aim to identify which factors available through GPS and CANBus data, has an influence on fuel consumption and how one explains the difference in the fuel consumption of different vehicles of the same type?
+Say we have three vehicles, A, B and C, that drive at different kilometers per liter fuel (see Table~\ref{tb:exemple1}).
+Is it then possible to pinpoint why vehicle A is much less fuel efficient than vehicle C using GPS and CANBus data?
+With a gas price of 12 kr/l vehicle A use 2,400 kr a week if he drives 1000 km where as vehicle B use 2,000 kr and vehicle C only 1500 kr a week. %CHECK
+Over a year vehicle A could save a around 45,000 kr if he could drive with the same fuel efficiency as vehicle C.%CHECK
+\begin{table}%TODO: This table seems redundant. Too little information   
+\centering
+\begin{tabular}{|c|c|c|}\hline
+Vehicle & $km/l$\\\hline
+A & 5\\\hline
+B & 6\\\hline
+C & 8\\\hline
+\end{tabular}
+\caption{Example}\label{tb:exemple1}
+\end{table}
 
-Contributions
+We aim to identify which factors available through GPS and CANBus data, has an influence on fuel consumption and how one explains the difference in the fuel consumption of different vehicles of the same type.
+That is, why does vehicle C use less fuel than vehicle A and can vehicle C improve his fuel efficiency using eco-driving strategies?
+
+
+The main contributions of this paper are:
+\begin{itemize*}
+\item ?
+\end{itemize*}

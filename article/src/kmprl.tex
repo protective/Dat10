@@ -1,24 +1,60 @@
-\section{Kilometers per liter fuel}
+\section{Classifying Data}
+%TODO: Why those classes?
 
-How many kilometers per liter fuel (km/l) a vehicle drives will indicate how fuel efficient the vehicle is.
+Fuel consumption is a measure of effectiveness, and how many kilometers per liter fuel (km/l) a vehicle drives will indicate how fuel efficient the vehicle is.
 The main goal of a vehicle is transportation and hence, the more kilometers one can drive per liter fuel, the cheaper it is.
 
-Let $\kml{t}$ be the total number of km driven in trip $t$ devided by the total fuel consumption of trip $t$, and let $\kml{v}$ be the average of $\kml{t}$ for all trips that vehicle $v$ has driven.
 
-Figure~\ref{fig:kmlTrips} plots all $\kml{t}$ with trips on the x-axis, $\kml{t}$ on the y-axis with a plot symbol for each vehicle.
-We see that the majority of the trips have a $\kml{t}$ between 5 and 10 km/l, but also that many trips have a near zero value and that some have er very high km/l.
-The near zero values is because they do not drive anywhere and the very high values are due to inaccuracies and because the trips are too short.
-Overall, the km/l-values are very consistent with what can be expected from minibusses.
 
-All trips are devided into classes based on their $\kml{t}$, such that we later can classify the different factors. %TODO: Uklart
-All trips with $\kml{t}\leq6$ are in the \fuelLow class. These trips have an distinctively low km/l and lie out side of the normal range. 
-The remaining trips are grouped in two to classes, \fuelMedium and \fuelHigh in order to distinquish the best from the rest.
-\fuelMedium contains trips with $6 < \kml{t} < 8$ and \fuelHigh contains trips with $\kml{t}\geq8$.
-Had we only used two classes, e.g. 0 to 6 and above 6, will allow us to identify very bad trips but not average versus good. 
-One could also have a class containing trips with more than 15 km/l but only 43 trips will be in this class. %CHECK
+
+Let $\kml{\trip{}}$ be the total number of km driven devided by the total fuel consumption of trip $\trip{}$ and let $kml_{vid}$ be the average of $\kml{\trip{}}$ for all trips that vehicle \vid{\trip{}} has driven.
+
+Figure~\ref{fig:kmlTrips} plots $\kml{\trip{i}}$ for all trips ordered by time and grouped by vehicles.
+All trips are classified into three classes based on their $\kml{\trip{i}}$.
+These are marked as horisontal lines on Figure~\ref{fig:kmlTrips}.
+We need to be able to distinguish fuel efficient trips from fuel inefficient trips.  
+We see that the majority of the trips have a $\kml{\trip{i}}$ between 5 and 12 km/l, but that many trips have a lesser value.
+$\kml{\trip{i}}=0$ when the trip is 0 km long.
+Overall, the values are very consistent with what can be expected from minibusses.
+Table~\ref{tb:tripStatistics} lists $\kml{\vid{}}$ and the standard sample deviation of the four vehicles and on the total data set.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|c|c|c|}\hline %CHECK
+Vehicle id & Average $km/l$ & Standard Deviation \\\hline
+67 & 6.78 & 2.69\\\hline
+58 & 5.82 & 2.55\\\hline
+40 & 7.38 & 2.77\\\hline
+10 & 6.75 & 2.66\\\hline\hline
+Average & 6.73 & 2.72\\\hline
+\end{tabular}
+\end{center}
+\caption{Vehicle statistics}\label{tb:tripStatistics}
+\end{table}
+
+The class \fuelLow is made of the trips with unusually low $\kml{\trip{}}$, being those where km/l is less than the average km/l minus the standard sample deviation.
+\[\kml{\trip{i}} < c_l\]
+\[c_l = \frac{\sum_{\trip{i}\in \mathbb{T}}\kml{\trip{i}}}{\mid \mathbb{T}\mid} - \sigma_{\trip{i}\in \mathbb{T}}(\kml{\trip{i}}) = 4.02\]%CHECK
+
+where $\sigma_{\trip{i}\in \mathbb{T}}(\kml{\trip{i}})$ is the standard sample deviation.
+The remaining trips are grouped into two classes, \fuelMedium and \fuelHigh.
+We split the main group into two in order to distinqush the more fuel efficient trips from the less fuel efficient.
+More classes will not be more beneficial and less will prevent detailed analysis. %TODO: Not good
+The classes \fuelMedium and \fuelHigh is split by the average \kml{\trip{i}} of the remaning trips.
+\[c_h = \frac{\sum_{\trip{i}\in \mathbb{T'}}\kml{\trip{i}}}{\mid \mathbb{T'}\mid} = 7.7\]%CHECK
+\[\mathbb{T}' = \{\trip{j}\in \mathbb{T}\mid \kml{\trip{j}} > c_l\}\]
+Hence class \fuelMedium contains trips with
+\[c_l \leq \kml{\trip{}} < c_h\]
+and class \fuelHigh contains trips with
+\[c_h \leq \kml{\trip{}}\]
+ 
+
+Some odd values can also be seen around $2.5$ and $3.33 km/l$ where several trips have the exact same $\kml{\trip{}}$.
+This is due to inaccuracies in the measurements.
+
 \begin{figure}[htb]
 \centering
-\includegraphics[width=0.5\textwidth]{../src/d_images/kmlTrips.png}
+\includegraphics[width=0.45\textwidth]{../src/e_images/kmlTrips.png}
 \caption{km/l for all trips}
 \label{fig:kmlTrips}
 \end{figure}

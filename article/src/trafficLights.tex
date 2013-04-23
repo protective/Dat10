@@ -1,26 +1,87 @@
 \section{Avoid Traffic lights}
+Anticipating traffic flow is a key factor for maintaining a steady speed and avoiding unnecessary accelerations. 
+Avoiding stopping at traffic lights and adjust the speed to the expected phases of the light is one part of anticipating the traffic flow \cite{}. %TODO: Can we reference you own article, GreenFlow?
 
-\subsection{Detecting when crosing a trafficligh}
+\subsection{Detecting when crossing a traffic light}
+Traffic light data is collected from open street map. 
+This database contains a fair number of traffic lights but not all, especialy the smaller traffic lights are missing.
+Algorithm \ref{alg.tlrange} details the procedure for counting traffic lights in a trip where $TLInRange$ finds the closest traffic light within range and returns null if none is found. Line $1$ orders the records of the trip on its timestamp. Line 2-4 setup initial variables. Line 5 loops the indevidual records in chronological order on timestamp. Line 6-8 test if the record are within a 25 meters radius of a traffic light and if so, add one to the counter and sets the variable $inL$ indicating that the vehicle are now inside the area of a traffic light. Line 9-11 test if the vehicle have left the traffic light and then resets the variable $inL$. Line 12-15 test if while the vehicle are inside a trafficlight if the record have a speed of zero then we count it as a full stop and incremment the counter $redCounter$. To avoid favouring shot trips, the number of traffic lights visited is divided with the length of the trip. This is done on line 17.
 
-Traffic lights data are collected from open street map. A vehicle is sayd to cross a trafficligh if any of the gps-records are within 25 meters of the trafficligh. A vehicle have to leave the trafficligh before it can reenter and be countet as a secound pass. Se algorithm %TODO
+This results in traffic lights overlapping only being counted once and is a neccesary limitation as OpenStreetMap provides multiple identifiers for the same traffic light.
 
-The range of 25 meters is determined from the graf in Figure \ref{fig:traffclightsize} where it is clear that after 25 meters the avange number of trafficlight a vehicle crosses is stable hence vehicles crossing a trafficligh witout beening counted is very unlikly.
+The 25 meter radius is determined from the graph in Figure \ref{fig:traffclightsize}.
+It is clear that after 25 meters the average number of traffic lights a vehicle crosses stablises.
+Hence, vehicles crossing a trafficlight without being counted is very unlikely.
 
+\begin{algorithm}
+\caption{$countTrafficLights(\trip{})$}\label{alg.tlrange}
+\begin{algorithmic}[1]
+\State $R = \trip{}.timeOrderRecords$
+\State $TL = \mbox{all traffic lights}$
+\State $inL, red = False$
+\State $counter, redCounter= 0$
+\While{$r = R.popFirst()$}
+\If{\textbf{not} $inL$ \textbf{and} $TLInRange(TL,r,25)$}
+	\State $inL = True$
+	\State $counter+=1$
+\ElsIf{\textbf{not} $TLInRange(TL,r,25)$}
+	\State $inL = False$
+\EndIf
+\If{\textbf{not} $red$ \textbf{and} $inL$ \textbf{and} $r_{speed}=0$}
+	\State $red = True$
+	\State $redCounter+=1$
+\EndIf
+\EndWhile
+\State \Return $ counter / \kmcounter{\trip{}}$
+
+\end{algorithmic}
+\end{algorithm}
 
 \begin{figure}[htb]
 \centering
-%\includegraphics[width=0.5\textwidth]{../src/images/tlRange.png}
-\caption{Traffic lights size}
+\includegraphics[width=0.45\textwidth]{../src/images/tlRange.png}
+\caption{Size of traffic lights}
 \label{fig:traffclightsize}
 \end{figure}
 
 
-Figure~\ref{fig:traffclight} plots the percentange of trips in the three fule categorys driving through diffrent concentration of trfficlights. From this graph it is clear that the green trips with a high km/l are mostly driving in areas with few traffic lights. Where trips driving in areas with many trafficlights mosly have a medium or low km/l.
+Figure~\ref{fig:traffclight} plots the percentage of trips in the three fuel classes driving through different concentration of traffic lights. 
+From this graph it is clear that the trips in class \fuelHigh with a high km/l are mostly driving in areas with few traffic lights. 
+Whereas trips driving in areas with many traffic lights mostly are in class \fuelMedium or \fuelLow.
 
-
-\begin{figure}[htb]%TODO: not updated
+\begin{figure}[htb]
 \centering
-%\includegraphics[width=0.5\textwidth]{../src/d_images/trafficlight.png}
+\includegraphics[width=0.45\textwidth]{../src/e_images/trafficlight.png}
 \caption{Traffic lights per kilometer}
 \label{fig:traffclight}
+\end{figure}
+
+Figure \ref{fig:trafficlightratio} shows the percentage of trafficlight where the vehicle have had a full stop. There is a significant drop in trips at 40\% and on average the veichels stop in 18.5\% of the traffic lights. %CHECK
+Observe there is no significant diffrens in the percentage of traffic light related stop and the fule classes. This indicate that the accelration and idle time in traffic lights do not have a significant impact on the fuel effeciency.
+
+\begin{comment}
+From Figure \ref{fig:traffclightred} we observe that no trip in class \fuelHigh have more than $0.8$ stops related to traffic light pr km. 
+But from Figure \ref{fig:traffclightgreen} we observe that this do not hold for driving through traffic lights without stopping. 
+This indicates that while a high concentraion of traffic lights is bad for the fuel economy, it is the full stop behavior that costs the most.
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.45\textwidth]{../src/e_images/trafficlightgreen.png}
+\caption{Traffic lights without stoping per kilometer}
+\label{fig:traffclightgreen}
+\end{figure}
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.45\textwidth]{../src/e_images/trafficlightred.png}
+\caption{Traffic lights with full stop per kilometer}
+\label{fig:traffclightred}
+\end{figure}
+\end{comment}
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.45\textwidth]{../src/e_images/trafficlightratio.png}
+\caption{Traffic lights with full stop}
+\label{fig:trafficlightratio}
 \end{figure}

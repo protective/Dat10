@@ -1,92 +1,5 @@
 \section{Defintions}
-\begin{comment}
-\subsection{Trips}
-The data set is split into trips by annotating each record with a trip identifier, \tid.
-A trip is defined as a collection of consecutive records with the same vehicle identifier, \vid.
-Idle time, i.e. when the engine is running but the vehicle is not moving, is persumed to be an important factor for fuel consumption. 
-We therefore need to ensure that records recorded when the vehicle is idle is included in trips. 
-A trip is hence defined from when the vehicle is turn on and not by when the vehicle is moving or when it is possible to map-match GPS coordinates to road segments.
-In order not to split a trip into two trips just because the engine stalls, we say that a trips ends when two consecutive records are more than some timeframe apart.
-Figure~\ref{fig:TimeTrips} show the number of trips at different timeframes from 20 seconds between two trips to 240 seconds.
-We see that the curve flattens around 100 and 120 seconds. 
-Few traffic lights have a circulation time of more that 100 seconds, and in order to aviod splitting a trip because the engine is turned of while waiting, we choose 120 seconds as the timeframe. 
-\begin{figure}[htb]
-\centering
-\includegraphics[width=0.5\textwidth]{../src/images/TimeTrips.png}
-\caption{Number of trips at different times??}
-\label{fig:TimeTrips}
-\end{figure}
 
-Many of these trips have very few records %TODO: statistics
-These short trips are not usable.
-Figure~\ref{fig:LengthTrips} show the number of trips with different minimum limits on number of records in a trip.
-\begin{figure}[htb]
-\centering
-%\includegraphics[width=0.5\textwidth]{../src/images/LengthTrips.png}
-\caption{Number of trips at different length}
-\label{fig:LengthTrips}
-\end{figure}
-
-%The data set contains 13606 distinct trips containing between 1 and 78511 records. %CHECK
-%Many of these trips have less than 100 records and are therefore not useful. %TODO: Do tests to explain why 100 records
-%We remove these trips which results in 2868 distinct trips. %CHECK
-%The longest trip is 231 km and 278 trips drive less than 1 km. %CHECK
-
-%TODO: Minimum duration?
-
-\subsection{Km per liter}
-Km per liter is the total number of kilometers driven in the trip divided by the amount of fuel used.
-The fuel consumption is extracted from \var{totalconsumed} by substracting the lowest value from the highest.
-
-All six vehicles in the data set have similar km/l accross their trips (See Figure~\ref{fig:kmlTrips}).
-All trips a plotted along the x-axis with the km/l as the y-value.
-Most trips have been driven with between 5 and 10 km/l and 278 trips with 0 km/l. %CHECK
-The latter is because they do not drive any where.
-\begin{figure}[htb]
-\centering
-\includegraphics[width=0.5\textwidth]{../src/images/km_pr_lTrips.png}
-\caption{km/l for all trips}
-\label{fig:kmlTrips}
-\end{figure}
-
-Km per liter can be used as a measure for how fuel efficient the vehicles are.
-We classify the trips into three classes based on their km/l.
-Class \fuelLow contains trips with between 0 and 4 km/l, being all those that fall below the normal values and drive very fuel inefficient.
-Class \fuelMedium and \fuelHigh splits the main cluser into two in order to distinguish the better trips.
-Class \fuelMedium contains trips with between 4 and 8 km/l and class \fuelHigh contains the remaning trips with 8 or more km/l.
-Had we only used two classes, e.g. 0 to 4 and above 4, will allow us to identify very bad trips but not average versus good. 
-One could also have a class containing trips with more than 10 km/l but only 94 trips will be in this class. %CHECK
-
-\subsection{Idle}
-We say a vehicle is idle when its speed is zero while the engine is running, i.e. the engines rounds per minut (RPM) is above zero. 
-In these situations the driver might as well have turned the engine off.
-The data set has 2859110 records with zero speed and non-zero RPM, with a minimal RPM of 41, a maximum RPM of 8192 and an average RPM of 910.4. %CHECK
-Let $idle_t$ be the percentage of the trip $t$ where the car is in an idle state.
-
-Figure~\ref{fig:idleTrips} plots $idle_t$ for each trip $t$ versus the km/l of that trip.
-The size of the plot indicates the amount of fuel used in the trip and the color signals what class it has been asigned to. 
-It is clear that most of the trips in class \fuelLow idles often and that the trips in class \fuelHigh clusters around 0 to 40 \%.
-
-\begin{figure}[htb]
-\centering
-\includegraphics[width=0.5\textwidth]{../src/images/idle_percentageTrips.png}
-\caption{Idle time}
-\label{fig:idleTrips}
-\end{figure}
-\end{comment}
-\subsection{Cruise Control}
-
-\cite{EcoMark} establishes that driving at a constant speed is more fuel echonomic. 
-From observing the data in periods where we know the driver have cruise control enabled, we see that the speed varies with $\pm$ 1 km/h. Observing data where we know the cruise controle to be disabled we se that experienced drivers might be able to drive at a constant speed over a longer time period without cruise control but the speed tends to vary more. 
-Most drivers can drive with a constant speed for a short period. 
-
-Hence, we say that a driver is using cruise control, or driving as if he did, if the speed does not changes more than $\pm$ 1 km/h in at least 20 seconds. Figure~\ref{fig:cruiseTripsTime} plots the percentage of records there are in a cruise state. The plot breaks at 20 secounds and it is used as the default minimum cruise time.
-
-Let $cruise_t$ be the percentage of the trip $t$ where the car is in a cruise state.
-Figure~\ref{fig:cruiseTrips} plots $cruise_t$ for each trip $t$ versus the km/l of that trip.
-The size of the plot indicates the amount of fuel used in the trip and the color signals what class it has been asigned to. 
-We see that all trips in the \fuelLow class and many of the trips in the \fuelMedium class never cruises.
-Generally, the trips in the \fuelHigh has tends to be cruising more often.
 
 
 \begin{comment}
@@ -99,21 +12,6 @@ Figure~\ref{fig:cruiseTrips} shows how often the trips cruise.
 Almost all trips never cruise, and all trips classified as having a low km/l never cruise.
 
 \end{comment}
-
-
-\begin{figure}
-\centering
-\includegraphics[width=0.5\textwidth]{../src/images/cruiseCounter.png}
-\caption{Cruise control activation time}
-\label{fig:cruiseTripsTime}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=0.5\textwidth]{../src/images/cruise_percentageTrips.png}
-\caption{Cruise control}
-\label{fig:cruiseTrips}
-\end{figure}
 
 \subsection{Acceleration kilometers}
 Acckm$_t$ is the total km driven while accelerating for a given trip $t$, normalised by the lenght of the trip. 
@@ -153,7 +51,7 @@ Trips with a high km/l are mostly clustered with a low acckm and a trips in the 
 
 \begin{figure}
 \centering
-\includegraphics[width=0.5\textwidth]{../src/images/acckmTrips.png}
+\includegraphics[width=0.45\textwidth]{../src/images/acckmTrips.png}
 \caption{Acceleration kilometers}
 \label{fig:acckmTrips}
 \end{figure}
@@ -172,7 +70,7 @@ We see that the trips in the \fuelHigh class have few stop and goes and about ha
 
 \begin{figure}
 \centering
-\includegraphics[width=0.5\textwidth]{../src/images/stopngoTrips.png}
+\includegraphics[width=0.45\textwidth]{../src/images/stopngoTrips.png}
 \caption{Number of stop and goes}
 \label{fig:stopngoTrips}
 \end{figure}

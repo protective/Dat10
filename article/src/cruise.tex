@@ -1,0 +1,33 @@
+\section{Maintain a Steady Speed}
+Driving at a steady speed is more fuel economic than an oscillating speed as more fuel is consumed when accelerating.
+This is also establised in the paper \cite{EcoMark}.
+It will therefore be interesting to evaluate how good the drivers are at maintaining a steady speed.
+
+It is very difficult to drive at a constant speed for longer periods of time. 
+The speed will always fluctuate with a few km/h due to changes in the road and wether conditions amonst others.
+From observing a small data set where cruise control has been used, we see that the speed only varies with $\pm$ 1 km/h. 
+Observing data where cruise control has not be use, we se that an experienced driver is able to maintain a steady speed over a longer time period without cruise control but the speed tends to vary more. 
+Most drivers can drive with a constant speed for a short period.
+
+The property of a period of steady speed is that the speed does not vary more that $\pm 1km/h$ for at least 20 seconds.
+Figure~\ref{fig:cruiseTripsTime} plots the number of records that maintain a steady speed over the minimum duration of the period at different speed variations.
+The biggest difference between the plots is between 0 and 1 km/h and all plots break at 20 seconds.%TODO: Explain
+%TODO: Why do we not count number of periods?
+
+Figure~\ref{fig:cruiseTrips} plots the class distribution of how much of all trips are at a steady speed as percent.
+It is clear that the trips that often maintains a steady speed primarily belongs in class \fuelHigh, and that all trips in class \fuelLow rearly maintains a steady speed.
+This indicates that the advice of maintaining a steady speed will reduce the fuel consumption.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.45\textwidth]{../src/g_images/cruiseCounter.png}
+\caption{Cruise control activation time}
+\label{fig:cruiseTripsTime}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.45\textwidth]{../src/g_images/cruisep.png}
+\caption{Cruise control}
+\label{fig:cruiseTrips}
+\end{figure}
