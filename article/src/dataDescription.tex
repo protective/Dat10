@@ -1,73 +1,84 @@
-\section{Data Description}
-A number of data sources are avaiable with information about vehicles.
+\section{Data Foundation}
+A number of data sources are avaiable with information about vehicles.%TODO: Reformulate
 
 \subsection{Global Positioning System (GPS) Data}
-GPS data is often used when analysing driving behaviour and patterens because it is easily to collect with a GPS system and much data therefore exists. 
-The following data types are avialable in the provided data set.
-\vspace{-5mm}
-\begin{description*}
-\item{\var{Timestamp}} is the date and time of each record in the data set with a granularity of one second. 
-\item{\var{Logitude and latitude}} is the coordinates of the position of the vehicle at the given timestamp.
-\item{\var{Speed}} is the speed of the vehicle in km/h as an integer.
-\item{\var{Compas}} is the direction of the vehicle in degrees where 0 is north, 90 is east, 180 is south and 270 is west.
-\item{\var{Satellites}} is the number of visible satellistes at the given timestamp.
-\end{description*}
+GPS's provide spatio-temporal information with high accuracy and reliablity at a low cost.
+GPS data is therefore often used when analysing driving behaviour and patterns because much data exists. 
+
+GPS data records a vehicles latitude and logitude position, speed and direction at some UTC time with some frequency. 
+With such information it will for example be possible to analyse how well the driver is at keeping a steady speed (advice \ref{advice.steadySpeed}) and how he accelerates and decelerates (advice \ref{advice.decelerate} and \ref{advice.accelerate}). 
+By comparing the positions with a map we will also be able to analyse how well the driver analyses the traffic flow for example avoids stopping at traffic lights (advice \ref{advice.anticipateFlow}).
+The coordinates can also matched to road segments on a map, from which one for exampple can see the types of roads that are used.
 
 \subsection{CANBus Data}
-GPS data alone is not enough when making detailed analysis of driving behaviour.
-CANBus data allows access to more detail information about the state of the vehicle but as of today, little data is available. 
-The following data types are avialable in the provided data set.
-\vspace{-5mm}
-\begin{description*}
-\item{\var{RPM}} is the rounds per minute of the engine.
-\item{\var{kmcounter}} records the total number of kilometers (km) driven by the vehicle. The granularity is 1 decimal.
-\item{\var{Temperature}} is the temperature of the the engine.
-\item{\var{Throttlepos}} is the position of the trottle in percent where 100 \% is flat down. The data is, however, corrupted, and the data is 102 in 90 \% of the data records. These data can therefore not be used.%CHECK
-\item{\var{Acceleration}} is the acceleration of the vehicle. The data is, however, corrupted and little correlation between speed, rpm and acceleration exits. This data will hence not used, but can be calculated from speed and timestamp.
-\item{\var{Fuellevel}} is the level of fuel in the tank where 100 \% is a full tank.
-\item{\var{Totalconsumed}} is the total amount of fuel consumed in liters. The granularity is 2 decimals (See Section~\ref{sec:dataDescriptionVehicles} for comments.) 
-\item{\var{Actualconsumed}} is the instantaneous fuel consumption in liters. The data is said to be undependable by the data provider due to inaccuracies, and hence not used.
-\item{\var{Actual\_km\_l}} is the instantaneous fuel consumption per kilometers in liters. The data is said to be undependable by the data provider due to inaccuracies, and hence not used.
-\end{description*}
+CANBus data allows access to the state of the electronic devices in a vehicle giving more detail information about the state of the vehicle. 
+This allows more detailed analysis of driving behaviour.
+CANBus data always annotates GPS data, but as of today, little GPS data with CANBus information is available.  
 
-When calulating fuel consumption we refer to the \var{totalconsumed} values, as these are most accurate.
-No CANBus data is available in 2410 records. These records are marked as dirty and not used in the following analysis.
+%TODO: This section is very segregated. Rewrite
+CANBus data can include many different values, here we only mention the most common.  
+The engines rounds per minute (RPM) will indicate the load on the engine, e.g. if the vehicle is turned off, idling or under high load. 
+The current gear can be utilised to understand if the driver drives in neutral gear and changes gears at the correct places.
+Knowing the driving distance is also usefull and can be access through the vehicles mileometer. 
+Fuel consumption is often avaiable in different formats, i.e. the fuel level in the tank, the instantaneous fuel consumption and the total fuel consumed. 
+Instantaneous fuel consumption is estimated based on other CANBus data such as RPM and fuel flow. 
+This makes it a good estimate of fuel consumption at drive time, but it is not useful and too inaccurate at an aggregate level.
+The total fuel consumption is more accurate when looking at consumption over time.
+The acceleration can be avaliable in the CANBus data, but can also be calculated from the speed. 
+The position of the throttle indicates how agreesively the vehicle is driven.
+An engine works best at certain temperatures, and this temperature is also available through the CANBus. 
 
-\subsection{Haulier Data}
-The haulier can provide data about the type of vehicle, e.g. \var{make}, \var{model}, \var{capacity} and \var{weight}.
-No data is available in this dataset.    
-
-\subsection{Map Data and Map-matching}
-Using the latitude and longitude coordinates it is possible to match each record to a road seqment on a map.
-From road seqments it is possible to reason about which types of roads they use.
-We use the tool M-GEMMA \cite{M-GEMMA} to map match each record to road seqments on a map from OpenStreetMap \cite{}.
-OpenStreetMap is an open source collaporation project, and hence some data might be lacking or inaccurate. 
-The information is reliable in most cases.
-The map-matching process uses a collection of records to match records to seqments and will discard data with too few correlated records or if the coordinates are too far from any seqments.
-After map-matching the provided data set, 40 \% of the data was discarded. %CHECK.
-Some of the following analysis will therefore be executed on non-map-matched data and some on map-matched data. 
-The map-matching process annotates the data set with a \var{seqmentkey} refering to a road segment on the map and a \var{direction} being either \var{Forward} or \var{Backward} on the seqment.
-
-%TODO: Describe values on the map
-
-\subsection{Vehicles} \label{sec:dataDescriptionVehicles}
-The data set contains records from six different vehicles of a minibus type. 
+\subsection{'Avaliable Data Foundation'}%TODO: New headline
+The data set contains records from four real-life vehicles of a minibus type. 
 All vehicles are assumned to be comparable based on statements from the data provider. %TODO
-Two vehicles have a very low granularity of half a liter on \var{totalconsumed}. 
-This is too inaccurate for a proper analysis, and these two vehicles are ommitted from the analysis.  
-
-Table~\ref{tb:NoRecords} list the number of un-map-matched records for each vehicle. 
+Table~\ref{tb:NoRecords} list the number of records for each vehicle. 
 About 90\% of the data is recorded with 1 hertz frequency, the remaning is collected with a larger frequency.
-\begin{table}
+\begin{table}%CHECK
 \centering
 \begin{tabular}{l|r}
 Vehicle id		& Number of records \\\hline
-354330030804267 & 1,736,654\\\hline
-354330030714458 & 950,542\\\hline
-354330030793940 & 1,789,228\\\hline
-354330030781010 & 1,992,340\\\hline
+67 & 1,736,654\\\hline
+58 & 950,542\\\hline
+40 & 1,789,228\\\hline
+10 & 1,992,340\\\hline
 \textbf{Total}	& \textbf{6,468,764}
 \end{tabular}
 \caption{Number of data records}
 \label{tb:NoRecords}
+\end{table}
+
+In the following, we will be using 8 of the data values provided in the data set. 
+The remaining are either lacking data, the data is erroneous or not usable in this context.
+Let \rec{} be a recording and \vid{\rec{}} be the vehicle identifier, \timestamp{\rec{}} be the timestamp of the recording, \lng{\rec{}} and \lat{\rec{}} be the longitude and latitude position, \speed{\rec{}} be the speed in km/h as an integer, \rpm{\rec{}} be the RPM of the engine, \kmcounter{\rec{}} be the read-out of the mileometer and \fuel{\rec{}} be the total fuel consumption of the vehicle with a granularity of 1 ml.
+No information about the gears are available in the data set. 
+
+The tool M-GEMMA \cite{M-GEMMA} is used to match each record to a road segment from a map from OpenStreetMap\cite{OSM} using the latitude and longitude coordinates.
+The map-matching process uses a collection of records to match records to segments and annotates the data set with a \segmentkey{\rec{}} refering to a road segment on the map and a \mmdirection{\rec{}} being either \var{Forward} or \var{Backward} on the segment.
+The process fails in about 45 \% of the records and the record is not map-matched to a road segment. %CHECK 
+
+Some of the advices from Section\ref{ecodriving} can be evaluated with the avaliable data and some cannot. 
+Table~\ref{tb:advicesDataSet} gives an overview which advices can be evaluated with what data.
+The category 'Other' indicates that aditional information not avaiable in the data set is necessary. 
+Advice \ref{advice.steadySpeed}, \ref{advice.accelerate}, \ref{advice.idle}, \ref{advice.speedLimit} and \ref{advice.startup} can be evaluated solely the provided data set, and advice \ref{advice.highGearLowRPM}, \ref{advice.anticipateFlow}, \ref{advice.decelerate} and \ref{advice.curves} can be evaluated to some extent.
+Advice \ref{advice.highGearLowRPM}, \ref{advice.decelerate} and \ref{advice.curves} requires access to the current gear.
+Parts of advice \ref{advice.anticipateFlow} can be evaluated, such as driving pattern around traffic lights, but it will require additional information in order to evaluate how the driver behaves around for example other vehicles and pedestrians.
+No evaluation can be made of advice \ref{advice.weightAir}, \ref{advice.tyre} and \ref{advice.accessories} as they require other data than what is available.
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|c|}\hline
+Advice & GPS & CANBus & Map & Other\\\hline
+\ref{advice.highGearLowRPM} & - & \checkmark & - & \checkmark\\\hline
+\ref{advice.steadySpeed} & \checkmark & - & - & -\\\hline
+\ref{advice.anticipateFlow} & \checkmark & - & \checkmark & \checkmark\\\hline
+\ref{advice.decelerate} & \checkmark & \checkmark & - & \checkmark \\\hline
+\ref{advice.accelerate} & \checkmark & - & - & -\\\hline
+\ref{advice.idle} & \checkmark & \checkmark & - & -\\\hline
+\ref{advice.speedLimit} & \checkmark & - & \checkmark & -\\\hline
+\ref{advice.startup} & \checkmark & \checkmark & - & -\\\hline
+\ref{advice.curves} & \checkmark & - & \checkmark & \checkmark\\\hline
+\ref{advice.weightAir} & - & - & - & \checkmark\\\hline
+\ref{advice.tyre} & - & - & - & \checkmark\\\hline
+\ref{advice.accessories} & - & - & - & \checkmark\\\hline
+\end{tabular}
+\caption{????}\label{tb:advicesDataSet}
 \end{table}

@@ -68,6 +68,10 @@ while cruiseBegin < len(res) -1:
 		
 		cruiseBegin += 1
 		cruiseCur = cruiseBegin
+
+		if cruiseCur >= len(res):
+			break
+
 		cruiseSpeed = res[cruiseBegin][0]
 		Time = time.mktime(time.strptime(res[cruiseBegin][1], "%Y-%m-%j %H:%M:%S"))
 		counter = 0

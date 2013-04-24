@@ -1,97 +1,97 @@
-\section{Avoid Idling}
+\section{Avoid Idling}\label{sec:idle}
+
+%TODO: Make sure the vehicles have the same color and order on all pictures.  
 
 Avoiding idling or minimising idle time is a factor in eco-driving as fuel is still consumed when the engine is running even though the vehicle is not moving.
 The driver is hence consuming unneccesary fuel when idling.
-A vehicle is idling when the engines rounds per minute (RPM) is above zero while the speed is zero for at least 2 consecutive recordings.
-A vehicle is hence also idling when for example waiting at a red light or in a queue. 
 
-Let $\vrpm$ and $\vspeed$ be the RPM and speed of vehicle $v$ at time $t$ and we say that vehicle $v$ is ideling at timestep $t$ if and only if $\vrpm$ is larger than zero and $\vspeed$ is zero.
-\[\vidle = true \mbox{ iff. } \vrpm > 0 \wegde \vspeed = 0\]
-An \textit{idle period}, $\vidlep$ is a set of consequtive records where the vehicle is idling
-\[\vidlep = \{r \mid v_{r.t}^{idle}=true \}\]
-and $\timelength{\vidlep}$ is the length of the idle period in seconds.
+We say a vehicle is \textit{stopped} iff. the RPM i above zero and the speed is zero for at least 2 consecutive recordings.
+\begin{align}
+\stopp{\rec{i+1}} = true &\mbox{ iff. } \nonumber\\
+&\rpm{\rec{i}} > 0 \wedge \rpm{\rec{i+1}} > 0 \wedge \nonumber\\
+&\speed{\rec{i}} = 0 \wedge \speed{\rec{i+1}} = 0 \nonumber
+\end{align}
 
-Figure~\ref{fig:idleRange2} shows how often the vehiceles idle and how long.
-The idle periods are combined into ranges of 100 seconds and displaied on the x-axis, e.g. 100.0 indicates the time range 100-199 seconds. 
-The number of times each vehicle idles in the given time range is displaied on the y-axis in a logarithmic scale. 
-It is clear to see that most of the vehicles idles less that 100 seconds which correlates with the longest circulation times of traffic ligths. 
+A vehicle is hence stopped when for example waiting at a red light, in a queue or parked with the engine on. 
+A \textit{stopped period} is a sequence of records where $\stopp{\rec{}}$ is true as per Section~\ref{sec:periods}.
+But when looking at idling, we are not interesseted in all stopped periods.
+All stops near traffic lights is not idling and very short stops are neigher.  
+Figure~\ref{fig:idleRange2} shows how often the vehiceles are stopped outside traffic lights and for how long. 
+The periods are combined into ranges of 100 seconds and displayed on the x-axis, e.g. 100.0 indicates the time range 100-199 seconds. 
+The number of times each vehicle is stopped in the given time range is displayed on the y-axis in a logarithmic scale.
+Note that some periods have been ommited in this graph due to too few occurences.
+It is clear to see that most of the vehicles stop for less 100 seconds which correlates with the longest circulation times of traffic ligths. 
+
 \begin{figure}[htb]
 \centering
-\includegraphics[width=0.5\textwidth]{../src/d_images/idleRange2.png}
-\caption{Minimum idle duration}
+\includegraphics[width=0.45\textwidth]{../src/e_images/idleRange2.png}
+\caption{Number of idle periods at different ranges}
 \label{fig:idleRange2}
 \end{figure}
 
-Figure~\ref{fig:idleRange3} shows how much fuel has been consumed in the idling periodes of more than 100 seconds. 
-Fuel consumption is shown on the y-axis and the number of seconds in the idle period is shown on the x-axis.
-We see that few idles for more than 25 minutes and that even these do not use more than 2 liters of fuel.
+Figure~\ref{fig:idleDuration} shows the total number of stopped periods with different minimum durations of the periods.
+The curve flattens around 250 $s$, a little over $4$ minutes.
+An \textit{idle period} is therefore a stopped period that longer than 250 $s$ and not near a traffic light.
+Involuntary stopped periods such as queues and alike are thereby eliminated.
 \begin{figure}[htb]
 \centering
-\includegraphics[width=0.5\textwidth]{../src/d_images/idleRange3.png}
-\caption{Minimum idle duration}
-\label{fig:idleRange3}
-\end{figure}
-
-It will also be interessting to investigate whether how much of a trip is in an idle state has an infulence on the trips km/l.
-
-A vehicle has a \textit{pure idle period} when
-
-
-\[\]
-
-
-\[\mbox{\textbf{for }} i, \dots ,t, \dots, i+50 \mbox{: }\vrpm> 0 \wedge \vspeed=0 \]
-A vehicle must be in idling at least $50$ seconds in order to eliminate involuntary idle times at for example traffic lights or due to small disturbances is the traffic flow.
-Figure~\ref{fig:idleDuration} plots a graph of the number of records in which a vehicle is idling at different minimum durations. 
-
-\begin{figure}[htb]
-\centering
-\includegraphics[width=0.5\textwidth]{../src/d_images/idleDuration.png}
+\includegraphics[width=0.45\textwidth]{../src/e_images/idleDuration.png}
 \caption{Minimum idle duration}
 \label{fig:idleDuration}
 \end{figure}
 
-\begin{comment}
-Figure~\ref{fig:idleTime} plots the km/l for all trips as a function of how many seconds the vehicle has been idling.
-The size of the plot indicates the amount of fuel used in the trip and the color signals what class it has been asigned to.
-TODO: analyse
+Figure~\ref{fig:idleRange3} shows how much fuel is consumed in the idle periods. 
+Fuel consumption is shown on the y-axis and the number of seconds of the idle period is shown on the x-axis.
+A linear regression line has been plottet for each vehicle
+We see that few idles for more than 1300 seconds ($\sim$ 21 minuts) but that these use between 0.5 and 2 liters of fuel each time.
+Following the regression lines it can be estimated that between 0.85 and 1.25 liters of fuel are used per idling hour.  
 \begin{figure}[htb]
 \centering
-\includegraphics[width=0.5\textwidth]{../src/images/idleTime.png}
-\caption{Idle time}
-\label{fig:idleTime}
+\includegraphics[width=0.45\textwidth]{../src/e_images/idleRange3.png}
+\caption{Fuel comsumption when idling}
+\label{fig:idleRange3}
 \end{figure}
 
-It might give a more fair result, if the numbers from Figure~\ref{fig:idleTime} are normalised such that the x-axis plots how many percent of the records are an idle state compared to the number of records in the trip.
-Figure~\ref{fig:idlePercent} plots the km/l for all trips as a function of how many percent of the trip the vehicle has been idling.
-The size of the plot indicates the amount of fuel used in the trip and the color signals what class it has been asigned to.
-TODO: analyse
+Table~\ref{tb:idleFuel} shows how much each vehicle idles and how much fuel is used.
+Vehicle 58 idles the most and consumes about a quarter of a liter of fuel each day on idling. 
+Vehicle 67 only idles around 4 minuts a day and is the vehicle that consumes least fuel on idling.
+Vehicle 10 and 40 use almost the same amount of fuel, but vehicle 40 idles much less than vehicle 10. 
+This makes vehicle 40 more fuel efficient when idling. 
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|c|}\hline%CHECK
+			& \multicolumn{2}{c|}{Idle} & \multicolumn{2}{c|}{Fuel}\\
+Vehicle id & $s$ & $min/day$ & $l$& $l/day$\\\hline
+        40 & 109,138 & 7.86 & 31.17 & 0.13\\\hline
+        58 & 179,118 & 12.64 & 60.11 & 0.25\\\hline
+        67 &  67,312 & 4.75 & 18.37 & 0.08\\\hline
+        10 & 153,083 & 10.90 & 35.56 & 0.15\\\hline
+%Average & 36.30 & 127.162 s $\sim$ ?? hours & 1.03\\\hline %TODO: Do average
+\end{tabular}
+\caption{Time and fuel consumption in idle}\label{tb:idleFuel}
+\end{table}
+%select i.vehicleid, idle, (idle/60)/(time/60/60/24) as idleday, fuel, fuel/(time/60/60/24) as fuelday from (select vehicleid, sum(stopped)::float as idle, sum(fuel)::float as fuel from e_idledatatl where stopped > 250 group by vehicleid)i, (select vehicleid, EXTRACT(EPOCH FROM max(timestamp)-min(timestamp))::float as time from e_gps_can_data group by vehicleid)t where i.vehicleid=t.vehicleid;
+
+%select i.vehicleid, idle, time, (idle/60)/(time/60/60/24) as idleday, fuel, fuel/(time/60/60/24) as fuelday from (select vehicleid, sum(stopped)::float as idle, sum(fuel)::float as fuel from e_idledatatl where stopped > 250 group by vehicleid)i, (select vehicleid, EXTRACT(EPOCH FROM max(timestamp)-min(timestamp))::float as time from e_gps_can_data group by vehicleid)t where i.vehicleid=t.vehicleid;
+
+It will also be interesting to investigate whether how much of a trip is in an idle state has an infulence on the trips km/l.
+Figure~\ref{fig:idleClassPercent} shows the class distribution of all trips grouped by how much of the trip is in an idle period.
+The yellow line indicates the number of trips on a logaritmic scale.
+We clearly see that of the trips with a small idle percentage most are in the class \fuelHigh and vice versa.
+This strongly suggests that there is a correlation between idle and fuel efficiency.
+Figure~\ref{fig:idleClassTime} shows the class distribution over the length of the pure idle periods split into ranges.
+We do not see the same clear distinction in this plot as for Figure~\ref{fig:idleClassPercent}.
+This might indicate that the trips from class \fuelLow do not necesarily idle for long periods but idles more often. 
 \begin{figure}[htb]
 \centering
-\includegraphics[width=0.5\textwidth]{../src/images/idlePercent.png}
-\caption{Idle percent}
-\label{fig:idlePercent}
-\end{figure}
-
-Figure~\ref{fig:idleClassPercent} abstracts away the actual km/l and only plots the class distibution as a function of he idle percent. 
-The purple line indicates how many trips have this idle percentage. 
-The graph is cut off at 60 \% because of too little data.
-It is evident that the majority of the trips in the \fuelHigh class avoids idling. 
-TODO: analyse
-
-\begin{figure}[htb]
-\centering
-\includegraphics[width=0.5\textwidth]{../src/images/idle2.png}
-\caption{Class distribution }
+\includegraphics[width=0.45\textwidth]{../src/e_images/idle2.png}
+\caption{Class distribution of percentage in pure idle periods}
 \label{fig:idleClassPercent}
 \end{figure}
-
 \begin{figure}[htb]
 \centering
-\includegraphics[width=0.5\textwidth]{../src/images/idle3.png}
-\caption{Class distribution}
+\includegraphics[width=0.45\textwidth]{../src/e_images/idle3.png}
+\caption{Class distribution of time in pure idle periods}
 \label{fig:idleClassTime}
 \end{figure}
-
-\end{comment}
 

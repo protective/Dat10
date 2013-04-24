@@ -1,4 +1,4 @@
-\documentclass{acm_proc_article-sp}% {article}% TODO: twosided
+\documentclass[conference, twosided]{IEEEtran}% {article}% TODO: twosided
 
 %%%%% BASIC PACKAGES %%%%%%%%%%%%%%%%%%
 % Support for Danish characters UTF-8
@@ -119,34 +119,35 @@
     urlcolor 		= black           				% color of external links
 }
 
+% correct bad hyphenation here
+\hyphenation{op-tical net-works semi-conduc-tor}
+
 %%%%% CUSTOM MACROS %%%%%%%%%%%%%%%%%%%
 \input{commands.tex}
 
 \begin{document}
 
-\title{Characterising Eco driving with GPS and CANBus data}
+\title{Characterising Eco-driving\\using GPS and CANBus data}
 
-\numberofauthors{2}
 \author{
-% Separate each 3 authors with an 'and'
-% 1st. author
-\alignauthor
-Karsten Jakobsen\\
-       \affaddr{Institute of Computer Science}\\
-       \affaddr{Aalborg University}\\
-       \affaddr{Denmark}\\
-       \email{karstenjjakobsen@gmail.com}
-% 2nd. author
-\alignauthor 
-Sabrine C. H. Mouritsen\\
-       \affaddr{Institute of Computer Science}\\
-       \affaddr{Aalborg University}\\
-       \affaddr{Denmark}\\
-       \email{sabrinechm@gmail.com}
+\IEEEauthorblockN{Karsten Jakobsen}
+\IEEEauthorblockA{Aalborg University\\
+Institute of Computer Sience\\
+Aalborg, Denmark\\
+Email: karstenjjakobsen@gmail.com}
+\and
+\IEEEauthorblockN{Sabrine C. H. Mouritsen}
+\IEEEauthorblockA{Aalborg University\\
+Institute of Computer Sience\\
+Aalborg, Denmark\\
+Email: sabrinechm@gmail.com}
 }
+
 
 \date{1th of July 2013}
 \maketitle
+\thispagestyle{plain}
+\pagestyle{plain}
 
 %%%%%%%%%% DO NOT EDIT BELOW, THIS WILL BE AUTO GENERATED %%%%%%%%%%
 REPLACE-WITH-CONTENTS

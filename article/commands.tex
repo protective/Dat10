@@ -2,15 +2,32 @@
 
 \newcommand{\heltal}{\ensuremath{\mathbb{N}}\xspace}
 
-\newcommand{\tid}{\ensuremath{tid}\xspace}
-\newcommand{\vid}{\ensuremath{vid}\xspace}
+\newcommand{\var}[1]{\ensuremath{\textbf{#1}}\xspace}
+
+%\newcommand{\rec}{\var{r}}
+\newcommand{\rec}[1]{\ensuremath{\var{r}_{#1}}}
+\newcommand{\trip}[1]{\ensuremath{\var{trip}_{#1}}}
+\newcommand{\acceleration}[1]{\ensuremath{#1.\var{acceleration}}}
+\newcommand{\direction}[1]{\ensuremath{#1.\var{direction}}}
+\newcommand{\fuel}[1]{\ensuremath{#1.\var{fuel}}}
+\newcommand{\kmcounter}[1]{\ensuremath{#1.\var{kmcounter}}}
+\newcommand{\kml}[1]{\ensuremath{#1.\var{kml}}}
+\newcommand{\lat}[1]{\ensuremath{#1.\var{lat}}}
+\newcommand{\lng}[1]{\ensuremath{#1.\var{lng}}}
+\newcommand{\mmdirection}[1]{\ensuremath{#1.\var{mdirection}}}
+\newcommand{\rpm}[1]{\ensuremath{#1.\var{RPM}}}
+\newcommand{\segmentkey}[1]{\ensuremath{#1.\var{segmentkey}}}
+\newcommand{\speed}[1]{\ensuremath{#1.\var{speed}}}
+\newcommand{\stopp}[1]{\ensuremath{#1.\var{stop}}}
+\newcommand{\timestamp}[1]{\ensuremath{#1.\var{time}}}
+\newcommand{\temperature}[1]{\ensuremath{#1.\var{temperature}}}
+\newcommand{\tid}[1]{\ensuremath{#1.\var{tid}}}
+\newcommand{\vid}[1]{\ensuremath{#1.\var{vid}}}
+
 
 \newcommand{\fuelLow}{`low'\xspace}
 \newcommand{\fuelMedium}{`medium'\xspace}
 \newcommand{\fuelHigh}{`high'\xspace}
-
-\newcommand{\var}[1]{\textbf{#1}\xspace}
-\newcommand{\kml}[1]{\ensuremath{kml_{#1}}\xspace}
 
 \newcommand{\vrpm}{\ensuremath{v_t^{RPM}}\xspace}
 \newcommand{\vspeed}{\ensuremath{v_t^{speed}}\xspace}

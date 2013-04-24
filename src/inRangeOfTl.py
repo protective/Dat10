@@ -63,7 +63,7 @@ con.query('alter table ' + TRIPDATA + ' add TlRedCounter float not null default 
 con.query("alter table " + TRIPDATA + " drop IF EXISTS TlGreenCounter;")
 con.query('alter table ' + TRIPDATA + ' add TlGreenCounter float not null default 0;')
 
-res = con.query('select speed, timestamp, tid, tl  from ' + DATATABLE + ' where tid in (select tid from ' + TRIPDATA + ')order by tid, timestamp').getresult()
+res = con.query('select speedMod, timestamp, tid, tl  from ' + DATATABLE + ' where tid in (select tid from ' + TRIPDATA + ')order by tid, timestamp').getresult()
 
 
 tcounter = float(0)

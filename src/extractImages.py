@@ -557,6 +557,12 @@ elif TYPE == 'testSpeed':
 	print "set xtics 5"
 	print "plot '" + path + "data/testSpeed.csv' with lines lw 3 notitle"
 
+elif TYPE == 'testClusters':
+	print "set output '" + path + "images/testClusters.png';"
+	print "set ylabel 'Percentage correctly classified"
+	print "set xlabel 'Number of clusters'"
+	print "plot '" + path + "data/classData.csv' with lines lw 3 notitle"
+
 
 elif TYPE == 'idleTime':
 	#TODO: Do not work
