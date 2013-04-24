@@ -177,7 +177,7 @@ elif TYPE == 'normalRoad':
 	print "set y2tics"
 	print "set y2label 'Number of trips'"
 	print "set key opaque"
-	print "plot '" + path + "data/normalRoad.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/normalRoad.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/normalRoad.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/normalRoad.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Data points' axes x1y2"
+	print "plot '" + path + "data/normalRoad.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/normalRoad.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/normalRoad.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/normalRoad.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
 
 elif TYPE == 'smallRoad':
 	clusters = []
@@ -198,7 +198,7 @@ elif TYPE == 'smallRoad':
 	print "set y2tics"
 	print "set y2label 'Number of trips'"
 	print "set key opaque"
-	print "plot '" + path + "data/smallRoad.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/smallRoad.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/smallRoad.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/smallRoad.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Data points' axes x1y2"
+	print "plot '" + path + "data/smallRoad.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/smallRoad.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/smallRoad.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/smallRoad.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
 
 elif TYPE == 'moterRoad':
 	clusters = []
@@ -219,7 +219,7 @@ elif TYPE == 'moterRoad':
 	print "set y2tics"
 	print "set y2label 'Number of trips'"
 	print "set key opaque"
-	print "plot '" + path + "data/moterRoad.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/moterRoad.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/moterRoad.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/moterRoad.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Data points' axes x1y2"
+	print "plot '" + path + "data/moterRoad.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/moterRoad.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/moterRoad.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/moterRoad.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
 
 elif TYPE == 'testRoad':
 
@@ -242,14 +242,19 @@ elif TYPE == 'testRoad':
 	print s[:-1]
 
 
-
+elif TYPE == 'cruiseCounter':
+	print "set output '" + path + "images/cruiseCounter.png';"
+	print "set ylabel 'Number of records with steady speed (x 10^3)"
+	print "set xlabel 'Minimum length (s)'"
+	#print "set logscale y 10"
+	print "plot '" + path + "data/cruiseCounter0.csv' using 1:($2/1000) with lines lw 3 title '+/- 0 km/h','" + path + "data/cruiseCounter1.csv' using 1:($2/1000) with lines lw 3 title '+/- 1 km/h','" + path + "data/cruiseCounter2.csv' using 1:($2/1000) with lines lw 3 title '+/- 2 km/h', '" + path + "data/cruiseCounter3.csv' using 1:($2/1000) with lines lw 3 title '+/- 3 km/h','" + path + "data/cruiseCounter4.csv' using 1:($2/1000) with lines lw 3 title '+/- 4 km/h'"
 
 elif TYPE == 'cruisep':
 	clusters = []
 	clusters.append(con.query('select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+ TABLE + ';').getresult()[0][0])
 	clusters.append(con.query('select avg(km_pr_l) from '+TABLE+' where km_pr_l > (select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+TABLE+')').getresult()[0][0])
 	
-	res = con.query("select * from (select round((cruise_percentage)::numeric,2),count(case when km_pr_l <"+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l < "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) as c from " + TABLE + " where total_km >= 0.1 group by round order by round)a where c > 10;").getresult()
+	res = con.query("select * from (select round((cruise_percentage)::numeric,2)*100 as round,count(case when km_pr_l <"+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l < "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) as c from " + TABLE + " where total_km >= 0.1 group by round order by round)a where c > 10;").getresult()
 	output = open(path + 'data/cruisep.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 	for r in res:
@@ -257,14 +262,16 @@ elif TYPE == 'cruisep':
 
 	print "set output '" + path + "images/cruisep.png';"
 	print "set ylabel 'Class distribution (%)'"
-	print "set xlabel 'cruise percentage '"
+	print "set xlabel 'Steady speed (%) '"
 	print "set yrange[0:100]"
 	print "set xrange[0:]"
 	print "set y2tics"
 	print "set y2label 'Number of trips'"
 	print "set logscale y2 10 "
 	print "set key opaque"
-	print "plot '" + path + "data/cruisep.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/cruisep.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/cruisep.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/cruisep.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Data points' axes x1y2"
+	print "set xtics 5"
+
+	print "plot '" + path + "data/cruisep.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/cruisep.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/cruisep.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/cruisep.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
 
 
 
@@ -289,7 +296,7 @@ elif TYPE == 'trafficlight':
 	print "set y2label 'Number of trips'"
 	print "set logscale y2 10 "
 	print "set key opaque"
-	print "plot '" + path + "data/trafficlight.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/trafficlight.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/trafficlight.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/trafficlight.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Data points' axes x1y2"
+	print "plot '" + path + "data/trafficlight.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/trafficlight.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/trafficlight.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/trafficlight.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
 
 elif TYPE == 'trafficlightgreen':
 	clusters = []
@@ -311,7 +318,8 @@ elif TYPE == 'trafficlightgreen':
 	print "set y2label 'Number of trips'"
 	print "set logscale y2 10 "
 	print "set key opaque"
-	print "plot '" + path + "data/trafficlightgreen.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/trafficlightgreen.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/trafficlightgreen.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/trafficlightgreen.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Data points' axes x1y2"
+	
+	print "plot '" + path + "data/trafficlightgreen.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/trafficlightgreen.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/trafficlightgreen.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/trafficlightgreen.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
 
 elif TYPE == 'trafficlightred':
 	clusters = []
@@ -333,7 +341,7 @@ elif TYPE == 'trafficlightred':
 	print "set y2label 'Number of trips'"
 	print "set logscale y2 10 "
 	print "set key opaque"
-	print "plot '" + path + "data/trafficlightred.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/trafficlightred.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/trafficlightred.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/trafficlightred.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Data points' axes x1y2"
+	print "plot '" + path + "data/trafficlightred.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/trafficlightred.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/trafficlightred.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/trafficlightred.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
 
 elif TYPE == 'trafficlightratio':
 	clusters = []
@@ -355,7 +363,7 @@ elif TYPE == 'trafficlightratio':
 	print "set y2label 'Number of trips'"
 	#print "set logscale y2 10 "
 	print "set key opaque"
-	print "plot '" + path + "data/trafficlightratio.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/trafficlightratio.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/trafficlightratio.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/trafficlightratio.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Data points' axes x1y2"
+	print "plot '" + path + "data/trafficlightratio.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/trafficlightratio.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/trafficlightratio.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/trafficlightratio.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
 
 
 elif TYPE == 'idleDuration':
@@ -394,12 +402,6 @@ elif TYPE == 'tlRange':
 	#print "set logscale y 10"
 	print "plot '" + path + "data/TlCounter.csv' with lines lw 3 notitle"
 
-elif TYPE == 'cruiseCounter':
-	print "set output '" + path + "images/cruiseCounter.png';"
-	print "set ylabel 'Number of records with steady speed"
-	print "set xlabel 'Minimum length (s)'"
-	#print "set logscale y 10"
-	print "plot '" + path + "data/cruiseCounter0.csv' with lines lw 3 title '0 seconds','" + path + "data/cruiseCounter1.csv' with lines lw 3 title '1 second','" + path + "data/cruiseCounter2.csv' with lines lw 3 title '2 seconds', '" + path + "data/cruiseCounter3.csv' with lines lw 3 title '3 seconds','" + path + "data/cruiseCounter4.csv' with lines lw 3 title '4 seconds'"
 	
 elif TYPE == 'idleRange':
 	res = con.query("select idle, count(*) from (select round(count(case when stopped=1 then 1 end)/10)*10 as idle from " + TABLE + " group by tid)a group by idle order by idle;").getresult()
@@ -501,29 +503,28 @@ elif TYPE == 'rpmRanges':
 	
 
 elif TYPE == 'accelerationRanges':
-	vehicles = con.query("select distinct vehicleid from " + TABLE + ";").getresult()
+	vehicles = con.query("select vehicleid, count(*) from " + TABLE + " group by vehicleid order by vehicleid;").getresult()
 	
-	granularity = 10
+	granularity = 1
 	for v in vehicles:
-		res = con.query("select * from (select round(acceleration2/"+str(granularity)+")*"+str(granularity)+"::integer as acc, count(*)::float as c from "+ TABLE + " where vehicleid =" + str(v[0]) + " group by acc order by acc)a where acc != 0 and c > 10;").getresult()
+		res = con.query("select * from (select round(acceleration2::decimal, " + str(granularity)+") as acc, count(*)::float as c from "+ TABLE + " where vehicleid =" + str(v[0]) + " group by acc order by acc)a where acc > 1 and c > 100;").getresult()
 		output = open(path + 'data/'+str(v[0])+'accelerationRanges.csv', 'w+')
-		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 		for r in res:
-			writer.writerow(r)
-
-	boxwidth= float(granularity)/(len(vehicles)+1)
+			print >> output, str(r[0]) + " " + str(float(r[1])/float(v[1]))
+	boxwidth= (float(granularity)/10)/(len(vehicles)+1)
 	print "set output '" + path + "images/accelerationRanges.png';"
 	print "set ylabel 'Number of records'"
 	print "set xlabel 'Acceleration (m/s^2)'"
 	print "set style fill solid border -1"
 	print "set boxwidth " + str(boxwidth)
 	print "set xtic rotate by -45 scale 0"
-	print "set xtics " + str(granularity)
+	print "set xtics " + str(float(granularity)/10)
+	print "set xrange[1:]"
 	
 	offset = 0
 	s = "plot "
-	for v in vehicles:
-		s += "'" + path + "data/"+str(v[0]) + "accelerationRanges.csv' using ($1+"+ str(offset) + "):2 with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + "  title '" + str(v[0]) + "',"
+	for v in vehicles: #fs pattern " + patterns[v[0]][2] + " 
+		s += "'" + path + "data/"+str(v[0]) + "accelerationRanges.csv' using ($1+"+ str(offset) + "):2 with boxes lc rgb '" + patterns[v[0]][1]+ "'  title '" + str(v[0]) + "',"
 		offset+=boxwidth
 	print s[:-1]
 
@@ -542,12 +543,12 @@ elif TYPE == 'accelerationFast':
 	print "set output '" + path + "images/accelerationFast.png';"
 	print "set ylabel 'Acceleration (m/s^2)'"
 	print "set ytics 10"
-	#print "set yrange[:100]"
+	#print "set yrange[:10]"
 	
 	s = "plot "
-	for v in vehicles:
-		s += "'" + path + "data/"+str(v[0]) + "accelerationFast.csv' lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + " title '" + str(v[0]) + "',"
-	print s + "2 notitle"
+	for v in vehicles: 
+		s += "'" + path + "data/"+str(v[0]) + "accelerationFast.csv' lc rgb '" + patterns[v[0]][1]+ "'  title '" + str(v[0]) + "',"
+	print s + " 0 lw 2 lc rgb 'black' notitle"
 
 elif TYPE == 'testSpeed':
 	print "set output '" + path + "images/testSpeed.png';"

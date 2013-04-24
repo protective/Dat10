@@ -20,6 +20,8 @@ def getTime(t):
 con.query('alter table ' + DATATABLE + ' drop IF EXISTS speedMod;')
 con.query('alter table ' + DATATABLE + ' add column speedMod integer not null default 0;')
 con.query('update ' + DATATABLE + ' set speedMod= speed;')
+con.query("DROP INDEX IF EXISTS speedMod_" + DATATABLE + "_idx;")
+con.query("Create index speedMod_" + DATATABLE + "_idx on " + DATATABLE + " (speedMod);")
 
 counter = 0
 trips = con.query('select distinct tid from ' + DATATABLE +' where tid is not null').getresult()
