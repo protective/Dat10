@@ -49,6 +49,26 @@ if TYPE == 'km_pr_l':
 
 	print s + ""+str(clusters[0])+" lw 2 lc rgb \"black\" notitle, "+str(clusters[1])+" lw 2 lc rgb \"black\" notitle"
 	
+elif TYPE == 'TripsKmlCluster':
+
+
+	res = con.query("select round(km_pr_l::decimal*4,0)/4 as round, count(*) from " + TABLE + " group by round order by round;").getresult()
+	output = open(path +'data/TripsKmlCluster.csv', 'wb')
+	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+
+	for r in res:
+		writer.writerow(r)
+
+	print "set output '" + path + "images/TripsKmlCluster.png';"
+	print "set ylabel 'Number of trips"
+	print "set xlabel 'km/l '"
+	print "set xtic 0.5"
+	print "set arrow from 3.5,0 to 3.5,300 lw 2 nohead"
+	print "set arrow from 8.125,0 to 8.125,300 lw 2 nohead"
+	print "plot '" + path + "data/TripsKmlCluster.csv' with lines lw 3 notitle"
+
+
+
 elif TYPE == 'TimeTrips':
 	print "set output '" + path + "images/TimeTrips.png';"
 	print "set ylabel 'Number of trips"
@@ -503,23 +523,23 @@ elif TYPE == 'rpmRanges':
 	
 
 elif TYPE == 'accelerationRanges':
-	vehicles = con.query("select vehicleid, count(*) from " + TABLE + " group by vehicleid order by vehicleid;").getresult()
+	vehicles = con.query("select vehicleid, count(*) from " + TABLE + " where dirty = false group by vehicleid order by vehicleid;").getresult()
 	
-	granularity = 1
+	granularity = 0.25
 	for v in vehicles:
-		res = con.query("select * from (select round(acceleration2::decimal, " + str(granularity)+") as acc, count(*)::float as c from "+ TABLE + " where vehicleid =" + str(v[0]) + " group by acc order by acc)a where acc > 1 and c > 100;").getresult()
+		res = con.query("select * from (select round(acceleration2::decimal*4, 0)/4 as acc, count(*)::float as c from "+ TABLE + " where vehicleid =" + str(v[0]) + " and cruise = false and dirty = false group by acc order by acc)a where (acc > 0.1 or acc < -0.1)  and c > 800;").getresult()
 		output = open(path + 'data/'+str(v[0])+'accelerationRanges.csv', 'w+')
 		for r in res:
 			print >> output, str(r[0]) + " " + str(float(r[1])/float(v[1]))
-	boxwidth= (float(granularity)/10)/(len(vehicles)+1)
+	boxwidth= (float(granularity))/(len(vehicles)+1)
 	print "set output '" + path + "images/accelerationRanges.png';"
 	print "set ylabel 'Number of records'"
 	print "set xlabel 'Acceleration (m/s^2)'"
 	print "set style fill solid border -1"
 	print "set boxwidth " + str(boxwidth)
 	print "set xtic rotate by -45 scale 0"
-	print "set xtics " + str(float(granularity)/10)
-	print "set xrange[1:]"
+	print "set xtics " + str(float(granularity))
+	print "set xrange[:]"
 	
 	offset = 0
 	s = "plot "
@@ -533,7 +553,7 @@ elif TYPE == 'accelerationFast':
 	i = 0
 	for v in vehicles:
 		vid = str(v[0])
-		res = con.query("select acceleration2 as acc from "+ TABLE + " where vehicleid =" + vid + " order by tid, timestamp;").getresult()
+		res = con.query("select acceleration2 as acc from "+ TABLE + " where vehicleid =" + vid + " and dirty = false order by tid, timestamp;").getresult()
 		output = open(path + 'data/'+str(v[0])+'accelerationFast.csv', 'w+')
 		for r in res:
 			print>> output, str(i) + " " + str(r[0])
