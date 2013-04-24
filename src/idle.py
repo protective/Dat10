@@ -16,6 +16,7 @@ except:
 	print 'Error: remember the parameters'
 	exit(1)
 
+
 print "Finding stopped records"
 con.query('alter table ' + DATATABLE + ' drop IF EXISTS stopped;')
 con.query('alter table ' + DATATABLE + ' add column stopped int not null default 0;')
@@ -27,14 +28,15 @@ con.query("Create index stopped_" + DATATABLE + "_idx on " + DATATABLE + " (stop
 
 print "Finding stopped periods"
 con.query("drop table if exists "+IDLEDATA+";")
-con.query("create table "+IDLEDATA+" (vehicleid bigint, stopped int, fuel float, startTime timestamp);")
+con.query("create table "+IDLEDATA+" (vehicleid bigint, stopped int, fuel float, startTime timestamp, endTime timestamp, length float, tid int);")
 
 vehicles = con.query("select distinct vehicleid from "+ DATATABLE + ";").getresult()
 for v in vehicles:
 	print "Processing vehicle " + str(v[0])
-	res = con.query("select timestamp, stopped, totalconsumed, tid, tl from " + DATATABLE + " where vehicleid=" + str(v[0]) +" and dirty is false order by timestamp;").getresult()
+	res = con.query("select timestamp, stopped, totalconsumed, tid, tl, kmcounter from " + DATATABLE + " where vehicleid=" + str(v[0]) +" and dirty is false order by timestamp;").getresult()
 	s = -1
 	fuel = 0
+	length = 0
 	stoppedAtTL = False 			
 	for r in range(0, len(res)-1):
 		if res[r][1]==1 and not res[r][4] == None:
@@ -43,25 +45,29 @@ for v in vehicles:
 		if (res[r][1] == 0 or ((r==len(res)-1 or not res[r-1][3]== res[r][3]) and res[r][1] == 1)) and not s==-1 and r > 0:
 #			print "end"
 			t = time.mktime(time.strptime(res[r-1][0], "%Y-%m-%j %H:%M:%S"))
-			if abs(t-s)> 0 and not stoppedAtTL:
+			length2 = res[r-1][5]
+			if abs(t-s)> 0 and not stoppedAtTL and abs(length2-length)==0:
 				fuel2 = res[r-1][2]
-				q= "insert into "+IDLEDATA+" values (" + str(v[0]) + ", " + str(abs(t-s)) + "," + str(abs(fuel2-fuel)) + ",'" + str(startTime) + "');"
+				q= "insert into "+IDLEDATA+" values (" + str(v[0]) + ", " + str(abs(t-s)) + "," + str(abs(fuel2-fuel)) + ",'" + str(startTime) + "','" + str(res[r-1][0]) + "'," + str(abs(length2-length)) + ", " + str(res[r-1][3]) + ");"
 				con.query(q)
 #				print q
 			stoppedAtTL = False
 			s = -1
 			fuel = 0
+			length = 0
 		if res[r][1] == 1 and s== -1:
 			s = time.mktime(time.strptime(res[r][0], "%Y-%m-%j %H:%M:%S"))
 			startTime = res[r][0]
 			fuel = res[r][2]
+			length = res[r][5]
 
 con.query("DROP INDEX IF EXISTS vehicleid_" + DATATABLE + "_idx;Create index vehicleid_" + IDLEDATA + "_idx on " + IDLEDATA + " (vehicleid);")
 con.query("DROP INDEX IF EXISTS stopped_" + DATATABLE + "_idx;Create index stopped_" + IDLEDATA + "_idx on " + IDLEDATA + " (stopped);")
 con.query("DROP INDEX IF EXISTS fuel_" + DATATABLE + "_idx;Create index fuel_" + IDLEDATA + "_idx on " + IDLEDATA + " (fuel);")
 con.query("DROP INDEX IF EXISTS startTime_" + DATATABLE + "_idx;Create index startTime_" + IDLEDATA + "_idx on " + IDLEDATA + " (startTime);")
+con.query("DROP INDEX IF EXISTS length_" + DATATABLE + "_idx;Create index length_" + IDLEDATA + "_idx on " + IDLEDATA + " (length);")
 	
-	
+
 print "Finding idle periods with " + str(duration) + " seconds duration"
 con.query('alter table ' + DATATABLE + ' drop IF EXISTS idle;')
 con.query('alter table ' + DATATABLE + ' add column idle int not null default 0;')

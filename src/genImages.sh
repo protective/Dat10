@@ -6,6 +6,7 @@ else
 fi
 TRIPS=$PREFIX"_trip_data"
 IDLEDATA=$PREFIX'_idledatatl'
+CRUISEDATA=$PREFIX'_cruise_data'
 GPSDATA=$PREFIX'_gps_can_data'
 
 scp extractImages.py d103@172.25.26.191:Dat10/src/
@@ -15,9 +16,28 @@ if [ ! -d $PREFIX"_images" ]; then
     mkdir $PREFIX"_images"
 fi
 
+
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py TripsKmlCluster $TRIPS | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/TripsKmlCluster.png $PREFIX"_images"/TripsKmlCluster.png
-: << 'COMMENT'
+
+
+ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py cruiseSpeedKml $CRUISEDATA | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/cruiseSpeedKml.png $PREFIX"_images"/cruiseSpeedKml.png
+
+
+
+ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py idleRange2 $IDLEDATA | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/idleRange2.png $PREFIX"_images"/idleRange2.png
+
+ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py km_pr_l $TRIPS | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/kmlTrips.png $PREFIX"_images"/kmlTrips.png
+
+
+
+ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py steadySpeedExample $TRIPS | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/steadySpeedExample.png $PREFIX"_images"/steadySpeedExample.png
+
+
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py cruisep f_trip_data | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/cruisep.png $PREFIX"_images"/cruisep.png
 
@@ -28,9 +48,6 @@ scp d103@172.25.26.191:Dat10/src/images/cruiseCounter.png $PREFIX"_images"/cruis
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py testClusters | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/testClusters.png $PREFIX"_images"/testClusters.png
 
-
-
-
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py accelerationRanges $GPSDATA | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/accelerationRanges.png $PREFIX"_images"/accelerationRanges.png
 
@@ -38,12 +55,8 @@ ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py acceleration
 scp d103@172.25.26.191:Dat10/src/images/accelerationFast.png $PREFIX"_images"/accelerationFast.png
 
 
-ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py idleRange2 $IDLEDATA | gnuplot"
-scp d103@172.25.26.191:Dat10/src/images/idleRange2.png $PREFIX"_images"/idleRange2.png
 
 
-ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py km_pr_l $TRIPS | gnuplot"
-scp d103@172.25.26.191:Dat10/src/images/kmlTrips.png $PREFIX"_images"/kmlTrips.png
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py rpmRanges $GPSDATA | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/rpmRanges.png $PREFIX"_images"/rpmRanges.png
@@ -100,10 +113,9 @@ ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py trafficlight
 scp d103@172.25.26.191:Dat10/src/images/trafficlightratio.png $PREFIX"_images"/trafficlightratio.png
 
 
-
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py testRoad $TRIPS | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/testRoad.png $PREFIX"_images"/testRoad.png
-
+: << 'COMMENT'
 COMMENT
 
 

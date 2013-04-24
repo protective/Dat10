@@ -15,18 +15,19 @@ if (False):
 con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 
 
+clusters = [3.5, 8.125]
 #clusters = [4,7.7]
+#clusters.append(con.query('select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+ TABLE + ';').getresult()[0][0])
+#clusters.append(con.query('select avg(km_pr_l) from '+TABLE+' where km_pr_l > (select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+TABLE+')').getresult()[0][0])
+
 
 #Letter, color, pattern
 patterns = {1: ['b', 'red', '1'], 2: ['c', 'blue', '2'], 3: ['a', 'green', '4'], 4: ['d', '#BB00FF', '5']}
 
 print "set terminal png size 1000,500;"
 
-if TYPE == 'km_pr_l':
-	clusters = []
-	clusters.append(con.query('select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+ TABLE + ';').getresult()[0][0])
-	clusters.append(con.query('select avg(km_pr_l) from '+TABLE+' where km_pr_l > (select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+TABLE+')').getresult()[0][0])
 
+if TYPE == 'km_pr_l':
 	vehicles = con.query("select distinct vehicleid from " + TABLE + ";").getresult()
 
 	i = 0
@@ -128,10 +129,6 @@ elif TYPE == 'TripLengthKml':
 	print "plot '" + path + "data/tripLengthKml.csv' notitle"
 
 elif TYPE == 'idle2':
-	clusters = []
-	clusters.append(con.query('select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+ TABLE + ';').getresult()[0][0])
-	clusters.append(con.query('select avg(km_pr_l) from '+TABLE+' where km_pr_l > (select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+TABLE+')').getresult()[0][0])
-	
 	res = con.query("select round((idle_percentage*100)/5)*5 as round,count(case when km_pr_l <"+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l < "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " group by round order by round;").getresult()
 	
 	output = open(path + 'data/idle2.csv', 'w+')
@@ -152,10 +149,6 @@ elif TYPE == 'idle2':
 	print "plot '" + path + "data/idle2.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '" + path + "data/idle2.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '" + path + "data/idle2.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/idle2.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
 	
 elif TYPE == 'idle3':
-	clusters = []
-	clusters.append(con.query('select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+ TABLE + ';').getresult()[0][0])
-	clusters.append(con.query('select avg(km_pr_l) from '+TABLE+' where km_pr_l > (select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+TABLE+')').getresult()[0][0])
-	
 	res = con.query("select * from (select round(idle_time::numeric/50,0)*50 as idle, count(case when km_pr_l <"+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l < "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " group by idle order by idle)a where idle>=250;").getresult()
 	
 	output = open(path + 'data/idle3.csv', 'w+')
@@ -178,10 +171,6 @@ elif TYPE == 'idle3':
 	print "plot '" + path + "data/idle3.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/idle3.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/idle3.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/idle3.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
 
 elif TYPE == 'normalRoad':
-	clusters = []
-	clusters.append(con.query('select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+ TABLE + ';').getresult()[0][0])
-	clusters.append(con.query('select avg(km_pr_l) from '+TABLE+' where km_pr_l > (select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+TABLE+')').getresult()[0][0])
-	
 	res = con.query("select round((PNormalRoad)::numeric,2),count(case when km_pr_l <"+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l < "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " where total_km >= 0.1 and PNormalRoad is not null  group by round order by round;").getresult()
 	
 	output = open(path + 'data/normalRoad.csv', 'wb')
@@ -200,10 +189,6 @@ elif TYPE == 'normalRoad':
 	print "plot '" + path + "data/normalRoad.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/normalRoad.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/normalRoad.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/normalRoad.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
 
 elif TYPE == 'smallRoad':
-	clusters = []
-	clusters.append(con.query('select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+ TABLE + ';').getresult()[0][0])
-	clusters.append(con.query('select avg(km_pr_l) from '+TABLE+' where km_pr_l > (select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+TABLE+')').getresult()[0][0])
-	
 	res = con.query("select round((PSmallRoad)::numeric,2),count(case when km_pr_l <"+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l < "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " where total_km >= 0.1 and PSmallRoad is not null group by round order by round;").getresult()
 	output = open(path + 'data/smallRoad.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -221,10 +206,6 @@ elif TYPE == 'smallRoad':
 	print "plot '" + path + "data/smallRoad.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/smallRoad.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/smallRoad.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/smallRoad.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
 
 elif TYPE == 'moterRoad':
-	clusters = []
-	clusters.append(con.query('select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+ TABLE + ';').getresult()[0][0])
-	clusters.append(con.query('select avg(km_pr_l) from '+TABLE+' where km_pr_l > (select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+TABLE+')').getresult()[0][0])
-	
 	res = con.query("select round((pmoterroad)::numeric,2),count(case when km_pr_l <"+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l < "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " where total_km >= 0.1 and pmoterroad is not null group by round order by round;").getresult()
 	output = open(path + 'data/moterRoad.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -270,10 +251,6 @@ elif TYPE == 'cruiseCounter':
 	print "plot '" + path + "data/cruiseCounter0.csv' using 1:($2/1000) with lines lw 3 title '+/- 0 km/h','" + path + "data/cruiseCounter1.csv' using 1:($2/1000) with lines lw 3 title '+/- 1 km/h','" + path + "data/cruiseCounter2.csv' using 1:($2/1000) with lines lw 3 title '+/- 2 km/h', '" + path + "data/cruiseCounter3.csv' using 1:($2/1000) with lines lw 3 title '+/- 3 km/h','" + path + "data/cruiseCounter4.csv' using 1:($2/1000) with lines lw 3 title '+/- 4 km/h'"
 
 elif TYPE == 'cruisep':
-	clusters = []
-	clusters.append(con.query('select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+ TABLE + ';').getresult()[0][0])
-	clusters.append(con.query('select avg(km_pr_l) from '+TABLE+' where km_pr_l > (select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+TABLE+')').getresult()[0][0])
-	
 	res = con.query("select * from (select round((cruise_percentage)::numeric,2)*100 as round,count(case when km_pr_l <"+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l < "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) as c from " + TABLE + " where total_km >= 0.1 group by round order by round)a where c > 10;").getresult()
 	output = open(path + 'data/cruisep.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -293,14 +270,27 @@ elif TYPE == 'cruisep':
 
 	print "plot '" + path + "data/cruisep.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/cruisep.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/cruisep.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/cruisep.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
 
-
-
+elif TYPE == 'cruiseSpeedKml':
+	vehicles = con.query("select distinct vehicleid from " + TABLE + " order by vehicleid;").getresult()
+	for v in vehicles:
+		res = con.query("select  cruisespeed, case when fuel = 0 then 0 else length/fuel end from " + TABLE + " where vehicleid = " + str(v[0]) +" and time> 60 order by startTime;").getresult()
+		output = open(path + 'data/'+str(v[0])+'cruiseSpeedKml.csv', 'wb')
+		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+		for r in res:
+			writer.writerow(r)
+		
+	print "set output '" + path + "images/cruiseSpeedKml.png';"
+	print "set ylabel 'Fuel efficiency (km/l)'"
+	print "set xlabel 'Cruise speed (km/h)'"
+	print "set xrange[40:]"
+	print "set xtics 10"
+	
+	s = "plot "
+	for v in vehicles:
+		s += "'"+  path + "data/"+str(v[0])+"cruiseSpeedKml.csv' title 'Vehicle " + str(v[0]) + "'lc rgb '"+ patterns[v[0]][1] +"',"
+	print s[:-1]
 
 elif TYPE == 'trafficlight':
-	clusters = []
-	clusters.append(con.query('select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+ TABLE + ';').getresult()[0][0])
-	clusters.append(con.query('select avg(km_pr_l) from '+TABLE+' where km_pr_l > (select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+TABLE+')').getresult()[0][0])
-	
 	res = con.query("select round((tlcounter)::numeric,1),count(case when km_pr_l <"+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l < "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " where total_km >= 0.1 group by round order by round;").getresult()
 	output = open(path + 'data/trafficlight.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -319,10 +309,6 @@ elif TYPE == 'trafficlight':
 	print "plot '" + path + "data/trafficlight.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/trafficlight.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/trafficlight.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/trafficlight.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
 
 elif TYPE == 'trafficlightgreen':
-	clusters = []
-	clusters.append(con.query('select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+ TABLE + ';').getresult()[0][0])
-	clusters.append(con.query('select avg(km_pr_l) from '+TABLE+' where km_pr_l > (select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+TABLE+')').getresult()[0][0])
-	
 	res = con.query("select round((tlgreencounter)::numeric,1),count(case when km_pr_l <"+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l < "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " where total_km >= 0.1 group by round order by round;").getresult()
 	output = open(path + 'data/trafficlightgreen.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -342,10 +328,6 @@ elif TYPE == 'trafficlightgreen':
 	print "plot '" + path + "data/trafficlightgreen.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/trafficlightgreen.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/trafficlightgreen.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/trafficlightgreen.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
 
 elif TYPE == 'trafficlightred':
-	clusters = []
-	clusters.append(con.query('select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+ TABLE + ';').getresult()[0][0])
-	clusters.append(con.query('select avg(km_pr_l) from '+TABLE+' where km_pr_l > (select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+TABLE+')').getresult()[0][0])
-	
 	res = con.query("select round((tlredcounter)::numeric,1),count(case when km_pr_l <"+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l < "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " where total_km >= 0.1 group by round order by round;").getresult()
 	output = open(path + 'data/trafficlightred.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -364,10 +346,6 @@ elif TYPE == 'trafficlightred':
 	print "plot '" + path + "data/trafficlightred.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/trafficlightred.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/trafficlightred.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/trafficlightred.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
 
 elif TYPE == 'trafficlightratio':
-	clusters = []
-	clusters.append(con.query('select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+ TABLE + ';').getresult()[0][0])
-	clusters.append(con.query('select avg(km_pr_l) from '+TABLE+' where km_pr_l > (select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+TABLE+')').getresult()[0][0])
-	
 	res = con.query("select round((tlredcounter/tlcounter)::numeric,1),count(case when km_pr_l <"+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l < "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " where total_km >= 0.1 and tlcounter > 0 group by round order by round;").getresult()
 	output = open(path + 'data/trafficlightratio.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -438,9 +416,9 @@ elif TYPE == 'idleRange':
 	print "plot '"+ path + "data/idleRange.csv' with boxes"
 	
 elif TYPE == 'idleRange2':
-	vehicles = con.query("select distinct vehicleid from " + TABLE + ";").getresult()
+	vehicles = con.query("select distinct vehicleid from " + TABLE + " order by vehicleid;").getresult()
 	for v in vehicles:
-		res = con.query("select * from (select (case when round(stopped/100)*100=0 then 1 else round(stopped/100)*100 end)::integer as idle, count(*) from "+ TABLE + " where vehicleid =" + str(v[0]) + " group by idle order by idle)a where count > 1;").getresult()
+		res = con.query("select * from (select (case when round(stopped/100)*100=0 then 1 else round(stopped/100)*100 end) as idle, sum(stopped) from "+ TABLE + " where vehicleid =" + str(v[0]) + " group by idle order by idle)a where count > 1;").getresult()
 	
 		output = open(path + 'data/'+str(v[0])+'idleRange2.csv', 'w+')
 		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -582,6 +560,27 @@ elif TYPE == 'testClusters':
 	print "set ylabel 'Percentage correctly classified"
 	print "set xlabel 'Number of clusters'"
 	print "plot '" + path + "data/classData.csv' with lines lw 3 notitle"
+	
+elif TYPE == 'steadySpeedExample':
+	print "set output '" + path + "images/steadySpeedExample.png';"
+	print "set ylabel 'Speed (km/h)"
+	print "set xlabel 'Time (s)'"
+	print "set yrange[30:55]"
+	print "set xrange[0:62]"
+	print "set ytics 2"
+	
+	print "set arrow from 4,50 to 39,50 lw 1 nohead"
+	print "set arrow from 4,47 to 39,47 lw 4 nohead"
+	print "set arrow from 4,53 to 39,53 lw 4 nohead"
+	print "set arrow from 4,47 to 4,53 lw 4 nohead"
+	print "set arrow from 39,47 to 39,53 lw 4 nohead"
+	
+	print "set arrow from 41,53 to 62,53 lw 1 nohead"
+	print "set arrow from 41,50 to 62,50 lw 4 nohead"
+	print "set arrow from 41,56 to 62,56 lw 4 nohead"
+	print "set arrow from 41,50 to 41,56 lw 4 nohead"
+	print "set arrow from 62,50 to 62,56 lw 4 nohead"
+	print "plot '" + path + "data/steadySpeedExample' with lines lw 2 notitle"
 
 
 elif TYPE == 'idleTime':
