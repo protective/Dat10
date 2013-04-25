@@ -415,31 +415,50 @@ elif TYPE == 'idleRange':
 
 	print "plot '"+ path + "data/idleRange.csv' with boxes"
 	
-elif TYPE == 'idleRange2':
+elif TYPE == 'idleRange2' or TYPE == 'idleRange22':
 	vehicles = con.query("select distinct vehicleid from " + TABLE + " order by vehicleid;").getresult()
+	s = ""
+
 	for v in vehicles:
-		res = con.query("select * from (select (case when round(stopped/100)*100=0 then 1 else round(stopped/100)*100 end) as idle, sum(stopped) from "+ TABLE + " where vehicleid =" + str(v[0]) + " group by idle order by idle)a where count > 1;").getresult()
-	
-		output = open(path + 'data/'+str(v[0])+'idleRange2.csv', 'w+')
+		if(TYPE == 'idleRange2'):
+			s = "select * from (select round(stopped/100)*100 as idle, sum(stopped),count(stopped) from "+ TABLE + " where vehicleid =" + str(v[0]) + " and stopped < 500 group by idle order by idle)a where count > 0;"
+		else:
+			s = "select * from (select round(stopped/100)*100 as idle, sum(stopped),count(stopped) from "+ TABLE + " where vehicleid =" + str(v[0]) + " and stopped >= 500 group by idle order by idle)a where count > 0;"
+		res = con.query(s).getresult()
+		if(TYPE == 'idleRange2'):
+			output = open(path + 'data/'+str(v[0])+'idleRange2.csv', 'w+')
+		else:
+			output = open(path + 'data/'+str(v[0])+'idleRange22.csv', 'w+')
 		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 		for r in res:
 			writer.writerow(r)
 
 	boxwidth= 100.0/(len(vehicles)+1)
-	print "set output '" + path + "images/idleRange2.png';"
-	print "set ylabel 'Number of records';"
+	if(TYPE == 'idleRange2'):
+		print "set output '" + path + "images/idleRange2.png';"
+		print "set xtics 100"
+		print "set xrange[0:500]"
+
+	else:
+		print "set output '" + path + "images/idleRange22.png';"
+		print "set xtics 200"
+		print "set xrange[200:5600]"
+
+	print "set ylabel 'Sum of seconds (s) in idle';"
 	print "set xlabel 'Idle range (s)'"
 	print "set style fill solid border -1"
 	print "set boxwidth " + str(boxwidth)
 	print "set xtic rotate by -45 scale 0"
-	print "set logscale y 10"
+	#print "set logscale y 10"
 	print "set xr [-10:]"
-	print "set xtics 100"
 	
 	offset = 0
 	s = "plot "
 	for v in vehicles:
-		s += "'" + path + "data/"+str(v[0]) + "idleRange2.csv' using ($1+"+ str(offset) + "):2 with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + " title '" + str(v[0]) + "' ,"
+		if(TYPE == 'idleRange2'):
+			s += "'" + path + "data/"+str(v[0]) + "idleRange2.csv' using ($1+"+ str(offset) + "):2 with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + " title '" + str(v[0]) + "' ,"
+		else:
+			s += "'" + path + "data/"+str(v[0]) + "idleRange22.csv' using ($1+"+ str(offset) + "):2 with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + " title '" + str(v[0]) + "' ,"
 		offset+=boxwidth
 	print s[:-1]
 
