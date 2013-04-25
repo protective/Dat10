@@ -15,10 +15,18 @@ if (False):
 con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 
 
-clusters = [3.5, 8.125]
+#clusters = [[3.5, 'Low', '1'], [8.125, 'Medium', '3'],[100, 'High', '2']]
 #clusters = [4,7.7]
 #clusters.append(con.query('select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+ TABLE + ';').getresult()[0][0])
 #clusters.append(con.query('select avg(km_pr_l) from '+TABLE+' where km_pr_l > (select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+TABLE+')').getresult()[0][0])
+
+noClasses= 3
+clusters = [[3.5, 'Outliers', 13]]
+r = con.query("select count(case when km_pr_l >=" + str(clusters[0][0]) + " then 1 end)::float/" + str(noClasses) + " from g_trip_data ;").getresult()
+kmprl = con.query("select km_pr_l from g_trip_data where km_pr_l >=" + str(clusters[0][0]) + " order by km_pr_l;").getresult()
+clusters.append([kmprl[int(r[0][0])][0], 'Low', '1'])
+clusters.append([kmprl[int(r[0][0])*2][0], 'Medium', '9'])
+clusters.append([100, 'High', '2']) #100 is dummy value
 
 
 #Letter, color, pattern
@@ -50,24 +58,24 @@ if TYPE == 'km_pr_l':
 
 	print s + ""+str(clusters[0])+" lw 2 lc rgb \"black\" notitle, "+str(clusters[1])+" lw 2 lc rgb \"black\" notitle"
 	
+
 elif TYPE == 'TripsKmlCluster':
-
-
 	res = con.query("select round(km_pr_l::decimal*4,0)/4 as round, count(*) from " + TABLE + " group by round order by round;").getresult()
 	output = open(path +'data/TripsKmlCluster.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 
-	for r in res:
-		writer.writerow(r)
+	for re in res:
+		writer.writerow(re)
 
 	print "set output '" + path + "images/TripsKmlCluster.png';"
 	print "set ylabel 'Number of trips"
 	print "set xlabel 'km/l '"
 	print "set xtic 0.5"
-	print "set arrow from 3.5,0 to 3.5,300 lw 2 nohead"
-	print "set arrow from 8.125,0 to 8.125,300 lw 2 nohead"
-	print "plot '" + path + "data/TripsKmlCluster.csv' with lines lw 3 notitle"
 
+	for i in clusters:
+		print "set arrow from " + str(i[0]) + ",0 to " + str(i[0]) + ",300 lw 2 nohead"
+	
+	print "plot '" + path + "data/TripsKmlCluster.csv' with lines lw 3 notitle"
 
 
 elif TYPE == 'TimeTrips':
@@ -129,7 +137,11 @@ elif TYPE == 'TripLengthKml':
 	print "plot '" + path + "data/tripLengthKml.csv' notitle"
 
 elif TYPE == 'idle2':
-	res = con.query("select round((idle_percentage*100)/5)*5 as round,count(case when km_pr_l <"+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l < "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " group by round order by round;").getresult()
+	q = "select round((idle_percentage*100)/5)*5 as idle,"
+	for i in clusters:
+		q += "count(case when km_pr_l <"+str(i[0])+" then 1 end)::float/count(*)*100,"
+	q += "count(*) from " + TABLE + " group by idle order by idle;"
+	res = con.query(q).getresult()
 	
 	output = open(path + 'data/idle2.csv', 'w+')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -141,15 +153,24 @@ elif TYPE == 'idle2':
 	print "set xlabel 'Percent of trip in idle (%)'"
 	print "set xtics 10"
 	print "set yrange[0:100]"
-	#print "set xrange[0:40]"
 	print "set y2tics"
 	print "set y2label 'Number of trips'"
 	print "set logscale y2 10"
 	print "set key opaque"
-	print "plot '" + path + "data/idle2.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '" + path + "data/idle2.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '" + path + "data/idle2.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/idle2.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
+	
+	s = "plot "	
+	for i in range(len(clusters)+1, 1, -1):
+		j= i-2
+		s += "'" + path + "data/idle2.csv' using 1:" + str(i) + " w filledcurves x1 linestyle " + str(clusters[j][2]) + " title '" + str(clusters[j][1]) + "', "
+	
+	print s + "'" + path + "data/idle2.csv' using 1:" + str(len(clusters)+2) + " with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
 	
 elif TYPE == 'idle3':
-	res = con.query("select * from (select round(idle_time::numeric/50,0)*50 as idle, count(case when km_pr_l <"+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l < "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " group by idle order by idle)a where idle>=250;").getresult()
+	q = "select * from (select round(idle_time::numeric/50,0)*50 as idle,"
+	for i in clusters:
+		q += "count(case when km_pr_l <"+str(i[0])+" then 1 end)::float/count(*)*100,"
+	q += "count(*) from " + TABLE + " group by idle order by idle)a where idle>=250;"
+	res = con.query(q).getresult()
 	
 	output = open(path + 'data/idle3.csv', 'w+')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -163,15 +184,22 @@ elif TYPE == 'idle3':
 	print "set xrange[250:1500]"
 	print "set y2tics"
 	print "set y2label 'Number of trips'"
-#	print "set logscale y2 10"
 	print "set key opaque"
 	print "set xtics 100"
-	
-	
-	print "plot '" + path + "data/idle3.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/idle3.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/idle3.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/idle3.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
 
+	s = "plot "	
+	for i in range(len(clusters)+1, 1, -1):
+		j= i-2
+		s += "'" + path + "data/idle3.csv' using 1:" + str(i) + " w filledcurves x1 linestyle " + str(clusters[j][2]) + " title '" + str(clusters[j][1]) + "', "
+	
+	print s + "'" + path + "data/idle3.csv' using 1:" + str(len(clusters)+2) + " with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
+	
 elif TYPE == 'normalRoad':
-	res = con.query("select round((PNormalRoad)::numeric,2),count(case when km_pr_l <"+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l < "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " where total_km >= 0.1 and PNormalRoad is not null  group by round order by round;").getresult()
+	q = "select round((PNormalRoad)::numeric,2),"
+	for i in clusters:
+		q += "count(case when km_pr_l <"+str(i[0])+" then 1 end)::float/count(*)*100,"
+	q += "count(*) from " + TABLE + " where total_km >= 0.1 and PNormalRoad is not null  group by round order by round;"
+	res = con.query(q).getresult()
 	
 	output = open(path + 'data/normalRoad.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -182,14 +210,26 @@ elif TYPE == 'normalRoad':
 	print "set ylabel 'Class distribution (%)'"
 	print "set xlabel 'Normal Road P'"
 	print "set yrange[0:100]"
-	print "set xrange[0:]"
+	print "set xrange[0:0.3]"
 	print "set y2tics"
 	print "set y2label 'Number of trips'"
 	print "set key opaque"
-	print "plot '" + path + "data/normalRoad.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/normalRoad.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/normalRoad.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/normalRoad.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
+	
+	s = "plot "	
+	for i in range(len(clusters)+1, 1, -1):
+		j= i-2
+		s += "'" + path + "data/normalRoad.csv' using 1:" + str(i) + " w filledcurves x1 linestyle " + str(clusters[j][2]) + " title '" + str(clusters[j][1]) + "', "
+	print s + "'" + path + "data/normalRoad.csv' using 1:" + str(len(clusters)+2) + " with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
 
 elif TYPE == 'smallRoad':
-	res = con.query("select round((PSmallRoad)::numeric,2),count(case when km_pr_l <"+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l < "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " where total_km >= 0.1 and PSmallRoad is not null group by round order by round;").getresult()
+	#res = con.query("select round((PSmallRoad)::numeric,2),count(case when km_pr_l <"+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l < "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " where total_km >= 0.1 and PSmallRoad is not null group by round order by round;").getresult()
+	
+	q = "select round((PSmallRoad)::numeric,2),"
+	for i in clusters:
+		q += "count(case when km_pr_l <"+str(i[0])+" then 1 end)::float/count(*)*100,"
+	q += "count(*) from " + TABLE + " where total_km >= 0.1 and PSmallRoad is not null  group by round order by round;"
+	res = con.query(q).getresult()
+	
 	output = open(path + 'data/smallRoad.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 	for r in res:
@@ -203,10 +243,23 @@ elif TYPE == 'smallRoad':
 	print "set y2tics"
 	print "set y2label 'Number of trips'"
 	print "set key opaque"
-	print "plot '" + path + "data/smallRoad.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/smallRoad.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/smallRoad.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/smallRoad.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
+	#print "plot '" + path + "data/smallRoad.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/smallRoad.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/smallRoad.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/smallRoad.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
+	
+	s = "plot "	
+	for i in range(len(clusters)+1, 1, -1):
+		j= i-2
+		s += "'" + path + "data/smallRoad.csv' using 1:" + str(i) + " w filledcurves x1 linestyle " + str(clusters[j][2]) + " title '" + str(clusters[j][1]) + "', "
+	print s + "'" + path + "data/smallRoad.csv' using 1:" + str(len(clusters)+2) + " with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
 
 elif TYPE == 'moterRoad':
-	res = con.query("select round((pmoterroad)::numeric,2),count(case when km_pr_l <"+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l < "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " where total_km >= 0.1 and pmoterroad is not null group by round order by round;").getresult()
+	#res = con.query("select round((pmoterroad)::numeric,2),count(case when km_pr_l <"+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l < "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " where total_km >= 0.1 and pmoterroad is not null group by round order by round;").getresult()
+	
+	q = "select round((pmoterroad)::numeric,2),"
+	for i in clusters:
+		q += "count(case when km_pr_l <"+str(i[0])+" then 1 end)::float/count(*)*100,"
+	q += "count(*) from " + TABLE + " where total_km >= 0.1 and pmoterroad is not null  group by round order by round;"
+	res = con.query(q).getresult()
+	
 	output = open(path + 'data/moterRoad.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 	for r in res:
@@ -220,7 +273,13 @@ elif TYPE == 'moterRoad':
 	print "set y2tics"
 	print "set y2label 'Number of trips'"
 	print "set key opaque"
-	print "plot '" + path + "data/moterRoad.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/moterRoad.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/moterRoad.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/moterRoad.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
+	#print "plot '" + path + "data/moterRoad.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/moterRoad.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/moterRoad.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/moterRoad.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
+	s = "plot "	
+	for i in range(len(clusters)+1, 1, -1):
+		j= i-2
+		s += "'" + path + "data/moterRoad.csv' using 1:" + str(i) + " w filledcurves x1 linestyle " + str(clusters[j][2]) + " title '" + str(clusters[j][1]) + "', "
+	print s + "'" + path + "data/moterRoad.csv' using 1:" + str(len(clusters)+2) + " with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
+	
 
 elif TYPE == 'testRoad':
 
@@ -251,7 +310,12 @@ elif TYPE == 'cruiseCounter':
 	print "plot '" + path + "data/cruiseCounter0.csv' using 1:($2/1000) with lines lw 3 title '+/- 0 km/h','" + path + "data/cruiseCounter1.csv' using 1:($2/1000) with lines lw 3 title '+/- 1 km/h','" + path + "data/cruiseCounter2.csv' using 1:($2/1000) with lines lw 3 title '+/- 2 km/h', '" + path + "data/cruiseCounter3.csv' using 1:($2/1000) with lines lw 3 title '+/- 3 km/h','" + path + "data/cruiseCounter4.csv' using 1:($2/1000) with lines lw 3 title '+/- 4 km/h'"
 
 elif TYPE == 'cruisep':
-	res = con.query("select * from (select round((cruise_percentage)::numeric,2)*100 as round,count(case when km_pr_l <"+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l < "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) as c from " + TABLE + " where total_km >= 0.1 group by round order by round)a where c > 10;").getresult()
+	q = "select * from (select round((cruise_percentage)::numeric,2)*100 as round,"
+	for i in clusters:
+		q += "count(case when km_pr_l <"+str(i[0])+" then 1 end)::float/count(*)*100,"
+	q += "count(*) as c from " + TABLE + " where total_km >= 0.1 group by round order by round)a where c > 10;"
+	res = con.query(q).getresult()
+	
 	output = open(path + 'data/cruisep.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 	for r in res:
@@ -268,7 +332,11 @@ elif TYPE == 'cruisep':
 	print "set key opaque"
 	print "set xtics 5"
 
-	print "plot '" + path + "data/cruisep.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/cruisep.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/cruisep.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/cruisep.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
+	s = "plot "	
+	for i in range(len(clusters)+1, 1, -1):
+		j= i-2
+		s += "'" + path + "data/cruisep.csv' using 1:" + str(i) + " w filledcurves x1 linestyle " + str(clusters[j][2]) + " title '" + str(clusters[j][1]) + "', "
+	print s + "'" + path + "data/cruisep.csv' using 1:" + str(len(clusters)+2) + " with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
 
 elif TYPE == 'cruiseSpeedKml':
 	vehicles = con.query("select distinct vehicleid from " + TABLE + " order by vehicleid;").getresult()
@@ -291,7 +359,12 @@ elif TYPE == 'cruiseSpeedKml':
 	print s[:-1]
 
 elif TYPE == 'trafficlight':
-	res = con.query("select round((tlcounter)::numeric,1),count(case when km_pr_l <"+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l < "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " where total_km >= 0.1 group by round order by round;").getresult()
+	q = "select round((tlcounter)::numeric,1),"
+	for i in clusters:
+		q += "count(case when km_pr_l <"+str(i[0])+" then 1 end)::float/count(*)*100,"
+	q += "count(*) from " + TABLE + " where total_km >= 0.1 group by round order by round;"
+	res = con.query(q).getresult()
+	
 	output = open(path + 'data/trafficlight.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 	for r in res:
@@ -306,10 +379,20 @@ elif TYPE == 'trafficlight':
 	print "set y2label 'Number of trips'"
 	print "set logscale y2 10 "
 	print "set key opaque"
-	print "plot '" + path + "data/trafficlight.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/trafficlight.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/trafficlight.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/trafficlight.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
+
+	s = "plot "	
+	for i in range(len(clusters)+1, 1, -1):
+		j= i-2
+		s += "'" + path + "data/trafficlight.csv' using 1:" + str(i) + " w filledcurves x1 linestyle " + str(clusters[j][2]) + " title '" + str(clusters[j][1]) + "', "
+	print s + "'" + path + "data/trafficlight.csv' using 1:" + str(len(clusters)+2) + " with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
 
 elif TYPE == 'trafficlightgreen':
-	res = con.query("select round((tlgreencounter)::numeric,1),count(case when km_pr_l <"+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l < "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " where total_km >= 0.1 group by round order by round;").getresult()
+	q = "select round((tlgreencounter)::numeric,1),"
+	for i in clusters:
+		q += "count(case when km_pr_l <"+str(i[0])+" then 1 end)::float/count(*)*100,"
+	q += "count(*) from " + TABLE + " where total_km >= 0.1 group by round order by round;"
+	res = con.query(q).getresult()
+	
 	output = open(path + 'data/trafficlightgreen.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 	for r in res:
@@ -325,10 +408,19 @@ elif TYPE == 'trafficlightgreen':
 	print "set logscale y2 10 "
 	print "set key opaque"
 	
-	print "plot '" + path + "data/trafficlightgreen.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/trafficlightgreen.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/trafficlightgreen.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/trafficlightgreen.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
+	s = "plot "	
+	for i in range(len(clusters)+1, 1, -1):
+		j= i-2
+		s += "'" + path + "data/trafficlightgreen.csv' using 1:" + str(i) + " w filledcurves x1 linestyle " + str(clusters[j][2]) + " title '" + str(clusters[j][1]) + "', "
+	print s + "'" + path + "data/trafficlightgreen.csv' using 1:" + str(len(clusters)+2) + " with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
 
 elif TYPE == 'trafficlightred':
-	res = con.query("select round((tlredcounter)::numeric,1),count(case when km_pr_l <"+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l < "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " where total_km >= 0.1 group by round order by round;").getresult()
+	q = "select round((tlredcounter)::numeric,1),"
+	for i in clusters:
+		q += "count(case when km_pr_l <"+str(i[0])+" then 1 end)::float/count(*)*100,"
+	q += "count(*) from " + TABLE + " where total_km >= 0.1 group by round order by round;"
+	res = con.query(q).getresult()
+	
 	output = open(path + 'data/trafficlightred.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 	for r in res:
@@ -343,10 +435,20 @@ elif TYPE == 'trafficlightred':
 	print "set y2label 'Number of trips'"
 	print "set logscale y2 10 "
 	print "set key opaque"
-	print "plot '" + path + "data/trafficlightred.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/trafficlightred.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/trafficlightred.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/trafficlightred.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
+
+	s = "plot "	
+	for i in range(len(clusters)+1, 1, -1):
+		j= i-2
+		s += "'" + path + "data/trafficlightred.csv' using 1:" + str(i) + " w filledcurves x1 linestyle " + str(clusters[j][2]) + " title '" + str(clusters[j][1]) + "', "
+	print s + "'" + path + "data/trafficlightred.csv' using 1:" + str(len(clusters)+2) + " with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
 
 elif TYPE == 'trafficlightratio':
-	res = con.query("select round((tlredcounter/tlcounter)::numeric,1),count(case when km_pr_l <"+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l < "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " where total_km >= 0.1 and tlcounter > 0 group by round order by round;").getresult()
+	q = "select round((tlredcounter/tlcounter)::numeric,1),"
+	for i in clusters:
+		q += "count(case when km_pr_l <"+str(i[0])+" then 1 end)::float/count(*)*100,"
+	q += "count(*) from " + TABLE + " where total_km >= 0.1 and tlcounter > 0 group by round order by round;"
+	res = con.query(q).getresult()
+	
 	output = open(path + 'data/trafficlightratio.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 	for r in res:
@@ -361,7 +463,12 @@ elif TYPE == 'trafficlightratio':
 	print "set y2label 'Number of trips'"
 	#print "set logscale y2 10 "
 	print "set key opaque"
-	print "plot '" + path + "data/trafficlightratio.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/trafficlightratio.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/trafficlightratio.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/trafficlightratio.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
+	
+	s = "plot "	
+	for i in range(len(clusters)+1, 1, -1):
+		j= i-2
+		s += "'" + path + "data/trafficlightratio.csv' using 1:" + str(i) + " w filledcurves x1 linestyle " + str(clusters[j][2]) + " title '" + str(clusters[j][1]) + "', "
+	print s + "'" + path + "data/trafficlightratio.csv' using 1:" + str(len(clusters)+2) + " with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
 
 
 elif TYPE == 'idleDuration':
@@ -418,7 +525,7 @@ elif TYPE == 'idleRange':
 elif TYPE == 'idleRange2':
 	vehicles = con.query("select distinct vehicleid from " + TABLE + " order by vehicleid;").getresult()
 	for v in vehicles:
-		res = con.query("select * from (select (case when round(stopped/100)*100=0 then 1 else round(stopped/100)*100 end) as idle, sum(stopped) from "+ TABLE + " where vehicleid =" + str(v[0]) + " group by idle order by idle)a where count > 1;").getresult()
+		res = con.query("select * from (select (case when round(stopped/100)*100=0 then 1 else round(stopped/100)*100 end) as idle, sum(stopped) from "+ TABLE + " where vehicleid =" + str(v[0]) + " group by idle order by idle)a where sum > 10;").getresult()
 	
 		output = open(path + 'data/'+str(v[0])+'idleRange2.csv', 'w+')
 		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
