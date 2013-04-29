@@ -56,7 +56,11 @@ if TYPE == 'km_pr_l':
 		vid = str(v[0])
 		s+= "'"+path + "data/" + vid + "_kmldata.csv' lc rgb '" + patterns[v[0]][1]+ "' title '" + vid + "', "
 
-	print s + ""+str(clusters[0])+" lw 2 lc rgb \"black\" notitle, "+str(clusters[1])+" lw 2 lc rgb \"black\" notitle"
+	for c in clusters:
+		s += str(c[0])+" lw 2 lc rgb \"black\" notitle,"
+	
+	print s[:-1]
+	#print s + ""+str(clusters[0])+" lw 2 lc rgb \"black\" notitle, "+str(clusters[1])+" lw 2 lc rgb \"black\" notitle"
 	
 
 elif TYPE == 'TripsKmlCluster':
@@ -340,12 +344,15 @@ elif TYPE == 'cruisep':
 
 elif TYPE == 'cruiseSpeedKml':
 	vehicles = con.query("select distinct vehicleid from " + TABLE + " order by vehicleid;").getresult()
+	allOutput = open(path + 'data/cruiseSpeedKml.csv', 'wb')
+	allWriter = csv.writer(allOutput, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 	for v in vehicles:
 		res = con.query("select  cruisespeed, case when fuel = 0 then 0 else length/fuel end from " + TABLE + " where vehicleid = " + str(v[0]) +" and time> 60 order by startTime;").getresult()
 		output = open(path + 'data/'+str(v[0])+'cruiseSpeedKml.csv', 'wb')
 		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 		for r in res:
 			writer.writerow(r)
+			allWriter.writerow(r)
 		
 	print "set output '" + path + "images/cruiseSpeedKml.png';"
 	print "set ylabel 'Fuel efficiency (km/l)'"
@@ -353,10 +360,13 @@ elif TYPE == 'cruiseSpeedKml':
 	print "set xrange[40:]"
 	print "set xtics 10"
 	
+	print "f(x) = a*x + b"
+	print "fit f(x) '" + path + "data/cruiseSpeedKml.csv' using 1:2 via a,b"
+	
 	s = "plot "
 	for v in vehicles:
 		s += "'"+  path + "data/"+str(v[0])+"cruiseSpeedKml.csv' title 'Vehicle " + str(v[0]) + "'lc rgb '"+ patterns[v[0]][1] +"',"
-	print s[:-1]
+	print s + " f(x) lw 2 lc rgb 'black'"
 
 elif TYPE == 'trafficlight':
 	q = "select round((tlcounter)::numeric,1),"
@@ -528,9 +538,9 @@ elif TYPE == 'idleRange2' or TYPE == 'idleRange22':
 
 	for v in vehicles:
 		if(TYPE == 'idleRange2'):
-			s = "select * from (select round(stopped/100)*100 as idle, sum(stopped),count(stopped) from "+ TABLE + " where vehicleid =" + str(v[0]) + " and stopped < 500 group by idle order by idle)a where count > 0;"
+			s = "select * from (select round(stopped/100)*100 as idle, sum(stopped),count(stopped) from "+ TABLE + " where vehicleid =" + str(v[0]) + " and stopped < 800 group by idle order by idle)a where count > 0;"
 		else:
-			s = "select * from (select round(stopped/100)*100 as idle, sum(stopped),count(stopped) from "+ TABLE + " where vehicleid =" + str(v[0]) + " and stopped >= 500 group by idle order by idle)a where count > 0;"
+			s = "select * from (select round(stopped/100)*100 as idle, sum(stopped),count(stopped) from "+ TABLE + " where vehicleid =" + str(v[0]) + " and stopped >= 800 group by idle order by idle)a where count > 0;"
 		res = con.query(s).getresult()
 		if(TYPE == 'idleRange2'):
 			output = open(path + 'data/'+str(v[0])+'idleRange2.csv', 'w+')
@@ -544,20 +554,19 @@ elif TYPE == 'idleRange2' or TYPE == 'idleRange22':
 	if(TYPE == 'idleRange2'):
 		print "set output '" + path + "images/idleRange2.png';"
 		print "set xtics 100"
-		print "set xrange[0:500]"
+		print "set xrange[0:800]"
 
 	else:
 		print "set output '" + path + "images/idleRange22.png';"
 		print "set xtics 200"
-		print "set xrange[200:5600]"
+		print "set xrange[800:5600]"
 
-	print "set ylabel 'Sum of seconds (s) in idle';"
+	print "set ylabel 'Sum of seconds in idle (s)'"
 	print "set xlabel 'Idle range (s)'"
 	print "set style fill solid border -1"
 	print "set boxwidth " + str(boxwidth)
 	print "set xtic rotate by -45 scale 0"
 	#print "set logscale y 10"
-	print "set xr [-10:]"
 	
 	offset = 0
 	s = "plot "
