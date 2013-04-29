@@ -10,16 +10,19 @@ CRUISEDATA=$PREFIX'_cruise_data'
 GPSDATA=$PREFIX'_gps_can_data'
 
 scp extractImages.py d103@172.25.26.191:Dat10/src/
+scp exportTrip.py d103@172.25.26.191:Dat10/src/
 
 
 if [ ! -d $PREFIX"_images" ]; then
     mkdir $PREFIX"_images"
 fi
 
+
+: << 'COMMENT'
+
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py cruiseSpeedKml $CRUISEDATA | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/cruiseSpeedKml.png $PREFIX"_images"/cruiseSpeedKml.png
 
-: << 'COMMENT'
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py idleRange2 $IDLEDATA | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/idleRange2.png $PREFIX"_images"/idleRange2.png
 

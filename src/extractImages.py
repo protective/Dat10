@@ -717,7 +717,6 @@ elif TYPE == 'steadySpeedExample':
 	print "set arrow from 62,50 to 62,56 lw 4 nohead"
 	print "plot '" + path + "data/steadySpeedExample' with lines lw 2 notitle"
 
-
 elif TYPE == 'idleTime':
 	#TODO: Do not work
 	val = 'idle_time, km_pr_l as val, |/ (total_fuel/3.14)'
@@ -733,7 +732,25 @@ elif TYPE == 'idleTime':
 	for r in res:
 		writer.writerow(r)
 
-	res = con.query("select " + val + " from " + TABLE + " where km_pr_l > 8 order by val;").getresult()
+	res = con.query("select " + val + " from " + TABLE + " where km_pr_l > 8 ordemandag 08.07.2013 - tirsdag 09.07.2013 
+kl. 16.00 - kl. 23.00	 Dronninglund Cup - Dag 1 & 2	Dronninglund Hallerne	Dronninglund	 Håndbold
+onsdag 10.07.2013 - onsdag 10.07.2013 
+kl. 08.00 - kl. 23.00	 Dronninglund Cup - Dag 3	Dronninglund Hallerne	Dronninglund	 Håndbold
+torsdag 11.07.2013 - torsdag 11.07.2013 
+kl. 08.00 - kl. 23.00	 Dronninglund Cup - Dag 4	Dronninglund Hallerne	Dronninglund	 Håndbold
+fredag 12.07.2013 - fredag 12.07.2013 
+kl. 08.00 - kl. 23.00	 Dronninglund Cup - Dag 5	Dronninglund Hallerne	Dronninglund	 Håndbold
+lørdag 13.07.2013 - lørdag 13.07.2013 
+kl. 08.00 - kl. 21.00	 Dronninglund Cup - Dag 6	Dronninglund Hallerne	Dronninglund	 Håndbold
+fredag 02.08.2013 - lørdag 03.08.2013 
+kl. 08.30 - kl. 01.00	 Egholm Festival - dag 1	Egholm	-	 Festival
+lørdag 03.08.2013 - søndag 04.08.2013 
+kl. 08.30 - kl. 01.00	 Egholm Festival - dag 2	Egholm	-	 Festival
+tirsdag 27.08.2013 - tirsdag 27.08.2013 
+kl. 08.30 - kl. 13.00	 Børnedag - Aalborg i Rødt	Karolinelund	Aalborg	 Kultur event
+fredag 30.08.2013 - lørdag 31.08.2013 
+kl. 15.30 - kl. 02.00	 Studiestartsfest	Gigantium	Aalborg Øst	 Andet
+r by val;").getresult()
 	output = open(path + 'data/' + TYPE + '_high_data.csv', 'wb')
 	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 	for r in res:
