@@ -15,11 +15,11 @@ if (False):
 con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 
 
-#clusters = [[3.5, 'Low', '1'], [8.125, 'Medium', '3'],[100, 'High', '2']]
+clusters = [[3.5, 'Low', '1'], [8.125, 'Medium', '3'],[100, 'High', '2']]
 #clusters = [4,7.7]
 #clusters.append(con.query('select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+ TABLE + ';').getresult()[0][0])
 #clusters.append(con.query('select avg(km_pr_l) from '+TABLE+' where km_pr_l > (select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+TABLE+')').getresult()[0][0])
-
+"""
 noClasses= 3
 clusters = [[3.5, 'Outliers', 13]]
 r = con.query("select count(case when km_pr_l >=" + str(clusters[0][0]) + " then 1 end)::float/" + str(noClasses) + " from g_trip_data ;").getresult()
@@ -27,7 +27,7 @@ kmprl = con.query("select km_pr_l from g_trip_data where km_pr_l >=" + str(clust
 clusters.append([kmprl[int(r[0][0])][0], 'Low', '1'])
 clusters.append([kmprl[int(r[0][0])*2][0], 'Medium', '9'])
 clusters.append([100, 'High', '2']) #100 is dummy value
-
+"""
 
 #Letter, color, pattern
 patterns = {1: ['b', 'red', '1'], 2: ['c', 'blue', '2'], 3: ['a', 'green', '4'], 4: ['d', '#BB00FF', '5']}

@@ -46,8 +46,6 @@ scp d103@172.25.26.191:Dat10/src/images/idle2.png $PREFIX"_images"/idle2.png
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py idle3 $TRIPS | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/idle3.png $PREFIX"_images"/idle3.png
 
-: << 'COMMENT'
-
 
 
 
@@ -132,6 +130,10 @@ scp d103@172.25.26.191:Dat10/src/images/tlRange.png images/tlRange.png
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py testRoad $TRIPS | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/testRoad.png $PREFIX"_images"/testRoad.png
+
+
+
+: << 'COMMENT'
 
 COMMENT
 
