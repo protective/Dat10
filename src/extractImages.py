@@ -168,8 +168,8 @@ elif TYPE == 'trajectory':
 
 	
 	print "set output '" + path + "images/trajectory.png';"
-	print "set ylabel 'km/l'"
-	print "set xlabel 'km'"
+	print "set ylabel 'speed(km/t)'"
+	print "set xlabel 'time(s)'"
 	print "set xr[0:150]"
 	s = "plot "
 	for v in res:
