@@ -20,7 +20,6 @@ ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py trajectory $
 scp d103@172.25.26.191:Dat10/src/images/trajectory.png $PREFIX"_images"/trajectory.png
 
 
-: << 'COMMENT'
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py cruiseSpeedKml $CRUISEDATA | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/cruiseSpeedKml.png $PREFIX"_images"/cruiseSpeedKml.png
@@ -138,6 +137,7 @@ scp d103@172.25.26.191:Dat10/src/images/testRoad.png $PREFIX"_images"/testRoad.p
 
 
 
+: << 'COMMENT'
 
 COMMENT
 
