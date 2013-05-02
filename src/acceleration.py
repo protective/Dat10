@@ -19,7 +19,7 @@ except:
 def getTime(t):
 	return float(time.mktime(time.strptime(t, "%Y-%m-%j %H:%M:%S")))
 
-if False:
+if True:
 	interval = 3
 	print "Altering table"
 	con.query('set synchronous_commit = on;')

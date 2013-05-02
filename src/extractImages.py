@@ -1,4 +1,4 @@
-import pg, sys, os, csv
+import pg, sys, os, csv, time
 
 USER = 'd103'
 DB = 'gps_can'
@@ -37,6 +37,10 @@ if TYPE == 'showClusters':
 	exit(1)
 
 print "set terminal png size 1000,500;"
+
+
+def getTime(t):
+	return float(time.mktime(time.strptime(t, "%Y-%m-%j %H:%M:%S")))
 
 
 if TYPE == 'km_pr_l':
@@ -144,6 +148,44 @@ elif TYPE == 'TripLengthKml':
 	print "set xlabel 'km'"
 
 	print "plot '" + path + "data/tripLengthKml.csv' notitle"
+
+elif TYPE == 'trajectory':
+
+	res = con.query("select distinct a.tid , a.vehicleid from g_gps_can_data as a , g_gps_can_data as b where a.timestamp < b.timestamp and a.segmentkey = 442671 and b.segmentkey = 648683 and a.tid = b.tid order by a.vehicleid;").getresult()
+	res = [[2871,1],[6691,1],[6830,1],[9195,1]]
+	for i in res:
+		#low = 
+		res2 = list(con.query("select timestamp, speedMod from g_gps_can_data where timestamp > (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and segmentkey = 442671) and timestamp < (select max(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and segmentkey = 648683) and tid = "+ str(i[0])+" order by timestamp; ").getresult())
+		output = open(path +'data/trajectory/'+ str(i[0])+'.csv', 'wb')
+		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+		#res2[0][0]
+		#print type(res2[0])
+		begin = getTime(res2[0][0])
+		#if len(res2) > 1000:
+		#	print "tid = "+ str(i[0])+""
+		for r  in range(0,len(res2)):
+			#print res2[r][0]
+			#print getTime(res2[r][0])
+			temp = str(getTime(res2[r][0]) - begin)
+			res2[r] = list(res2[r])
+			res2[r][0] = temp
+			writer.writerow(res2[r])
+
+	
+	print "set output '" + path + "images/trajectory.png';"
+	print "set ylabel 'speed(km/t)'"
+	print "set xlabel 'time(s)'"
+	print "set xr[0:150]"
+	s = "plot "
+	for v in res:
+		s += "'"+  path + "data/trajectory/"+str(v[0])+".csv' using 1:2 with lines title '"+str(v[0]) +"',"
+	print s[:-1]
+
+
+	#s = "plot "
+	#for v in vehicles:
+	#	s += "'"+  path + "data/"+str(v[0])+"cruiseSpeedKml.csv' title 'Vehicle " + str(v[0]) + "'lc rgb '"+ patterns[v[0]][1] +"',"
+	#print s + " f(x) lw 2 lc rgb 'black'"
 
 elif TYPE == 'idle2':
 	q = "select round((idle_percentage*100)/5)*5 as idle,"
