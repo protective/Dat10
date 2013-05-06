@@ -10,7 +10,7 @@ if len(sys.argv) > 1:
 QUERY_TABLE = ""+PREFIX+"_gps_can_data"
 TABLE = ""+PREFIX+"_trip_data"
 
-MAP_TABLE = "osm_dk_20130214"
+MAP_TABLE = "osm_dk_20130501"
 
 
 

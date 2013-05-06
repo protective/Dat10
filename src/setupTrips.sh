@@ -18,7 +18,7 @@ python adjustSpeed.py $PREFIX
 
 
 screen -S idle -d -m python idle.py $PREFIX 250
-screen -S tl -d -m sh -c "updatePostgis.sh $DB $PREFIX ; python inRangeOfTl.py 20 $PREFIX ; python extractTrafficLights.py maps/denmark.osm $PREFIX"
+screen -S tl -d -m sh -c "updatePostgis.sh $DB $PREFIX ; python extractTrafficLights.py maps/denmark.osm $PREFIX ; python inRangeOfTl.py 20 $PREFIX"
 screen -S road -d -m python roadCategory.py $PREFIX
 screen -S acc -d -m python acceleration.py $PREFIX
 
