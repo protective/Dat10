@@ -11,7 +11,7 @@ test= False
 errormargin = 40
 try:
 	DATATABLE = sys.argv[1] + "_gps_can_data"
-	ACCDATA = sys.argv[1] + "_accdata2"
+	ACCDATA = sys.argv[1] + "_accdata3"
 except:
 	print 'Error: remember the parameters'
 	exit(1)
@@ -23,8 +23,8 @@ if True:
 	interval = 3
 	print "Altering table"
 	con.query('set synchronous_commit = on;')
-	con.query('alter table ' + DATATABLE + ' drop IF EXISTS acceleration2;')
-	con.query('alter table ' + DATATABLE + ' add column acceleration2 float not null default 0;')
+	con.query('alter table ' + DATATABLE + ' drop IF EXISTS acceleration3;')
+	con.query('alter table ' + DATATABLE + ' add column acceleration3 float default null;')
 
 	print "Calculating acceleration profiles"
 	tids = con.query("select distinct tid from "+ DATATABLE + " order by tid;").getresult()
@@ -54,8 +54,9 @@ if True:
 						acc = ((avg-oldavg)/float(getTime(curTime)-getTime(oldTime)))/3.6
 					oldavg = avg
 					oldTime = res[r][0]
-				
-					q = "update " + DATATABLE + " set acceleration2 = " + str(acc) + " where tid=" + str(res[2][2]) + " and timestamp='"+ str(res[r][0]) + "';"				
+					
+					if(getTime(curTime)-getTime(oldTime) <= 2):
+						q = "update " + DATATABLE + " set acceleration3 = " + str(acc) + " where tid=" + str(res[2][2]) + " and timestamp='"+ str(res[r][0]) + "';"				
 					con.query(q)
 
 	con.query("DROP INDEX IF EXISTS acceleration2_" + DATATABLE + "_idx CASCADE; create index acceleration2_" + DATATABLE + "_idx on " + DATATABLE + " (acceleration2);")

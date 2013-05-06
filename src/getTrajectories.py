@@ -51,6 +51,9 @@ if (not test):
 	con.query('alter table ' + NEW_TABLE + ' drop IF EXISTS '+TIDTOUPDATE+';')
 	con.query('alter table ' + NEW_TABLE + ' add column '+TIDTOUPDATE+' int;')
 
+print "Setting dirty"	
+con.query('update ' + NEW_TABLE + ' set dirty = true where rpm>8000;')
+
 print "Fetching data"
 res = con.query('select vehicleid, timestamp from ' + NEW_TABLE + ' where rpm > 0 order by vehicleid, timestamp').getresult()
 
