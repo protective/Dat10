@@ -914,7 +914,7 @@ elif TYPE == 'accelerationSpeedFuel':
 #	vehicles = [[3]]
 	for v in vehicles:
 		output = open(path + 'data/'+ str(v[0]) + 'accelerationSpeedFuel.csv', 'w+')
-		res = con.query("select * from (select startSpeed, endSpeed, (|/ ((fuel)/3.14))*3 as fuel from " + TABLE + " where acceleration<>0 and avgAcceleration<>0 and km > 0 and time> 5 and vehicleid= "+ str(v[0]) + ")s where fuel > 0;").getresult()		
+		res = con.query("select * from (select startSpeed, endSpeed, (|/ ((fuel)/3.14))*3 as fuel from " + TABLE + " where acceleration<>0 and avgAcceleration<>0 and km > 0 and vehicleid= "+ str(v[0]) + ")s where fuel > 0;").getresult()		
 		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 		for r in res:
 			writer.writerow(r)
@@ -1036,7 +1036,9 @@ elif TYPE == "compareVehicles":
 		print >> output, 'Stopped ' + str(r[4])
 		print >> output, 'Idle ' + str(r[5])
 		print >> output, 'Other ' + str(r[6])
-		os.system("python piechart.py data/' + str(r[0]) + 'Compare.csv")
+		output.close()
+#		print "python piechart.py data/" + str(r[0]) + "Compare.csv images/" + str(r[0]) + "Compare.png"
+		os.system("python piechart.py data/" + str(r[0]) + "Compare.csv images/" + str(r[0]) + "Compare.png")
 
 elif TYPE == 'idleTime':
 	#TODO: Do not work

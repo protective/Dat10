@@ -19,7 +19,7 @@ except:
 def getTime(t):
 	return float(time.mktime(time.strptime(t, "%Y-%m-%j %H:%M:%S")))
 
-if False:
+if True:
 	interval = 3
 	print "Altering table"
 	con.query('set synchronous_commit = on;')
@@ -52,12 +52,13 @@ if False:
 					acc = 0
 					if(getTime(curTime)-getTime(oldTime) > 0):
 						acc = ((avg-oldavg)/float(getTime(curTime)-getTime(oldTime)))/3.6
-					oldavg = avg
-					oldTime = res[r][0]
 					
 					if(getTime(curTime)-getTime(oldTime) <= 2):
 						q = "update " + DATATABLE + " set acceleration3 = " + str(acc) + " where tid=" + str(res[2][2]) + " and timestamp='"+ str(res[r][0]) + "';"				
 					con.query(q)
+					
+					oldavg = avg
+					oldTime = res[r][0]
 
 	con.query("DROP INDEX IF EXISTS acceleration2_" + DATATABLE + "_idx CASCADE; create index acceleration2_" + DATATABLE + "_idx on " + DATATABLE + " (acceleration2);")
 
