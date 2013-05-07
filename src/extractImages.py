@@ -156,7 +156,7 @@ elif TYPE == 'trajectory':
 	segment2 = "424712"
 
 	res = con.query("select distinct a.tid , a.vehicleid from g_gps_can_data as a , g_gps_can_data as b where a.timestamp < b.timestamp and a.segmentkey = "+segment1+" and b.segmentkey = "+segment2+" and a.tid = b.tid order by a.vehicleid;").getresult()
-	#res = [[2871,1],[6691,1],[6830,1],[9195,1]]
+	res = [[6915,1],[9408,1],[7312,1],[10392,1],[7167,1]]
 	toplot = []
 	for i in res:
 		#low = 
