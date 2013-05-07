@@ -19,7 +19,7 @@ except:
 def getTime(t):
 	return float(time.mktime(time.strptime(t, "%Y-%m-%j %H:%M:%S")))
 
-if True:
+if False:
 	interval = 3
 	print "Altering table"
 	con.query('set synchronous_commit = on;')
@@ -69,7 +69,7 @@ if True:
 	vehicles = con.query("select distinct vehicleid from "+ DATATABLE + ";").getresult()
 	for v in vehicles:
 		print "Vehicle " + str(v[0])
-		res = con.query("select tid, timestamp, acceleration2, totalconsumed, speedmod, kmcounter from " + DATATABLE + " where vehicleid=" + str(v[0]) +" and dirty is false order by timestamp;").getresult()
+		res = con.query("select tid, timestamp, acceleration3, totalconsumed, speedmod, kmcounter from " + DATATABLE + " where vehicleid=" + str(v[0]) +" and dirty is false and acceleration3 is not null order by timestamp;").getresult()
 		startIndex = 0		
 		
 		counter = 0

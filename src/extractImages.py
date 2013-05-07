@@ -195,22 +195,22 @@ elif TYPE == 'trajectoryFuleCost':
 
 	output = open(path +'data/trajectoryFuleCost.csv', 'wb')
 	for i in res:
-		low = con.query("select totalconsumed,timestamp,kmcounter from g_gps_can_data where timestamp = (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and segmentkey = "+segment1+") and tid = "+ str(i[0])+" ").getresult()
-		high = con.query("select totalconsumed,timestamp,kmcounter from g_gps_can_data where timestamp = (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and timestamp > (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and segmentkey = "+segment1+") and segmentkey = "+segment2+") and tid = "+ str(i[0])+" ").getresult()
-		speed = con.query("select avg(speedMod) from g_gps_can_data where timestamp >= '" + low[0][1] + "' and timestamp <= '" + high[0][1] + "' and tid = "+ str(i[0])+" ").getresult()
+		low = con.query("select totalconsumed,timestamp,kmcounter from " + TABLE + " where timestamp = (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and segmentkey = "+segment1+") and tid = "+ str(i[0])+" ").getresult()
+		high = con.query("select totalconsumed,timestamp,kmcounter from " + TABLE + " where timestamp = (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and timestamp > (select min(timestamp) from " + TABLE + " where tid = "+ str(i[0])+" and segmentkey = "+segment1+") and segmentkey = "+segment2+") and tid = "+ str(i[0])+" ").getresult()
+		speed = con.query("select avg(speedMod) from " + TABLE + " where timestamp >= '" + low[0][1] + "' and timestamp <= '" + high[0][1] + "' and tid = "+ str(i[0])+" ").getresult()
 
 		#print str(high[0][2] - low[0][2]) + " " + str(high[0][0] - low[0][0]) + " " + str(i[0]) 
 
 		if (high[0][2] - low[0][2]) < 11.5:
-			output.writelines(str(speed[0][0]) + " " + str(distance / (high[0][0] - low[0][0])) + "\n")
+			output.writelines(str(speed[0][0]) + " " + str((high[0][0] - low[0][0])/distance) + "\n")
 
 	print "set output '" + path + "images/trajectoryFuleCost.png';"
-	print "set ylabel 'cost(km/l)'"
-	print "set xlabel 'speed(km/h)'"
-	print "f(x) = a*x + b"
-	print "fit f(x) '" + path + "data/trajectoryFuleCost.csv' using 1:2 via a,b"
+	print "set ylabel 'Fuel efficiency (l/km)'"
+	print "set xlabel 'Speed (km/h)'"
+	print "f(x) = a*x**2 + b*x +c"
+	print "fit f(x) '" + path + "data/trajectoryFuleCost.csv' using 1:2 via a,b,c"
 	s = "plot "
-	s += "'"+  path + "data/trajectoryFuleCost.csv'  title 'test',"
+	s += "'"+  path + "data/trajectoryFuleCost.csv'  notitle ,"
 	print s + " f(x) lw 2 lc rgb 'black' title 'Regression line'"
 	
 
@@ -677,9 +677,9 @@ elif TYPE == 'idleRange2' or TYPE == 'idleRange22':
 	s = "plot "
 	for v in vehicles:
 		if(TYPE == 'idleRange2'):
-			s += "'" + path + "data/"+str(v[0]) + "idleRange2.csv' using ($1+"+ str(offset) + "):2 with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + " title '" + str(v[0]) + "' ,"
+			s += "'" + path + "data/"+str(v[0]) + "idleRange2.csv' using ($1+"+ str(offset+(boxwidth/2)) + "):2 with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + " title '" + str(v[0]) + "' ,"
 		else:
-			s += "'" + path + "data/"+str(v[0]) + "idleRange22.csv' using ($1+"+ str(offset) + "):2 with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + " title '" + str(v[0]) + "' ,"
+			s += "'" + path + "data/"+str(v[0]) + "idleRange22.csv' using ($1+"+ str(offset+(boxwidth/2)) + "):2 with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + " title '" + str(v[0]) + "' ,"
 		offset+=boxwidth
 	print s[:-1]
 
@@ -1024,6 +1024,19 @@ elif TYPE == 'speedlimitCount':
 		s += "'" + path + "data/"+str(v[0]) + "speedlimitCount.csv' using ($1+"+ str(offset+boxwidth/2) + "):2 with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + " title '" + str(v[0]) + "',"
 		offset+=boxwidth
 	print s[:-1]
+	
+elif TYPE == "compareVehicles":
+	res = con.query("select a.vehicleid, acc::float/c as a, steady::float/c as s, dec::float/c as d, stopped::float/c as st, idle::float/c as i, o::float/c as o from (select vehicleid, count(case when acceleration3<0 and cruise is false then 1 end) as dec, count(case when cruise is true then 1 end) as steady, count(case when acceleration3>0 and cruise is false then 1 end) as acc, count(case when stopped=1 and idle=0 then 1 end) as stopped, count(case when idle=1 then 1 end) as idle, count(case when acceleration3=0 and cruise is false and stopped =0 then 1 end) as o from g_gps_can_data where dirty is false group by vehicleid)a,(select vehicleid,count(*) as c from g_gps_can_data where dirty is false group by vehicleid)t where a.vehicleid=t.vehicleid;").getresult()
+	
+	for r in res:
+		output = open(path + 'data/' + str(r[0]) + 'Compare.csv', 'wb')
+		print >> output, 'Acceleration ' + str(r[1]) 
+		print >> output, 'SteadySpeed ' + str(r[2])
+		print >> output, 'Deceleration ' + str(r[3])
+		print >> output, 'Stopped ' + str(r[4])
+		print >> output, 'Idle ' + str(r[5])
+		print >> output, 'Other ' + str(r[6])
+		os.system("python piechart.py data/' + str(r[0]) + 'Compare.csv")
 
 elif TYPE == 'idleTime':
 	#TODO: Do not work
