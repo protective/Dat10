@@ -156,21 +156,34 @@ elif TYPE == 'trajectory':
 	segment2 = "424712"
 
 	res = con.query("select distinct a.tid , a.vehicleid from g_gps_can_data as a , g_gps_can_data as b where a.timestamp < b.timestamp and a.segmentkey = "+segment1+" and b.segmentkey = "+segment2+" and a.tid = b.tid order by a.vehicleid;").getresult()
-	res = [[6915,1],[9408,1],[7312,1],[10392,1],[7167,1]]
+	res = [[10392,1],[7167,1],[7312,1],[6915,1]]
+	#res = [[7302,1],[6966,1]]
 	toplot = []
 	for i in res:
-		#low = 
-		res2 = list(con.query("select timestamp, speedMod from g_gps_can_data where timestamp > (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and segmentkey = "+segment1+") and timestamp < (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and segmentkey = "+segment2+") and tid = "+ str(i[0])+" order by timestamp; ").getresult())
+
+		low = con.query("select totalconsumed,timestamp,kmcounter from " + TABLE + " where timestamp = (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and segmentkey = "+segment1+") and tid = "+ str(i[0])+" ").getresult()
+
+		#high = con.query("select totalconsumed,timestamp,kmcounter from " + TABLE + " where timestamp  = (select min + interval '71 second' from (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and segmentkey = "+segment1+") as foo) and tid = "+ str(i[0])+" ").getresult()
+		high = con.query("select totalconsumed,timestamp,kmcounter from " + TABLE + " where timestamp  = (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+"  and kmcounter > "+ str(low[0][2] + 0.98) + ") and tid = "+ str(i[0])+" ").getresult()
+		#print high
+		#high = con.query("select totalconsumed,timestamp,kmcounter from " + TABLE + " where timestamp = (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and timestamp > (select min(timestamp) from " + TABLE + " where tid = "+ str(i[0])+" and segmentkey = "+segment1+") and segmentkey = "+segment2+") and tid = "+ str(i[0])+" ").getresult()
+
+		res2 = con.query("select kmcounter, avg(speedMod) from " + TABLE + " where timestamp >= '" + low[0][1] + "' and timestamp <= '" + high[0][1] + "' and tid = "+ str(i[0])+" group by kmcounter order by kmcounter").getresult()
+
+		#res2 = con.query("select timestamp, speedMod from " + TABLE + " where timestamp >= '" + low[0][1] + "' and timestamp <= '" + high[0][1] + "' and tid = "+ str(i[0])+" order by timestamp").getresult()
+
+
 		output = open(path +'data/trajectory/'+ str(i[0])+'.csv', 'wb')
 		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 		
 		if len(res2) > 0:
-			begin = getTime(res2[0][0])
-			
-			toplot.append(i[0])
+			#begin = getTime(res2[0][0])
+			begin =res2[0][0]
+			toplot.append([i[0], high[0][0] - low[0][0]])
 			for r  in range(0,len(res2)):
 
-				temp = str(getTime(res2[r][0]) - begin)
+				#temp = str(getTime(res2[r][0]) - begin)
+				temp = res2[r][0] - begin
 				res2[r] = list(res2[r])
 				res2[r][0] = temp
 				writer.writerow(res2[r])
@@ -179,10 +192,10 @@ elif TYPE == 'trajectory':
 	print "set output '" + path + "images/trajectory.png';"
 	print "set ylabel 'speed(km/t)'"
 	print "set xlabel 'time(s)'"
-	print "set xr[0:150]"
+	print "set xr[0:1.5]"
 	s = "plot "
 	for v in toplot:
-		s += "'"+  path + "data/trajectory/"+str(v)+".csv' using 1:2 with lines title '"+str(v) +"',"
+		s += "'"+  path + "data/trajectory/"+str(v[0])+".csv' using 1:2 with lines title '"+str(v[0] ) + " " + str(v[1]) +"',"
 	print s[:-1]
 
 elif TYPE == 'trajectoryFuleCost':
@@ -212,6 +225,56 @@ elif TYPE == 'trajectoryFuleCost':
 	s = "plot "
 	s += "'"+  path + "data/trajectoryFuleCost.csv'  notitle ,"
 	print s + " f(x) lw 2 lc rgb 'black' title 'Regression line'"
+	
+elif TYPE == 'trajectoryCruise':
+
+		#segment1 =  '50037' #"542931"
+	segment1 = "542931"
+	segment2 = "424712"
+
+	res = con.query("select distinct a.tid , a.vehicleid from g_gps_can_data as a , g_gps_can_data as b where a.timestamp < b.timestamp and a.segmentkey = "+segment1+" and b.segmentkey = "+segment2+" and a.tid = b.tid order by a.vehicleid;").getresult()
+	res = [[10392,1],[7167,1],[7312,1],[6915,1]]
+	#res = [[7302,1],[6966,1]]
+	toplot = []
+	for i in res:
+
+		low = con.query("select totalconsumed,timestamp,kmcounter from " + TABLE + " where timestamp = (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and segmentkey = "+segment1+") and tid = "+ str(i[0])+" ").getresult()
+
+		#high = con.query("select totalconsumed,timestamp,kmcounter from " + TABLE + " where timestamp  = (select min + interval '71 second' from (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and segmentkey = "+segment1+") as foo) and tid = "+ str(i[0])+" ").getresult()
+		#high = con.query("select totalconsumed,timestamp,kmcounter from " + TABLE + " where timestamp  = (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+"  and kmcounter > "+ str(low[0][2] + 0.98) + ") and tid = "+ str(i[0])+" ").getresult()
+		#print high
+		high = con.query("select totalconsumed,timestamp,kmcounter from " + TABLE + " where timestamp = (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and timestamp > (select min(timestamp) from " + TABLE + " where tid = "+ str(i[0])+" and segmentkey = "+segment1+") and segmentkey = "+segment2+") and tid = "+ str(i[0])+" ").getresult()
+
+		#res2 = con.query("select kmcounter, avg(speedMod) from " + TABLE + " where timestamp >= '" + low[0][1] + "' and timestamp <= '" + high[0][1] + "' and tid = "+ str(i[0])+" group by kmcounter order by kmcounter").getresult()
+
+		res2 = con.query("select timestamp, speedMod from " + TABLE + " where timestamp >= '" + low[0][1] + "' and timestamp <= '" + high[0][1] + "' and tid = "+ str(i[0])+" order by timestamp").getresult()
+
+
+		output = open(path +'data/trajectory/'+ str(i[0])+'.csv', 'wb')
+		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+		
+		if len(res2) > 0:
+			begin = getTime(res2[0][0])
+			#begin =res2[0][0]
+			toplot.append([i[0], high[0][0] - low[0][0]])
+			for r  in range(0,len(res2)):
+
+				temp = str(getTime(res2[r][0]) - begin)
+				#temp = res2[r][0] - begin
+				res2[r] = list(res2[r])
+				res2[r][0] = temp
+				writer.writerow(res2[r])
+
+	
+	print "set output '" + path + "images/trajectoryCruise.png';"
+	print "set ylabel 'speed(km/t)'"
+	print "set xlabel 'time(s)'"
+	#print "set xr[0:1.5]"
+	s = "plot "
+	for v in toplot:
+		s += "'"+  path + "data/trajectory/"+str(v[0])+".csv' using 1:2 with lines title '"+str(v[0] ) + " " + str(v[1]) +"',"
+	print s[:-1]
+
 	
 
 
