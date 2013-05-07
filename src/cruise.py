@@ -14,7 +14,8 @@ except:
 
 DATATABLE = PREFIX+"_gps_can_data"
 TRIPDATA = PREFIX+"_trip_data"
-CRUISEDATA = PREFIX+"_cruise_data"
+CRUISEDATA = PREFIX+"_loose_cruise_data"
+CRUISECOLUMN = 'loose_cruise'
 
 test = False
 if len(sys.argv) > 4:
@@ -29,8 +30,8 @@ con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 
 
 if not test:
-	con.query('alter table ' + DATATABLE + ' drop IF EXISTS cruise;')
-	con.query('alter table '+DATATABLE+' add column cruise bool default false;')
+	con.query('alter table ' + DATATABLE + ' drop IF EXISTS '+ CRUISECOLUMN + ';')
+	con.query('alter table '+DATATABLE+' add column '+ CRUISECOLUMN + ' bool default false;')
 	con.query('drop table if exists ' + CRUISEDATA+";" )
 	con.query("create table "+CRUISEDATA+" (vehicleid bigint, tid int, time int, length float, fuel float, startTime timestamp, endTime timestamp, cruiseSpeed int);")
 
@@ -58,7 +59,7 @@ while cruiseBegin < len(res) -1:
 			if test:
 				masterCounter += counter
 			else:
-				s1 = 'update ' + str(DATATABLE) + ' set cruise = true where tid = ' + str(res[cruiseBegin][2]) + ' and timestamp >= \''+str(res[cruiseBegin][1]) + '\' and timestamp <= \''+ str(res[cruiseCur-1][1]) + '\';'  
+				s1 = 'update ' + str(DATATABLE) + ' set '+ CRUISECOLUMN + ' = true where tid = ' + str(res[cruiseBegin][2]) + ' and timestamp >= \''+str(res[cruiseBegin][1]) + '\' and timestamp <= \''+ str(res[cruiseCur-1][1]) + '\';'  
 				con.query(s1)
 				
 				diffTime = getTime(res[cruiseCur-1][1]) - getTime(res[cruiseBegin][1])
@@ -87,9 +88,9 @@ if test:
 
 if not test:
 	print 'Percentage in cruise'
-	con.query('alter table ' + TRIPDATA + ' drop if exists cruise_percentage;')
-	con.query('alter table ' + TRIPDATA + ' add cruise_percentage float;')
-	con.query('update ' + TRIPDATA + ' set cruise_percentage = p from (select tid, (count(*)-count(case when cruise =false then 1 end))::float/count(*) as p from ' + DATATABLE + ' where dirty is false group by tid)f where ' + TRIPDATA + '.tid=f.tid;')
+	con.query('alter table ' + TRIPDATA + ' drop if exists '+ CRUISECOLUMN + '_percentage;')
+	con.query('alter table ' + TRIPDATA + ' add '+ CRUISECOLUMN + '_percentage float;')
+	con.query('update ' + TRIPDATA + ' set '+ CRUISECOLUMN + '_percentage = p from (select tid, (count(*)-count(case when cruise =false then 1 end))::float/count(*) as p from ' + DATATABLE + ' where dirty is false group by tid)f where ' + TRIPDATA + '.tid=f.tid;')
 
 
 

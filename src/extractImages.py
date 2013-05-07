@@ -195,22 +195,22 @@ elif TYPE == 'trajectoryFuleCost':
 
 	output = open(path +'data/trajectoryFuleCost.csv', 'wb')
 	for i in res:
-		low = con.query("select totalconsumed,timestamp,kmcounter from g_gps_can_data where timestamp = (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and segmentkey = "+segment1+") and tid = "+ str(i[0])+" ").getresult()
-		high = con.query("select totalconsumed,timestamp,kmcounter from g_gps_can_data where timestamp = (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and timestamp > (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and segmentkey = "+segment1+") and segmentkey = "+segment2+") and tid = "+ str(i[0])+" ").getresult()
-		speed = con.query("select avg(speedMod) from g_gps_can_data where timestamp >= '" + low[0][1] + "' and timestamp <= '" + high[0][1] + "' and tid = "+ str(i[0])+" ").getresult()
+		low = con.query("select totalconsumed,timestamp,kmcounter from " + TABLE + " where timestamp = (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and segmentkey = "+segment1+") and tid = "+ str(i[0])+" ").getresult()
+		high = con.query("select totalconsumed,timestamp,kmcounter from " + TABLE + " where timestamp = (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and timestamp > (select min(timestamp) from " + TABLE + " where tid = "+ str(i[0])+" and segmentkey = "+segment1+") and segmentkey = "+segment2+") and tid = "+ str(i[0])+" ").getresult()
+		speed = con.query("select avg(speedMod) from " + TABLE + " where timestamp >= '" + low[0][1] + "' and timestamp <= '" + high[0][1] + "' and tid = "+ str(i[0])+" ").getresult()
 
 		#print str(high[0][2] - low[0][2]) + " " + str(high[0][0] - low[0][0]) + " " + str(i[0]) 
 
 		if (high[0][2] - low[0][2]) < 11.5:
-			output.writelines(str(speed[0][0]) + " " + str(distance / (high[0][0] - low[0][0])) + "\n")
+			output.writelines(str(speed[0][0]) + " " + str((high[0][0] - low[0][0])/distance) + "\n")
 
 	print "set output '" + path + "images/trajectoryFuleCost.png';"
-	print "set ylabel 'cost(km/l)'"
-	print "set xlabel 'speed(km/h)'"
-	print "f(x) = a*x + b"
-	print "fit f(x) '" + path + "data/trajectoryFuleCost.csv' using 1:2 via a,b"
+	print "set ylabel 'Fuel efficiency (l/km)'"
+	print "set xlabel 'Speed (km/h)'"
+	print "f(x) = a*x**2 + b*x +c"
+	print "fit f(x) '" + path + "data/trajectoryFuleCost.csv' using 1:2 via a,b,c"
 	s = "plot "
-	s += "'"+  path + "data/trajectoryFuleCost.csv'  title 'test',"
+	s += "'"+  path + "data/trajectoryFuleCost.csv'  notitle ,"
 	print s + " f(x) lw 2 lc rgb 'black' title 'Regression line'"
 	
 
@@ -424,7 +424,7 @@ elif TYPE == 'cruiseSpeedKml':
 	allOutput = open(path + 'data/cruiseSpeedKml.csv', 'wb')
 	allWriter = csv.writer(allOutput, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 	for v in vehicles:
-		res = con.query("select  cruisespeed, case when fuel = 0 then 0 else length/fuel end from " + TABLE + " where vehicleid = " + str(v[0]) +" and time> 60 order by startTime;").getresult()
+		res = con.query("select  cruisespeed, case when length = 0 then 0 else fuel/length end from " + TABLE + " where cruisespeed>0 and cruisespeed<200 and vehicleid = " + str(v[0]) +" and time> 0;").getresult()
 		output = open(path + 'data/'+str(v[0])+'cruiseSpeedKml.csv', 'wb')
 		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 		for r in res:
@@ -432,18 +432,42 @@ elif TYPE == 'cruiseSpeedKml':
 			allWriter.writerow(r)
 		
 	print "set output '" + path + "images/cruiseSpeedKml.png';"
-	print "set ylabel 'Fuel efficiency (km/l)'"
+	print "set ylabel 'Fuel efficiency (l/km)'"
 	print "set xlabel 'Cruise speed (km/h)'"
-	print "set xrange[40:]"
+#	print "set xrange[0:150]"
+	print "set yr [0:0.5]"
 	print "set xtics 10"
 	
-	print "f(x) = a*x + b"
-	print "fit f(x) '" + path + "data/cruiseSpeedKml.csv' using 1:2 via a,b"
+	print "f(x) = a*x**2 + b*x + c"
+	print "fit f(x) '" + path + "data/cruiseSpeedKml.csv' using 1:2 via a,b,c"
 	
 	s = "plot "
 	for v in vehicles:
+		#print patterns[v[0]][0] + "(x) = a" + str(v[0]) + "*x**2 + b"+str(v[0])+"*x + c"+str(v[0])
+		#print "fit " + patterns[v[0]][0] + "(x) '" + path + "data/"+str(v[0]) + "cruiseSpeedKml.csv' using 1:2 via a"+str(v[0])+"," +"b" +str(v[0])+"," +"c" +str(v[0])
 		s += "'"+  path + "data/"+str(v[0])+"cruiseSpeedKml.csv' title 'Vehicle " + str(v[0]) + "'lc rgb '"+ patterns[v[0]][1] +"',"
+		#s+=patterns[v[0]][0] + "(x) notitle lc rgb '"+ patterns[v[0]][1] +"',"
 	print s + " f(x) lw 2 lc rgb 'black' title 'Regression line'"
+
+elif TYPE == 'cruiseSpeedKmlAvg':
+	res = con.query("select cruisespeed, avg(case when length = 0 then 0 else fuel/length end) from " + TABLE + " group by cruiseSpeed;").getresult()
+	output = open(path + 'data/cruiseSpeedKmlAvg.csv', 'wb')
+	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+	for r in res:
+		writer.writerow(r)
+		
+	print "set output '" + path + "images/cruiseSpeedKmlAvg.png';"
+	print "set ylabel 'Fuel efficiency (l/km)'"
+	print "set xlabel 'Cruise speed (km/h)'"
+#	print "set xrange[0:150]"
+	print "set yr [0:0.5]"
+	print "set xtics 10"
+	
+	print "f(x) = a*x**2 + b*x + c"
+	print "fit f(x) '" + path + "data/cruiseSpeedKmlAvg.csv' using 1:2 via a,b,c"
+	
+	print "plot '"+  path + "data/cruiseSpeedKmlAvg.csv' notitle, f(x) lw 2 lc rgb 'black' title 'Regression line'"
+
 
 elif TYPE == 'trafficlight':
 	q = "select round((tlcounter)::numeric,1),"
@@ -653,9 +677,9 @@ elif TYPE == 'idleRange2' or TYPE == 'idleRange22':
 	s = "plot "
 	for v in vehicles:
 		if(TYPE == 'idleRange2'):
-			s += "'" + path + "data/"+str(v[0]) + "idleRange2.csv' using ($1+"+ str(offset) + "):2 with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + " title '" + str(v[0]) + "' ,"
+			s += "'" + path + "data/"+str(v[0]) + "idleRange2.csv' using ($1+"+ str(offset+(boxwidth/2)) + "):2 with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + " title '" + str(v[0]) + "' ,"
 		else:
-			s += "'" + path + "data/"+str(v[0]) + "idleRange22.csv' using ($1+"+ str(offset) + "):2 with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + " title '" + str(v[0]) + "' ,"
+			s += "'" + path + "data/"+str(v[0]) + "idleRange22.csv' using ($1+"+ str(offset+(boxwidth/2)) + "):2 with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + " title '" + str(v[0]) + "' ,"
 		offset+=boxwidth
 	print s[:-1]
 
@@ -714,7 +738,45 @@ elif TYPE == 'rpmRanges':
 		s += "'" + path + "data/"+str(v[0]) + "rpmRanges.csv' using ($1+"+ str(offset) + "):2 with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + " title '" + str(v[0]) + "',"
 		offset+=boxwidth
 	print s[:-1]	
+
+elif TYPE=="rpmSpeed":
+	vehicles = con.query("select vehicleid from " + TABLE + " where dirty = false group by vehicleid order by vehicleid;").getresult()
+	counter =0
+	for v in vehicles:
+		res = con.query("select rpm from "+ TABLE + " where vehicleid =" + str(v[0]) + " and dirty = false and idle=1 and rpm<2000 order by timestamp;").getresult()
+		output = open(path + 'data/'+str(v[0])+'rpmSpeed.csv', 'w+')
+		for r in res:
+			print >> output, str(counter) + " " + str(r[0])
+			counter+=1
 	
+	print "set output '" + path + "images/rpmSpeed.png';"
+	print "set ylabel 'RPM';"
+	print "set xlabel '';"
+	print "set ytics 100"
+	
+	s = "plot "
+	for v in vehicles:
+		s += "'" + path + "data/"+str(v[0]) + "rpmSpeed.csv' lc rgb '" + patterns[v[0]][1]+ "' title 'Vehicle" + str(v[0]) + "',"
+	print s + " 900"
+
+elif TYPE=="rpmAcceleration":
+	vehicles = con.query("select vehicleid from " + TABLE + " where dirty = false group by vehicleid order by vehicleid;").getresult()
+	for v in vehicles:
+		res = con.query("select acceleration2, rpm from "+ TABLE + " where vehicleid =" + str(v[0]) + " and dirty = false and acceleration2<0 order by timestamp;").getresult()
+		output = open(path + 'data/'+str(v[0])+'rpmAcceleration.csv', 'w+')
+		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+		for r in res:
+			writer.writerow(r)
+	
+	print "set output '" + path + "images/rpmAcceleration.png';"
+	print "set ylabel 'RPM';"
+	print "set xlabel 'Acceleration';"
+	print "set key left"
+	
+	s = "plot "
+	for v in vehicles:
+		s += "'" + path + "data/"+str(v[0]) + "rpmAcceleration.csv' lc rgb '" + patterns[v[0]][1]+ "' title 'Vehicle" + str(v[0]) + "',"
+	print s + " 900 lw 3 lc rgb 'black'"
 
 elif TYPE == 'accelerationRanges':
 	vehicles = con.query("select vehicleid, count(*) from " + TABLE + " where dirty = false group by vehicleid order by vehicleid;").getresult()
@@ -935,6 +997,46 @@ elif TYPE == 'steadySpeedExample':
 	print "set arrow from 41,50 to 41,56 lw 4 nohead"
 	print "set arrow from 62,50 to 62,56 lw 4 nohead"
 	print "plot '" + path + "data/steadySpeedExample' with lines lw 2 notitle"
+
+elif TYPE == 'speedlimitCount':
+	vehicles = con.query("select vehicleid as v, count(*) from " + TABLE + " group by v order by v;").getresult()
+	for v in vehicles:
+		output = open(path + 'data/'+ str(v[0]) + 'speedlimitCount.csv', 'w+')
+		res = con.query("select round(d/5)*5 as r, count(*) from (select *, speedmod-speedlimit as d from (select case when g.direction='FORWARD' then speedlimit_forward else speedlimit_backward end as speedlimit,speedmod from osm_dk_20130501 as m, " + TABLE + " as g where m.segmentkey=g.segmentkey and dirty is false and vehicleid=" + str(v[0]) + ")s)t where d> 0 group by r order by r desc;").getresult()	
+		for r in res:
+			print >> output, str(r[0]) + " " + str(float(r[1])/v[1]*100)
+	
+			
+	boxwidth= 5.0/(len(vehicles)+1)
+	print "set output '" + path + "images/speedlimitCount.png';"
+	print "set ylabel 'Number of records (%)'"
+	print "set xlabel 'Faster than the speedlimit (km/h)';"
+	print "set style fill solid border -1"
+	print "set boxwidth " + str(boxwidth)
+	print "set xtic rotate by -45 scale 0"
+	#print "set logscale y 10"
+	print "set xr [0:]"
+	print "set xtics 5"
+	
+	offset = 0
+	s = "plot "
+	for v in vehicles:
+		s += "'" + path + "data/"+str(v[0]) + "speedlimitCount.csv' using ($1+"+ str(offset+boxwidth/2) + "):2 with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + " title '" + str(v[0]) + "',"
+		offset+=boxwidth
+	print s[:-1]
+	
+elif TYPE == "compareVehicles":
+	res = con.query("select a.vehicleid, acc::float/c as a, steady::float/c as s, dec::float/c as d, stopped::float/c as st, idle::float/c as i, o::float/c as o from (select vehicleid, count(case when acceleration3<0 and cruise is false then 1 end) as dec, count(case when cruise is true then 1 end) as steady, count(case when acceleration3>0 and cruise is false then 1 end) as acc, count(case when stopped=1 and idle=0 then 1 end) as stopped, count(case when idle=1 then 1 end) as idle, count(case when acceleration3=0 and cruise is false and stopped =0 then 1 end) as o from g_gps_can_data where dirty is false group by vehicleid)a,(select vehicleid,count(*) as c from g_gps_can_data where dirty is false group by vehicleid)t where a.vehicleid=t.vehicleid;").getresult()
+	
+	for r in res:
+		output = open(path + 'data/' + str(r[0]) + 'Compare.csv', 'wb')
+		print >> output, 'Acceleration ' + str(r[1]) 
+		print >> output, 'SteadySpeed ' + str(r[2])
+		print >> output, 'Deceleration ' + str(r[3])
+		print >> output, 'Stopped ' + str(r[4])
+		print >> output, 'Idle ' + str(r[5])
+		print >> output, 'Other ' + str(r[6])
+		os.system("python piechart.py data/' + str(r[0]) + 'Compare.csv")
 
 elif TYPE == 'idleTime':
 	#TODO: Do not work
