@@ -895,7 +895,7 @@ elif TYPE == 'accelerationSpeed':
 #	vehicles = [[3]]
 	for v in vehicles:
 		output = open(path + 'data/'+ str(v[0]) + 'accelerationSpeed.csv', 'w+')
-		res = con.query("select avgAcceleration as a, startspeed from " + TABLE + " where time>5 and (avgAcceleration>0) and acceleration>0 and vehicleid= "+ str(v[0]) + "order by starttime;").getresult()		
+		res = con.query("select avgAcceleration as a, startspeed from " + TABLE + " where (avgAcceleration>0) and acceleration>0 and vehicleid= "+ str(v[0]) + "order by starttime;").getresult()		
 		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 		for r in res:
 			writer.writerow(r)
