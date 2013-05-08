@@ -156,7 +156,7 @@ elif TYPE == 'trajectory':
 	segment2 = "424712"
 
 	res = con.query("select distinct a.tid , a.vehicleid from g_gps_can_data as a , g_gps_can_data as b where a.timestamp < b.timestamp and a.segmentkey = "+segment1+" and b.segmentkey = "+segment2+" and a.tid = b.tid order by a.vehicleid;").getresult()
-	res = [[10392,1],[7167,1],[7312,1],[6915,1]]
+	res = [[6915,1],[7312,1],[10392,1]]
 	#res = [[7302,1],[6966,1]]
 	toplot = []
 	for i in res:
@@ -168,34 +168,34 @@ elif TYPE == 'trajectory':
 		#print high
 		#high = con.query("select totalconsumed,timestamp,kmcounter from " + TABLE + " where timestamp = (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and timestamp > (select min(timestamp) from " + TABLE + " where tid = "+ str(i[0])+" and segmentkey = "+segment1+") and segmentkey = "+segment2+") and tid = "+ str(i[0])+" ").getresult()
 
-		res2 = con.query("select kmcounter, avg(speedMod) from " + TABLE + " where timestamp >= '" + low[0][1] + "' and timestamp <= '" + high[0][1] + "' and tid = "+ str(i[0])+" group by kmcounter order by kmcounter").getresult()
+		#res2 = con.query("select kmcounter, avg(speedMod) from " + TABLE + " where timestamp >= '" + low[0][1] + "' and timestamp <= '" + high[0][1] + "' and tid = "+ str(i[0])+" group by kmcounter order by kmcounter").getresult()
 
-		#res2 = con.query("select timestamp, speedMod from " + TABLE + " where timestamp >= '" + low[0][1] + "' and timestamp <= '" + high[0][1] + "' and tid = "+ str(i[0])+" order by timestamp").getresult()
+		res2 = con.query("select timestamp, speedMod from " + TABLE + " where timestamp >= '" + low[0][1] + "' and timestamp <= '" + high[0][1] + "' and tid = "+ str(i[0])+" order by timestamp").getresult()
 
 
 		output = open(path +'data/trajectory/'+ str(i[0])+'.csv', 'wb')
 		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 		
 		if len(res2) > 0:
-			#begin = getTime(res2[0][0])
-			begin =res2[0][0]
+			begin = getTime(res2[0][0])
+			#begin =res2[0][0]
 			toplot.append([i[0], high[0][0] - low[0][0]])
 			for r  in range(0,len(res2)):
 
-				#temp = str(getTime(res2[r][0]) - begin)
-				temp = res2[r][0] - begin
+				temp = str(getTime(res2[r][0]) - begin)
+				#temp = res2[r][0] - begin
 				res2[r] = list(res2[r])
 				res2[r][0] = temp
 				writer.writerow(res2[r])
 
 	
 	print "set output '" + path + "images/trajectory.png';"
-	print "set ylabel 'speed(km/t)'"
-	print "set xlabel 'time(s)'"
-	print "set xr[0:1.5]"
+	print "set ylabel 'Speed(km/t)'"
+	print "set xlabel 'Time(s)'"
+	print "set xr[0:]"
 	s = "plot "
 	for v in toplot:
-		s += "'"+  path + "data/trajectory/"+str(v[0])+".csv' using 1:2 with lines title '"+str(v[0] ) + " " + str(v[1]) +"',"
+		s += "'"+  path + "data/trajectory/"+str(v[0])+".csv' using 1:2 with lines title '" + str(v[1]) +" l fuel',"
 	print s[:-1]
 
 elif TYPE == 'trajectoryFuleCost':
@@ -977,7 +977,7 @@ elif TYPE == 'accelerationSpeedFuel':
 #	vehicles = [[3]]
 	for v in vehicles:
 		output = open(path + 'data/'+ str(v[0]) + 'accelerationSpeedFuel.csv', 'w+')
-		res = con.query("select * from (select startSpeed, endSpeed, (|/ ((fuel)/3.14))*3 as fuel from " + TABLE + " where acceleration<>0 and avgAcceleration<>0 and km > 0 and time> 5 and vehicleid= "+ str(v[0]) + ")s where fuel > 0;").getresult()		
+		res = con.query("select * from (select startSpeed, endSpeed, (|/ ((fuel)/3.14))*3 as fuel from " + TABLE + " where acceleration<>0 and avgAcceleration<>0 and km > 0 and vehicleid= "+ str(v[0]) + ")s where fuel > 0;").getresult()		
 		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 		for r in res:
 			writer.writerow(r)
@@ -1099,7 +1099,9 @@ elif TYPE == "compareVehicles":
 		print >> output, 'Stopped ' + str(r[4])
 		print >> output, 'Idle ' + str(r[5])
 		print >> output, 'Other ' + str(r[6])
-		os.system("python piechart.py data/' + str(r[0]) + 'Compare.csv")
+		output.close()
+#		print "python piechart.py data/" + str(r[0]) + "Compare.csv images/" + str(r[0]) + "Compare.png"
+		os.system("python piechart.py data/" + str(r[0]) + "Compare.csv images/" + str(r[0]) + "Compare.png")
 
 elif TYPE == 'idleTime':
 	#TODO: Do not work
