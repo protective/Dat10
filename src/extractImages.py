@@ -846,7 +846,7 @@ elif TYPE == 'accelerationRanges':
 	
 	granularity = 0.25
 	for v in vehicles:
-		res = con.query("select * from (select round(acceleration2::decimal*4, 0)/4 as acc, count(*)::float as c from "+ TABLE + " where vehicleid =" + str(v[0]) + " and cruise = false and dirty = false group by acc order by acc)a where (acc > 0.1 or acc < -0.1)  and c > 800;").getresult()
+		res = con.query("select * from (select round(acceleration3::decimal*4, 0)/4 as acc, count(*)::float as c from "+ TABLE + " where vehicleid =" + str(v[0]) + " and cruise = false and dirty = false group by acc order by acc)a where (acc > 0.1 or acc < -0.1)  and c > 800;").getresult()
 		output = open(path + 'data/'+str(v[0])+'accelerationRanges.csv', 'w+')
 		for r in res:
 			print >> output, str(r[0]) + " " + str(float(r[1])/float(v[1]))
