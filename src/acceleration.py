@@ -19,7 +19,7 @@ except:
 def getTime(t):
 	return float(time.mktime(time.strptime(t, "%Y-%m-%j %H:%M:%S")))
 
-if True:
+if False:
 	interval = 3
 	print "Altering table"
 	con.query('set synchronous_commit = on;')
@@ -70,7 +70,7 @@ if True:
 	vehicles = con.query("select distinct vehicleid from "+ DATATABLE + ";").getresult()
 	for v in vehicles:
 		print "Vehicle " + str(v[0])
-		res = con.query("select tid, timestamp, acceleration3, totalconsumed, speedmod, kmcounter from " + DATATABLE + " where vehicleid=" + str(v[0]) +" and dirty is false and acceleration3 is not null order by timestamp;").getresult()
+		res = con.query("select tid, timestamp, acceleration3, totalconsumed, speedmod, kmcounter from " + DATATABLE + " where vehicleid=" + str(v[0]) +" and dirty is false order by timestamp;").getresult()
 		startIndex = 0		
 		
 		counter = 0
@@ -78,21 +78,27 @@ if True:
 		oldAccSign = 0
 		
 		for r in range(0, len(res)):
-			acc = float(res[r][2])
+			if str(res[r][2]) == 'None':
+				startIndex = r
+				continue
 			
+			
+		
+			acc = float(res[r][2])
+					
 			accSign = 0 
 			if acc< 0:
 				accSign =-1
 			if acc>0:
 				accSign = 1
-			
+		
 			if (r> 0 and ((not accSign == oldAccSign) or (not res[r-1][0] == res[r][0]))) or r == len(res)-1:
 				endIndex = r-1
 				if r== len(res)-1:
 					endIndex = r
 					totalAcc += acc
 					counter += 1
-				
+			
 				timeDiff= abs(getTime(res[startIndex][1])-getTime(res[endIndex][1]))
 
 				if timeDiff>0:
@@ -100,14 +106,14 @@ if True:
 					avgAcc = float(totalAcc)/counter
 					fuel = abs(float(res[endIndex][3]) - float(res[startIndex][3]))
 					km = abs(float(res[endIndex][5]) - float(res[startIndex][5]))
-					
+				
 					q= "insert into " + str(ACCDATA) + " values (" + str(v[0]) + ", " +str(res[endIndex][0]) + ", '" + str(res[startIndex][1]) + "', '" + str(res[endIndex][1]) + "', " + str(res[startIndex][4]) + ", " + str(res[endIndex][4]) + ", " + str(curAcc) + ", " + str(avgAcc) + ", " + str(fuel) + ", " + str(km) + ")"
 					#print q
 					con.query(q)
 				totalAcc = 0
 				counter = 0
 				startIndex = r
-			
+		
 			oldAccSign = accSign
 			counter += 1
 			totalAcc += acc
