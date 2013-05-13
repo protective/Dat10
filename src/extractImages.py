@@ -156,33 +156,46 @@ elif TYPE == 'trajectory':
 	segment2 = "424712"
 
 	res = con.query("select distinct a.tid , a.vehicleid from g_gps_can_data as a , g_gps_can_data as b where a.timestamp < b.timestamp and a.segmentkey = "+segment1+" and b.segmentkey = "+segment2+" and a.tid = b.tid order by a.vehicleid;").getresult()
-	res = [[6915,1],[9408,1],[7312,1],[10392,1],[7167,1]]
+	res = [[6915,1],[7312,1],[10392,1]]
+	#res = [[7302,1],[6966,1]]
 	toplot = []
 	for i in res:
-		#low = 
-		res2 = list(con.query("select timestamp, speedMod from g_gps_can_data where timestamp > (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and segmentkey = "+segment1+") and timestamp < (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and segmentkey = "+segment2+") and tid = "+ str(i[0])+" order by timestamp; ").getresult())
+
+		low = con.query("select totalconsumed,timestamp,kmcounter from " + TABLE + " where timestamp = (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and segmentkey = "+segment1+") and tid = "+ str(i[0])+" ").getresult()
+
+		#high = con.query("select totalconsumed,timestamp,kmcounter from " + TABLE + " where timestamp  = (select min + interval '71 second' from (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and segmentkey = "+segment1+") as foo) and tid = "+ str(i[0])+" ").getresult()
+		high = con.query("select totalconsumed,timestamp,kmcounter from " + TABLE + " where timestamp  = (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+"  and kmcounter > "+ str(low[0][2] + 0.98) + ") and tid = "+ str(i[0])+" ").getresult()
+		#print high
+		#high = con.query("select totalconsumed,timestamp,kmcounter from " + TABLE + " where timestamp = (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and timestamp > (select min(timestamp) from " + TABLE + " where tid = "+ str(i[0])+" and segmentkey = "+segment1+") and segmentkey = "+segment2+") and tid = "+ str(i[0])+" ").getresult()
+
+		#res2 = con.query("select kmcounter, avg(speedMod) from " + TABLE + " where timestamp >= '" + low[0][1] + "' and timestamp <= '" + high[0][1] + "' and tid = "+ str(i[0])+" group by kmcounter order by kmcounter").getresult()
+
+		res2 = con.query("select timestamp, speedMod from " + TABLE + " where timestamp >= '" + low[0][1] + "' and timestamp <= '" + high[0][1] + "' and tid = "+ str(i[0])+" order by timestamp").getresult()
+
+
 		output = open(path +'data/trajectory/'+ str(i[0])+'.csv', 'wb')
 		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 		
 		if len(res2) > 0:
 			begin = getTime(res2[0][0])
-			
-			toplot.append(i[0])
+			#begin =res2[0][0]
+			toplot.append([i[0], high[0][0] - low[0][0]])
 			for r  in range(0,len(res2)):
 
 				temp = str(getTime(res2[r][0]) - begin)
+				#temp = res2[r][0] - begin
 				res2[r] = list(res2[r])
 				res2[r][0] = temp
 				writer.writerow(res2[r])
 
 	
 	print "set output '" + path + "images/trajectory.png';"
-	print "set ylabel 'speed(km/t)'"
-	print "set xlabel 'time(s)'"
-	print "set xr[0:150]"
+	print "set ylabel 'Speed(km/t)'"
+	print "set xlabel 'Time(s)'"
+	print "set xr[0:]"
 	s = "plot "
 	for v in toplot:
-		s += "'"+  path + "data/trajectory/"+str(v)+".csv' using 1:2 with lines title '"+str(v) +"',"
+		s += "'"+  path + "data/trajectory/"+str(v[0])+".csv' using 1:2 with lines title '" + str(v[1]) +" l fuel',"
 	print s[:-1]
 
 elif TYPE == 'trajectoryFuleCost':
@@ -212,6 +225,56 @@ elif TYPE == 'trajectoryFuleCost':
 	s = "plot "
 	s += "'"+  path + "data/trajectoryFuleCost.csv'  notitle ,"
 	print s + " f(x) lw 2 lc rgb 'black' title 'Regression line'"
+	
+elif TYPE == 'trajectoryCruise':
+
+		#segment1 =  '50037' #"542931"
+	segment1 = "542931"
+	segment2 = "424712"
+
+	res = con.query("select distinct a.tid , a.vehicleid from g_gps_can_data as a , g_gps_can_data as b where a.timestamp < b.timestamp and a.segmentkey = "+segment1+" and b.segmentkey = "+segment2+" and a.tid = b.tid order by a.vehicleid;").getresult()
+	res = [[10392,1],[7167,1],[7312,1],[6915,1]]
+	#res = [[7302,1],[6966,1]]
+	toplot = []
+	for i in res:
+
+		low = con.query("select totalconsumed,timestamp,kmcounter from " + TABLE + " where timestamp = (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and segmentkey = "+segment1+") and tid = "+ str(i[0])+" ").getresult()
+
+		#high = con.query("select totalconsumed,timestamp,kmcounter from " + TABLE + " where timestamp  = (select min + interval '71 second' from (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and segmentkey = "+segment1+") as foo) and tid = "+ str(i[0])+" ").getresult()
+		#high = con.query("select totalconsumed,timestamp,kmcounter from " + TABLE + " where timestamp  = (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+"  and kmcounter > "+ str(low[0][2] + 0.98) + ") and tid = "+ str(i[0])+" ").getresult()
+		#print high
+		high = con.query("select totalconsumed,timestamp,kmcounter from " + TABLE + " where timestamp = (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and timestamp > (select min(timestamp) from " + TABLE + " where tid = "+ str(i[0])+" and segmentkey = "+segment1+") and segmentkey = "+segment2+") and tid = "+ str(i[0])+" ").getresult()
+
+		#res2 = con.query("select kmcounter, avg(speedMod) from " + TABLE + " where timestamp >= '" + low[0][1] + "' and timestamp <= '" + high[0][1] + "' and tid = "+ str(i[0])+" group by kmcounter order by kmcounter").getresult()
+
+		res2 = con.query("select timestamp, speedMod from " + TABLE + " where timestamp >= '" + low[0][1] + "' and timestamp <= '" + high[0][1] + "' and tid = "+ str(i[0])+" order by timestamp").getresult()
+
+
+		output = open(path +'data/trajectory/'+ str(i[0])+'.csv', 'wb')
+		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+		
+		if len(res2) > 0:
+			begin = getTime(res2[0][0])
+			#begin =res2[0][0]
+			toplot.append([i[0], high[0][0] - low[0][0]])
+			for r  in range(0,len(res2)):
+
+				temp = str(getTime(res2[r][0]) - begin)
+				#temp = res2[r][0] - begin
+				res2[r] = list(res2[r])
+				res2[r][0] = temp
+				writer.writerow(res2[r])
+
+	
+	print "set output '" + path + "images/trajectoryCruise.png';"
+	print "set ylabel 'speed(km/t)'"
+	print "set xlabel 'time(s)'"
+	#print "set xr[0:1.5]"
+	s = "plot "
+	for v in toplot:
+		s += "'"+  path + "data/trajectory/"+str(v[0])+".csv' using 1:2 with lines title '"+str(v[0] ) + " " + str(v[1]) +"',"
+	print s[:-1]
+
 	
 
 
@@ -895,7 +958,7 @@ elif TYPE == 'accelerationSpeed':
 #	vehicles = [[3]]
 	for v in vehicles:
 		output = open(path + 'data/'+ str(v[0]) + 'accelerationSpeed.csv', 'w+')
-		res = con.query("select avgAcceleration as a, startspeed from " + TABLE + " where (avgAcceleration>0) and acceleration>0 and vehicleid= "+ str(v[0]) + "order by starttime;").getresult()		
+		res = con.query("select avgAcceleration as a, startspeed from " + TABLE + " where time>5 and (avgAcceleration>0) and acceleration>0 and vehicleid= "+ str(v[0]) + "order by starttime;").getresult()		
 		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 		for r in res:
 			writer.writerow(r)
@@ -911,10 +974,9 @@ elif TYPE == 'accelerationSpeed':
 
 elif TYPE == 'accelerationSpeedFuel':
 	vehicles = con.query("select distinct vehicleid as v from " + TABLE + " order by v;").getresult()
-#	vehicles = [[3]]
 	for v in vehicles:
 		output = open(path + 'data/'+ str(v[0]) + 'accelerationSpeedFuel.csv', 'w+')
-		res = con.query("select * from (select startSpeed, endSpeed, (|/ ((fuel)/3.14))*3 as fuel from " + TABLE + " where acceleration<>0 and avgAcceleration<>0 and km > 0 and vehicleid= "+ str(v[0]) + ")s where fuel > 0;").getresult()		
+		res = con.query("select * from (select startSpeed, endSpeed, (|/ ((fuel)/3.14))*5 as fuel from " + TABLE + " where acceleration<>0 and avgAcceleration<>0 and km > 0  and vehicleid= "+ str(v[0]) + ")s where fuel > 0;").getresult()		
 		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 		for r in res:
 			writer.writerow(r)
@@ -926,6 +988,50 @@ elif TYPE == 'accelerationSpeedFuel':
 	s = "plot "
 	for v in vehicles:
 		s += "'" + path + "data/"+ str(v[0]) + "accelerationSpeedFuel.csv' using 1:2:3 with points lt 1 pt 7 ps variable lc rgb '" + patterns[v[0]][1]+ "' title 'Vehicle " + str(v[0]) + "',"
+	print s[:-1]
+	
+elif TYPE == 'accelerationFuelStart':
+	starts = con.query("select * from (select distinct round((endspeed-startspeed)/10)*10 as start from " +  TABLE + ")s where start>0 order by start;").getresult()
+	s = "plot "
+	for ss in starts:
+		res = con.query("select startspeed, fuel/time from " + TABLE + " where round((endspeed-startspeed)/10)*10=" + str(ss[0]) + " and endspeed>startspeed order by endspeed;").getresult()
+		output = open(path + 'data/'+ str(int(ss[0])) + 'accelerationFuelStart.csv', 'w+')
+		for r in res:
+			print >> output, str(r[0]) + " " + str(r[1])
+		
+		if len(res)> 3:
+			n = str(int(ss[0]))
+			print "f"+ n + "(x) = a"+ n + "*x + b"+ n
+			print "fit f"+ n + "(x) '" + path + "data/"+ n + "accelerationFuelStart.csv' using 1:2 via a"+ n + ",b"+ n
+#			s += "'" + path + "data/"+ str(int(ss[0])) + "accelerationFuelStart.csv' title 'Speed diff " + str(ss[0]) + "',"
+			s+= "f"+ n + "(x),"
+	
+	print "set output '" + path + "images/accelerationFuelStart.png';"
+	print "set ylabel 'Fuel (l/s)'"
+	print "set xlabel 'start speed (km/h)'"
+	print "set xrange[0:150]"
+	print "set yrange[0:]"
+	print "set key right"
+	
+	if not s == '':
+		print s[:-1]
+
+elif TYPE == 'accelerationSpeedFuelTime':
+	vehicles = con.query("select distinct vehicleid as v from " + TABLE + " order by v;").getresult()
+	for v in vehicles:
+		output = open(path + 'data/'+ str(v[0]) + 'accelerationSpeedFuelTime.csv', 'w+')
+		res = con.query("select  time, endspeed-startspeed,(|/ ((fuel)/3.14))*4 as fuel from " + TABLE + " where avgAcceleration>0 and avgAcceleration <6 and km > 0 and vehicleid= "+ str(v[0]) + ";").getresult()		
+		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+		for r in res:
+			writer.writerow(r)
+		
+	print "set output '" + path + "images/accelerationSpeedFuelTime.png';"
+	print "set xlabel 'Time (s)'"
+	print "set ylabel 'Speed difference (km/h)'"
+	
+	s = "plot "
+	for v in vehicles:
+		s += "'" + path + "data/"+ str(v[0]) + "accelerationSpeedFuelTime.csv' using 1:2:3 with points lt 1 pt 7 ps variable lc rgb '" + patterns[v[0]][1]+ "' title 'Vehicle " + str(v[0]) + "',"
 	print s[:-1]
 
 elif TYPE == 'accelerationFuel':
