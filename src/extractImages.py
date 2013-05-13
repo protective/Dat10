@@ -315,7 +315,7 @@ elif TYPE == 'trajectoryTrafficLight':
 				res2[r] = list(res2[r])
 				res2[r][0] = temp
 				writer.writerow(res2[r])
-			toplot.append([i[0], high[0][0] - low[0][0],high[0][2] - low[0][2]],stopped)
+			toplot.append([i[0], high[0][0] - low[0][0],high[0][2] - low[0][2],stopped])
 	
 	print "set output '" + path + "images/trajectoryTrafficLight.png';"
 	print "set ylabel 'Speed(km/t)'"
