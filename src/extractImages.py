@@ -275,6 +275,89 @@ elif TYPE == 'trajectoryCruise':
 		s += "'"+  path + "data/trajectory/"+str(v[0])+".csv' using 1:2 with lines title '"+str(v[0] ) + " " + str(v[1]) +"',"
 	print s[:-1]
 
+elif TYPE == 'trajectoryTrafficLight':
+
+	#segment1 = "645538"
+	#segment2 = "71591"
+
+	segment1 = "645539"
+	segment2 = "71589"
+
+	res = con.query("select distinct a.tid , a.vehicleid from g_gps_can_data as a , g_gps_can_data as b where a.timestamp < b.timestamp and a.segmentkey = "+segment1+" and b.segmentkey = "+segment2+" and a.tid = b.tid and a.timestamp::time > '9:00:00' and a.timestamp::time < '15:00:00' order by a.vehicleid;").getresult()
+	#res = [[6915,1],[7312,1],[10392,1]]
+	#res = [[7302,1],[6966,1]]
+	toplot = []
+	for i in res:
+
+		low = con.query("select totalconsumed,timestamp,kmcounter from " + TABLE + " where timestamp = (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and segmentkey = "+segment1+") and tid = "+ str(i[0])+" ").getresult()
+
+		high = con.query("select totalconsumed,timestamp,kmcounter from " + TABLE + " where timestamp  = (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+"  and segmentkey = "+segment2+") and tid = "+ str(i[0])+" ").getresult()
+		#print high
+		#high = con.query("select totalconsumed,timestamp,kmcounter from " + TABLE + " where timestamp = (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and timestamp > (select min(timestamp) from " + TABLE + " where tid = "+ str(i[0])+" and segmentkey = "+segment1+") and segmentkey = "+segment2+") and tid = "+ str(i[0])+" ").getresult()
+
+		#res2 = con.query("select kmcounter, avg(speedMod) from " + TABLE + " where timestamp >= '" + low[0][1] + "' and timestamp <= '" + high[0][1] + "' and tid = "+ str(i[0])+" group by kmcounter order by kmcounter").getresult()
+
+		res2 = con.query("select timestamp, speedMod from " + TABLE + " where timestamp >= '" + low[0][1] + "' and timestamp <= '" + high[0][1] + "' and tid = "+ str(i[0])+" order by timestamp").getresult()
+
+
+		output = open(path +'data/trajectory/'+ str(i[0])+'.csv', 'wb')
+		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+		
+		if len(res2) > 0:
+			begin = getTime(res2[0][0])
+			#begin =res2[0][0]
+			stopped = False
+			for r  in range(0,len(res2)):
+				if(res2[1] == 0):
+					stopped = True
+				temp = str(getTime(res2[r][0]) - begin)
+				#temp = res2[r][0] - begin
+				res2[r] = list(res2[r])
+				res2[r][0] = temp
+				writer.writerow(res2[r])
+			toplot.append([i[0], high[0][0] - low[0][0],high[0][2] - low[0][2]],stopped)
+	
+	print "set output '" + path + "images/trajectoryTrafficLight.png';"
+	print "set ylabel 'Speed(km/t)'"
+	print "set xlabel 'Time(s)'"
+	print "set xr[0:]"
+	s = "plot "
+
+	legendset = {}
+	toplot.sort(key=lambda tup: tup[1])
+	
+	for v in toplot:
+		cou = 0
+		if v[1]< 0.01:
+			cou = 3
+			legend = "[0, 0.01) l"
+		elif v[1] < 0.02:
+			cou = 5
+			legend = "[0.01, 0.02) l"
+		elif v[1] < 0.03:
+			cou = 4
+			legend = "[0.02, 0.03) l"
+		elif v[1] < 0.04:
+			cou = 9
+			legend = "[0.03, 0.04) l"
+		elif v[1] < 0.05:
+			cou = 2
+			legend = "[0.04, 0.05) l"
+		elif v[1] < 0.07:
+			cou = 14
+			legend = "[0.05, 0.07) l"
+		elif v[1] <= 0.09:
+			cou = 13
+			legend = "[0.07, 0.09] l"
+
+		#print cou
+		if(not cou in legendset):
+			s += "'"+  path + "data/trajectory/"+str(v[0])+".csv' using 1:2 with lines lc " + str(cou) + " title '" + str(legend) +"',"
+		else:
+			s += "'"+  path + "data/trajectory/"+str(v[0])+".csv' using 1:2 with lines lc " + str(cou) + " notitle,"
+
+		legendset[cou] = True
+	print s[:-1]
 	
 
 
@@ -977,7 +1060,7 @@ elif TYPE == 'accelerationSpeedFuel':
 #	vehicles = [[3]]
 	for v in vehicles:
 		output = open(path + 'data/'+ str(v[0]) + 'accelerationSpeedFuel.csv', 'w+')
-		res = con.query("select * from (select startSpeed, endSpeed, (|/ ((fuel)/3.14))*3 as fuel from " + TABLE + " where acceleration<>0 and avgAcceleration<>0 and km > 0 and vehicleid= "+ str(v[0]) + ")s where fuel > 0;").getresult()		
+		res = con.query("select * from (select startSpeed, endSpeed, (|/ ((fuel)/3.14))*6 as fuel from " + TABLE + " where acceleration<>0 and avgAcceleration<>0 and km > 0 and vehicleid= "+ str(v[0]) + ")s where fuel > 0;").getresult()		
 		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 		for r in res:
 			writer.writerow(r)
