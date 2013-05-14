@@ -308,21 +308,33 @@ elif TYPE == 'trajectoryTrafficLight':
 			#begin =res2[0][0]
 			stopped = False
 			for r  in range(0,len(res2)):
-				if(res2[1] == 0):
+				if(res2[r][1] == 0):
 					stopped = True
 				temp = str(getTime(res2[r][0]) - begin)
 				#temp = res2[r][0] - begin
 				res2[r] = list(res2[r])
 				res2[r][0] = temp
 				writer.writerow(res2[r])
-			toplot.append([i[0], high[0][0] - low[0][0],high[0][2] - low[0][2],stopped])
+			toplot.append([i[0], high[0][0] - low[0][0],float(high[0][2]) - float(low[0][2]),stopped])
 	
+	avgstop = [0.0,0]
+	avgrun = [0.0,0]
+	for i in toplot:
+		if i[3]:
+			avgstop[0] += i[1]
+			avgstop[1] += 1
+		elif not i[3]:
+			avgrun[0] += i[1]
+			avgrun[1] += 1			
+
+	#print "avg stop " +str(avgstop[0]/avgstop[1])+ " avg run " +str(avgrun[0]/avgrun[1])+ ""
+
 	print "set output '" + path + "images/trajectoryTrafficLight.png';"
 	print "set ylabel 'Speed(km/t)'"
 	print "set xlabel 'Time(s)'"
 	print "set xr[0:]"
 	s = "plot "
-
+	
 	legendset = {}
 	toplot.sort(key=lambda tup: tup[1])
 	
@@ -331,20 +343,14 @@ elif TYPE == 'trajectoryTrafficLight':
 		if v[1]< 0.01:
 			cou = 3
 			legend = "[0, 0.01) l"
-		elif v[1] < 0.02:
-			cou = 5
-			legend = "[0.01, 0.02) l"
 		elif v[1] < 0.03:
 			cou = 4
-			legend = "[0.02, 0.03) l"
-		elif v[1] < 0.04:
-			cou = 9
-			legend = "[0.03, 0.04) l"
+			legend = "[0.01, 0.03) l"
 		elif v[1] < 0.05:
 			cou = 2
-			legend = "[0.04, 0.05) l"
+			legend = "[0.03, 0.05) l"
 		elif v[1] < 0.07:
-			cou = 14
+			cou = 9
 			legend = "[0.05, 0.07) l"
 		elif v[1] <= 0.09:
 			cou = 13
