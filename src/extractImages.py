@@ -952,6 +952,34 @@ elif TYPE == 'accelerationRanges':
 		offset+=boxwidth
 	print s[:-1]
 
+elif TYPE == 'accelerationRanges2':
+
+	vehicles = con.query("select vehicleid, count(*) from " + TABLE + " group by vehicleid order by vehicleid;").getresult()
+	
+	granularity = 0.25
+	for v in vehicles:
+		res = con.query("select * from (select round(avgAcceleration::decimal*4)/4 as acc, count(*)::float as c from "+ TABLE + " where vehicleid =" + str(v[0]) + " group by acc order by acc)a where (acc > 0);").getresult()
+		output = open(path + 'data/'+str(v[0])+'accelerationRanges2.csv', 'w+')
+		for r in res:
+			print >> output, str(r[0]) + " " + str(float(r[1])/float(v[1]))
+			
+	boxwidth= (float(granularity))/(len(vehicles)+1)
+	print "set output '" + path + "images/accelerationRanges2.png';"
+	print "set ylabel 'Percent of periods in range (%)'" #TODO: Rename
+	print "set xlabel 'Acceleration (m/s^2)'"
+	print "set style fill solid border -1"
+	print "set boxwidth " + str(boxwidth)
+	print "set xtic rotate by -45 scale 0"
+	print "set xtics " + str(float(granularity))
+	print "set xr [0.125:3.45]"
+	
+	offset = 0
+	s = "plot "
+	for v in vehicles: 
+		s += "'" + path + "data/"+str(v[0]) + "accelerationRanges2.csv' using ($1+"+ str(offset) + "):($2*100) with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + "  title '" + str(v[0]) + "',"
+		offset+=boxwidth
+	print s[:-1]
+
 elif TYPE == 'accelerationStddevAcc':
 	temp = con.query("select avgAcceleration from " + TABLE + " where avgAcceleration > 0 order by avgAcceleration").getresult()
 	highAcc = temp[len(temp)-(len(temp)/100*5)][0]
@@ -1008,7 +1036,7 @@ elif TYPE == 'accelerationSpeedFuel':
 	vehicles = con.query("select distinct vehicleid as v from " + TABLE + " order by v;").getresult()
 	for v in vehicles:
 		output = open(path + 'data/'+ str(v[0]) + 'accelerationSpeedFuel.csv', 'w+')
-		res = con.query("select * from (select startSpeed, endSpeed, (|/ ((fuel)/3.14))*5 as fuel from " + TABLE + " where acceleration<>0 and avgAcceleration<>0 and km > 0  and vehicleid= "+ str(v[0]) + ")s where fuel > 0;").getresult()		
+		res = con.query("select * from (select startSpeed, endSpeed, (|/ ((fuel)/3.14))*5 as fuel from " + TABLE + " where avgAcceleration>0 and km > 0  and vehicleid= "+ str(v[0]) + ")s where fuel > 0;").getresult()		
 		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 		for r in res:
 			writer.writerow(r)
@@ -1021,6 +1049,25 @@ elif TYPE == 'accelerationSpeedFuel':
 	for v in vehicles:
 		s += "'" + path + "data/"+ str(v[0]) + "accelerationSpeedFuel.csv' using 1:2:3 with points lt 1 pt 7 ps variable lc rgb '" + patterns[v[0]][1]+ "' title 'Vehicle " + str(v[0]) + "',"
 	print s[:-1]
+
+elif TYPE == 'accelerationSpeedFuel2':
+	vehicles = con.query("select distinct vehicleid as v from " + TABLE + " order by v;").getresult()
+	for v in vehicles:
+		output = open(path + 'data/'+ str(v[0]) + 'accelerationSpeedFuel2.csv', 'w+')
+		res = con.query("select * from (select startSpeed, avgAcceleration, (|/ ((fuel/time)/3.14))*21 as fuel from " + TABLE + " where avgAcceleration>0 and km > 0  and time> 10 and vehicleid= "+ str(v[0]) + ")s where fuel > 0;").getresult()		
+		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+		for r in res:
+			writer.writerow(r)
+		
+	print "set output '" + path + "images/accelerationSpeedFuel2.png';"
+	print "set xlabel 'Start speed (km/h)'"
+	print "set ylabel 'Acceleration (m/s^2)'"
+	
+	s = "plot "
+	for v in vehicles:
+		s += "'" + path + "data/"+ str(v[0]) + "accelerationSpeedFuel2.csv' using 1:2:3 with points lt 1 pt 7 ps variable lc rgb '" + patterns[v[0]][1]+ "' title 'Vehicle " + str(v[0]) + "',"
+	print s[:-1]
+	
 	
 elif TYPE == 'accelerationFuelStart':
 	starts = con.query("select * from (select distinct round((endspeed-startspeed)/10)*10 as start from " +  TABLE + ")s where start>0 order by start;").getresult()
