@@ -152,25 +152,29 @@ elif TYPE == 'TripLengthKml':
 elif TYPE == 'trajectory':
 
 	#segment1 =  '50037' #"542931"
-	segment1 = "542931"
-	segment2 = "424712"
+	if sys.argv[3] == "1":
+		segment1 = "542931"
+		segment2 = "542894"
 
+
+		geo = "ST_SetSRID(ST_MakePoint(9.0046,56.00939),4326)"
+	elif sys.argv[3] == "2":
+		segment1 = "553000"
+		segment2 = "552999"
+		geo = "ST_SetSRID(ST_MakePoint(9.03585,56.13387),4326)"
 	res = con.query("select distinct a.tid , a.vehicleid from g_gps_can_data as a , g_gps_can_data as b where a.timestamp < b.timestamp and a.segmentkey = "+segment1+" and b.segmentkey = "+segment2+" and a.tid = b.tid order by a.vehicleid;").getresult()
-	res = [[6915,1],[7312,1],[10392,1]]
-	#res = [[7302,1],[6966,1]]
+
 	toplot = []
 	for i in res:
 
 		low = con.query("select totalconsumed,timestamp,kmcounter from " + TABLE + " where timestamp = (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and segmentkey = "+segment1+") and tid = "+ str(i[0])+" ").getresult()
 
-		#high = con.query("select totalconsumed,timestamp,kmcounter from " + TABLE + " where timestamp  = (select min + interval '71 second' from (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and segmentkey = "+segment1+") as foo) and tid = "+ str(i[0])+" ").getresult()
-		high = con.query("select totalconsumed,timestamp,kmcounter from " + TABLE + " where timestamp  = (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+"  and kmcounter > "+ str(low[0][2] + 0.98) + ") and tid = "+ str(i[0])+" ").getresult()
-		#print high
-		#high = con.query("select totalconsumed,timestamp,kmcounter from " + TABLE + " where timestamp = (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and timestamp > (select min(timestamp) from " + TABLE + " where tid = "+ str(i[0])+" and segmentkey = "+segment1+") and segmentkey = "+segment2+") and tid = "+ str(i[0])+" ").getresult()
+		high = con.query("select totalconsumed,timestamp,kmcounter from " + TABLE + " where timestamp  = (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+"  and ST_DWithin(geom," + geo + ",50) and kmcounter <= "+str(low[0][2] + 2) +") and tid = "+ str(i[0])+" ").getresult()
+				
 
-		#res2 = con.query("select kmcounter, avg(speedMod) from " + TABLE + " where timestamp >= '" + low[0][1] + "' and timestamp <= '" + high[0][1] + "' and tid = "+ str(i[0])+" group by kmcounter order by kmcounter").getresult()
-
-		res2 = con.query("select timestamp, speedMod from " + TABLE + " where timestamp >= '" + low[0][1] + "' and timestamp <= '" + high[0][1] + "' and tid = "+ str(i[0])+" order by timestamp").getresult()
+		res2 = []		
+		if len(high):
+			res2 = con.query("select timestamp, speedMod from " + TABLE + " where timestamp >= '" + low[0][1] + "' and timestamp <= '" + high[0][1] + "' and tid = "+ str(i[0])+" order by timestamp").getresult()
 
 
 		output = open(path +'data/trajectory/'+ str(i[0])+'.csv', 'wb')
@@ -178,7 +182,7 @@ elif TYPE == 'trajectory':
 		
 		if len(res2) > 0:
 			begin = getTime(res2[0][0])
-			#begin =res2[0][0]
+
 			toplot.append([i[0], high[0][0] - low[0][0]])
 			for r  in range(0,len(res2)):
 
@@ -194,8 +198,41 @@ elif TYPE == 'trajectory':
 	print "set xlabel 'Time(s)'"
 	print "set xr[0:]"
 	s = "plot "
+
+	legendset = {}
+
+	toplot.sort(key=lambda tup: tup[1])
+
 	for v in toplot:
-		s += "'"+  path + "data/trajectory/"+str(v[0])+".csv' using 1:2 with lines title '" + str(v[1]) +" l fuel',"
+
+		cou = 0
+		if v[1]< 0.1:
+			cou = 3
+			legend = "[0, 0.1) l"
+		elif v[1] < 0.14:
+			cou = 4
+			legend = "[0.1, 0.14) l"
+		elif v[1] < 0.18:
+			cou = 2
+			legend = "[0.14, 0.18) l"
+		elif v[1] < 0.22:
+			cou = 9
+			legend = "[0.18, 0.22) l"
+		elif v[1] <= 0.26:
+			cou = 13
+			legend = "[0.22, 0.26] l"
+
+
+
+		#s += "'"+  path + "data/trajectory/"+str(v[0])+".csv' using 1:2 with lines lc " + str(cou) + "  title '" + str(v[1]) +" l fuel"+ str(v[0]) + "',"
+		#s += "'"+  path + "data/trajectory/"+str(v[0])+".csv' using 1:2 with lines lc " + str(cou) + "  notitle,"
+
+		if(not cou in legendset):
+			s += "'"+  path + "data/trajectory/"+str(v[0])+".csv' using 1:2 with lines lc " + str(cou) + " title '" + str(legend) +"',"
+		else:
+			s += "'"+  path + "data/trajectory/"+str(v[0])+".csv' using 1:2 with lines lc " + str(cou) + " notitle,"
+		legendset[cou] = True
+
 	print s[:-1]
 
 elif TYPE == 'trajectoryFuleCost':
@@ -277,25 +314,21 @@ elif TYPE == 'trajectoryCruise':
 
 elif TYPE == 'trajectoryTrafficLight':
 
-	#segment1 = "645538"
-	#segment2 = "71591"
-
-	segment1 = "645539"
-	segment2 = "71589"
+	if sys.argv[3] == "1":
+		segment1 = "645539"
+		segment2 = "71589"
+	elif sys.argv[3] == "2":
+		segment1 = "550218"
+		segment2 = "550208"
 
 	res = con.query("select distinct a.tid , a.vehicleid from g_gps_can_data as a , g_gps_can_data as b where a.timestamp < b.timestamp and a.segmentkey = "+segment1+" and b.segmentkey = "+segment2+" and a.tid = b.tid and a.timestamp::time > '9:00:00' and a.timestamp::time < '15:00:00' order by a.vehicleid;").getresult()
-	#res = [[6915,1],[7312,1],[10392,1]]
-	#res = [[7302,1],[6966,1]]
+
 	toplot = []
 	for i in res:
 
 		low = con.query("select totalconsumed,timestamp,kmcounter from " + TABLE + " where timestamp = (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and segmentkey = "+segment1+") and tid = "+ str(i[0])+" ").getresult()
 
 		high = con.query("select totalconsumed,timestamp,kmcounter from " + TABLE + " where timestamp  = (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+"  and segmentkey = "+segment2+") and tid = "+ str(i[0])+" ").getresult()
-		#print high
-		#high = con.query("select totalconsumed,timestamp,kmcounter from " + TABLE + " where timestamp = (select min(timestamp) from g_gps_can_data where tid = "+ str(i[0])+" and timestamp > (select min(timestamp) from " + TABLE + " where tid = "+ str(i[0])+" and segmentkey = "+segment1+") and segmentkey = "+segment2+") and tid = "+ str(i[0])+" ").getresult()
-
-		#res2 = con.query("select kmcounter, avg(speedMod) from " + TABLE + " where timestamp >= '" + low[0][1] + "' and timestamp <= '" + high[0][1] + "' and tid = "+ str(i[0])+" group by kmcounter order by kmcounter").getresult()
 
 		res2 = con.query("select timestamp, speedMod from " + TABLE + " where timestamp >= '" + low[0][1] + "' and timestamp <= '" + high[0][1] + "' and tid = "+ str(i[0])+" order by timestamp").getresult()
 
@@ -315,30 +348,39 @@ elif TYPE == 'trajectoryTrafficLight':
 				res2[r] = list(res2[r])
 				res2[r][0] = temp
 				writer.writerow(res2[r])
-			toplot.append([i[0], high[0][0] - low[0][0],float(high[0][2]) - float(low[0][2]),stopped])
+			if getTime(high[0][1]) - getTime(low[0][1]) < 180:
+				toplot.append([i[0], high[0][0] - low[0][0],float(high[0][2]) - float(low[0][2]),stopped,getTime(high[0][1]) - getTime(low[0][1])])
 	
-	avgstop = [0.0,0]
-	avgrun = [0.0,0]
+	avgstop = [0.0,0.0,0]
+	avgrun = [0.0,0.0,0]
 	for i in toplot:
 		if i[3]:
 			avgstop[0] += i[1]
-			avgstop[1] += 1
+			avgstop[1] += i[4]
+			avgstop[2] += 1
 		elif not i[3]:
 			avgrun[0] += i[1]
-			avgrun[1] += 1			
+			avgrun[1] += i[4]
+			avgrun[2] += 1			
 
-	#print "avg stop " +str(avgstop[0]/avgstop[1])+ " avg run " +str(avgrun[0]/avgrun[1])+ ""
-
+	#DO NOT DELETE
+	#print "avg fuel stop " +str(avgstop[0]/avgstop[2])+ " avg run " +str(avgrun[0]/avgrun[2])+ ""
+	#print "avg time stop " +str(avgstop[1]/avgstop[2])+ " avg run " +str(avgrun[1]/avgrun[2])+ ""
 	print "set output '" + path + "images/trajectoryTrafficLight.png';"
 	print "set ylabel 'Speed(km/t)'"
 	print "set xlabel 'Time(s)'"
-	print "set xr[0:]"
+	
+	if sys.argv[3] == "2":
+		print "set xr[0:]"
+	else:
+		print "set xr[0:]"
 	s = "plot "
 	
 	legendset = {}
 	toplot.sort(key=lambda tup: tup[1])
 	
 	for v in toplot:
+		#print "len " + str(v[2]) 
 		cou = 0
 		if v[1]< 0.01:
 			cou = 3
