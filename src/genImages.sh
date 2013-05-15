@@ -17,17 +17,29 @@ if [ ! -d $PREFIX"_images" ]; then
     mkdir $PREFIX"_images"
 fi
 
-ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py accelerationSpeedFuel2 $ACCDATA | gnuplot"
-scp d103@172.25.26.191:Dat10/src/images/accelerationSpeedFuel2.png $PREFIX"_images"/accelerationSpeedFuel2.png
+ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py accelerationRanges3a $GPSDATA | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/accelerationRanges3a $PREFIX"_images"/accelerationRanges3a
+ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py accelerationRanges3b $GPSDATA | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/accelerationRanges3b.png $PREFIX"_images"/accelerationRanges3b.png
 
 
 : << 'COMMENT'
 
-ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py accelerationSpeedFuel $ACCDATA | gnuplot"
-scp d103@172.25.26.191:Dat10/src/images/accelerationSpeedFuel.png $PREFIX"_images"/accelerationSpeedFuel.png
+ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py accelerationTEST $GPSDATA | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/accelerationTEST.png $PREFIX"_images"/accelerationTEST.png
+
+ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py trajectoryTrafficLight $GPSDATA | gnuplot  "
+scp d103@172.25.26.191:Dat10/src/images/trajectoryTrafficLight.png $PREFIX"_images"/trajectoryTrafficLight.png
+
+ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py accelerationSpeedFuel2 $ACCDATA | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/accelerationSpeedFuel2.png $PREFIX"_images"/accelerationSpeedFuel2.png
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py accelerationRanges2 $ACCDATA | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/accelerationRanges2.png $PREFIX"_images"/accelerationRanges2.png
+
+ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py accelerationSpeedFuel $ACCDATA | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/accelerationSpeedFuel.png $PREFIX"_images"/accelerationSpeedFuel.png
+
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py accelerationRanges $GPSDATA | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/accelerationRanges.png $PREFIX"_images"/accelerationRanges.png
@@ -36,8 +48,7 @@ scp d103@172.25.26.191:Dat10/src/images/accelerationRanges.png $PREFIX"_images"/
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py accelerationStddevAcc $ACCDATA | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/accelerationStddevAcc.png $PREFIX"_images"/accelerationStddevAcc.png
 
-ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py trajectoryTrafficLight $GPSDATA | gnuplot  "
-scp d103@172.25.26.191:Dat10/src/images/trajectoryTrafficLight.png $PREFIX"_images"/trajectoryTrafficLight.png
+
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py accelerationFuelStart2 $ACCDATA | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/accelerationFuelStart2.png $PREFIX"_images"/accelerationFuelStart2.png

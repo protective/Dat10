@@ -962,9 +962,9 @@ elif TYPE == 'accelerationRanges2':
 
 	vehicles = con.query("select vehicleid, count(*) from " + TABLE + " group by vehicleid order by vehicleid;").getresult()
 	
-	granularity = 0.25
+	granularity = 0.125
 	for v in vehicles:
-		res = con.query("select * from (select round(avgAcceleration::decimal*4)/4 as acc, count(*)::float as c from "+ TABLE + " where vehicleid =" + str(v[0]) + " group by acc order by acc)a where (acc > 0);").getresult()
+		res = con.query("select * from (select round(avgAcceleration::decimal*8)/8 as acc, count(*)::float as c from "+ TABLE + " where time > 10 and vehicleid =" + str(v[0]) + " group by acc order by acc)a where (acc > 0);").getresult()
 		output = open(path + 'data/'+str(v[0])+'accelerationRanges2.csv', 'w+')
 		for r in res:
 			print >> output, str(r[0]) + " " + str(float(r[1])/float(v[1]))
@@ -975,14 +975,61 @@ elif TYPE == 'accelerationRanges2':
 	print "set xlabel 'Acceleration (m/s^2)'"
 	print "set style fill solid border -1"
 	print "set boxwidth " + str(boxwidth)
-	print "set xtic rotate by -45 scale 0"
+	print "set xtic rotate by -40 scale 0"
 	print "set xtics " + str(float(granularity))
-	print "set xr [0.125:3.45]"
+	print "set xr [:2]"
 	
 	offset = 0
 	s = "plot "
 	for v in vehicles: 
 		s += "'" + path + "data/"+str(v[0]) + "accelerationRanges2.csv' using ($1+"+ str(offset) + "):($2*100) with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + "  title '" + str(v[0]) + "',"
+		offset+=boxwidth
+	print s[:-1]
+
+elif TYPE == 'accelerationRanges3a':
+	res = con.query("select b.vehicleid, round((b.count::float/c.count*100)::numeric,2) from (select vehicleid, count(*) from (select vehicleid, round(acceleration/5)*5 as acc from " + TABLE + ")a where acc=0 group by vehicleid)b, (select vehicleid, count(*) from " + TABLE + " group by vehicleid)c where b.vehicleid=c.vehicleid;").getresult()
+	output = open(path + 'images/accelerationRanges3a', 'w+')
+	print >> output, """
+	\\begin{table}
+	\\centering
+	\\begin{tabular}{|c|c|} \\hline
+	Vehicle id & \\%\\\\\\hline
+	"""
+	for r in res:
+		print >> output, str(r[0]) + " & " + str(r[1]) + "\\\\\\hline"
+	print >> output, """
+	\\end{tabular}
+	\\caption{Number of records where 0$\geq$ acceleration< 5}
+	\\label{tb:accelerationRanges3a}
+	\\end{table}
+	"""
+	
+	
+elif TYPE == 'accelerationRanges3b':
+
+	vehicles = con.query("select vehicleid, count(*) from " + TABLE + " where dirty = false group by vehicleid order by vehicleid;").getresult()
+	
+	granularity = 5
+	for v in vehicles:
+		res = con.query("select * from (select round(acceleration/" +str(granularity) + ")*" +str(granularity) + " as acc, count(*) as c from "+ TABLE + " where vehicleid =" + str(v[0]) + " and cruise = false and dirty = false group by acc order by acc)a where (acc > 0);").getresult()
+		output = open(path + 'data/'+str(v[0])+'accelerationRanges3.csv', 'w+')
+		for r in res:
+			print >> output, str(r[0]) + " " + str(float(r[1])/float(v[1]))
+			
+	boxwidth= (float(granularity))/(len(vehicles)+1)
+	print "set output '" + path + "images/accelerationRanges3b.png';"
+	print "set ylabel 'Percent of records in range (%)'" #TODO: Rename
+	print "set xlabel 'Acceleration (???)'"
+	print "set style fill solid border -1"
+	print "set boxwidth " + str(boxwidth)
+	print "set xtic rotate by -45 scale 0"
+	print "set xtics " + str(float(granularity))
+#	print "set xr [0.125:3.45]"
+	
+	offset = 0
+	s = "plot "
+	for v in vehicles: 
+		s += "'" + path + "data/"+str(v[0]) + "accelerationRanges3.csv' using ($1+"+ str(offset) + "):($2*100) with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + "  title '" + str(v[0]) + "',"
 		offset+=boxwidth
 	print s[:-1]
 
@@ -1119,7 +1166,7 @@ elif TYPE == "accelerationFuelCounter":
 	print "plot 'data/accelerationFuelCounter.csv' with lines notitle"
 	
 		
-elif TYPE == 'accelerationFuelStart2' or 'accelerationFuelStart2Data':
+elif TYPE == 'accelerationFuelStart2' or  TYPE == 'accelerationFuelStart2Data':
 	minTime = '10'
 	starts = con.query("select * from (select distinct round(startspeed/10)*10 as start from " +  TABLE + " where time>" + minTime + ")s where start>0 order by start;").getresult()
 	s = "plot "
@@ -1280,6 +1327,20 @@ elif TYPE == "compareVehicles":
 		output.close()
 #		print "python piechart.py data/" + str(r[0]) + "Compare.csv images/" + str(r[0]) + "Compare.png"
 		os.system("python piechart.py data/" + str(r[0]) + "Compare.csv images/" + str(r[0]) + "Compare.png")
+
+elif TYPE == 'accelerationTEST':
+	res = con.query('select speedmod, rpm, acceleration from ' + TABLE + " where tid=9999 order by timestamp;").getresult()
+	output = open(path + 'data/accelerationTEST.csv', 'wb+')
+	counter = 0
+	for r in res:
+		print >> output, str(counter) + " " + str(r[0]) + " " + str(r[1]) + " " + str(r[2])
+		counter += 1
+	
+	print "set output '" + path + "images/accelerationTEST.png';"
+	print "set xlabel 'Time (s)'"
+	print "set y2tics"
+
+	print "plot '" + path + "data/accelerationTEST.csv' using 1:4 with lines title 'Acceleration', '" + path + "data/accelerationTEST.csv' using 1:3 with lines title 'RPM' axes x1y2"
 
 elif TYPE == 'idleTime':
 	#TODO: Do not work
