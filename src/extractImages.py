@@ -1006,7 +1006,7 @@ elif TYPE == 'accelerationRanges2':
 	
 	granularity = 0.125
 	for v in vehicles:
-		res = con.query("select * from (select round(avgAcceleration::decimal*8)/8 as acc, count(*)::float as c from "+ TABLE + " where time > 10 and vehicleid =" + str(v[0]) + " group by acc order by acc)a where (acc > 0);").getresult()
+		res = con.query("select * from (select round(avgAcceleration::decimal*8)/8 as acc, count(*)::float as c from "+ TABLE + " where time > 10 and vehicleid =" + str(v[0]) + " and dirty is false group by acc order by acc)a where (acc > 0);").getresult()
 		output = open(path + 'data/'+str(v[0])+'accelerationRanges2.csv', 'w+')
 		for r in res:
 			print >> output, str(r[0]) + " " + str(float(r[1])/float(v[1]))
@@ -1053,7 +1053,7 @@ elif TYPE == 'accelerationRanges3b':
 	
 	granularity = 5
 	for v in vehicles:
-		res = con.query("select * from (select round(acceleration/" +str(granularity) + ")*" +str(granularity) + " as acc, count(*) as c from "+ TABLE + " where vehicleid =" + str(v[0]) + " and cruise = false and dirty = false group by acc order by acc)a where (acc > 0);").getresult()
+		res = con.query("select * from (select round(acceleration/" +str(granularity) + ")*" +str(granularity) + " as acc, count(*) as c from "+ TABLE + " where vehicleid =" + str(v[0]) + " and cruise = false and dirty is false group by acc order by acc)a where (acc > 0);").getresult()
 		output = open(path + 'data/'+str(v[0])+'accelerationRanges3.csv', 'w+')
 		for r in res:
 			print >> output, str(r[0]) + " " + str(float(r[1])/float(v[1]))
@@ -1072,6 +1072,35 @@ elif TYPE == 'accelerationRanges3b':
 	s = "plot "
 	for v in vehicles: 
 		s += "'" + path + "data/"+str(v[0]) + "accelerationRanges3.csv' using ($1+"+ str(offset) + "):($2*100) with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + "  title '" + str(v[0]) + "',"
+		offset+=boxwidth
+	print s[:-1]
+
+elif TYPE == 'accelerationRanges4':
+
+	vehicles = con.query("select vehicleid, count(*) from " + TABLE + " group by vehicleid order by vehicleid;").getresult()
+	
+	granularity = 5
+	for v in vehicles:
+		res = con.query("select round(acc/" +str(granularity) + ")*" +str(granularity) + " as a, avg(fuel/time) as c from "+ TABLE + " where time>10 and vehicleid =" + str(v[0]) + " group by a order by a;").getresult()
+		output = open(path + 'data/'+str(v[0])+'accelerationRanges4.csv', 'w+')
+		for r in res:
+			print >> output, str(r[0]) + " " + str(r[1])#str(float(r[1])/float(v[1]))
+			
+	boxwidth= (float(granularity))/(len(vehicles)+1)
+	print "set output '" + path + "images/accelerationRanges4.png';"
+	print "set ylabel 'Fuel (l/s)'"
+	print "set xlabel 'Acceleration (???)'"
+	print "set style fill solid border -1"
+	print "set boxwidth " + str(boxwidth)
+	print "set xtic rotate by -45 scale 0"
+	print "set xtics " + str(float(granularity))
+#	print "set xr [0.125:3.45]"
+	print "set key left"
+	
+	offset = 0
+	s = "plot "
+	for v in vehicles: 
+		s += "'" + path + "data/"+str(v[0]) + "accelerationRanges4.csv' using ($1+"+ str(offset) + "):($2) with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + "  title '" + str(v[0]) + "',"
 		offset+=boxwidth
 	print s[:-1]
 

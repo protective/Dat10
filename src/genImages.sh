@@ -8,6 +8,7 @@ TRIPS=$PREFIX"_trip_data"
 IDLEDATA=$PREFIX'_idledatatl'
 CRUISEDATA=$PREFIX'_cruise_data'
 ACCDATA=$PREFIX'_accdata3'
+ACC4DATA=$PREFIX'_accdata4'
 GPSDATA=$PREFIX'_gps_can_data'
 
 scp extractImages.py d103@172.25.26.191:Dat10/src/
@@ -17,11 +18,15 @@ if [ ! -d $PREFIX"_images" ]; then
     mkdir $PREFIX"_images"
 fi
 
+ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py accelerationRanges4 $ACC4DATA | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/accelerationRanges4.png $PREFIX"_images"/accelerationRanges4.png
+
+: << 'COMMENT'
+
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py accelerationRanges3a $GPSDATA | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/accelerationRanges3a $PREFIX"_images"/accelerationRanges3a
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py accelerationRanges3b $GPSDATA | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/accelerationRanges3b.png $PREFIX"_images"/accelerationRanges3b.png
-
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py trajectory $GPSDATA 1 | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/trajectory.png $PREFIX"_images"/trajectory1.png
@@ -35,7 +40,7 @@ scp d103@172.25.26.191:Dat10/src/images/trajectoryTrafficLight.png $PREFIX"_imag
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py trajectoryTrafficLight $GPSDATA 2 | gnuplot  "
 scp d103@172.25.26.191:Dat10/src/images/trajectoryTrafficLight.png $PREFIX"_images"/trajectoryTrafficLight2.png
 
-: << 'COMMENT'
+
 
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py accelerationTEST $GPSDATA | gnuplot"
