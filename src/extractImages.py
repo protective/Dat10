@@ -155,15 +155,21 @@ elif TYPE == 'trajectory':
 	if sys.argv[3] == "1":
 		segment1 = "542931"
 		segment2 = "542894"
-
-
 		geo = "ST_SetSRID(ST_MakePoint(9.0046,56.00939),4326)"
 	elif sys.argv[3] == "2":
 		segment1 = "553000"
 		segment2 = "552999"
 		geo = "ST_SetSRID(ST_MakePoint(9.03585,56.13387),4326)"
-	res = con.query("select distinct a.tid , a.vehicleid from g_gps_can_data as a , g_gps_can_data as b where a.timestamp < b.timestamp and a.segmentkey = "+segment1+" and b.segmentkey = "+segment2+" and a.tid = b.tid order by a.vehicleid;").getresult()
+	elif sys.argv[3] == "3":
+		segment1 = "542931"
+		segment2 = "542894"
+		geo = "ST_SetSRID(ST_MakePoint(9.0046,56.00939),4326)"
 
+
+	res = con.query("select distinct a.tid , a.vehicleid from g_gps_can_data as a , g_gps_can_data as b where a.timestamp < b.timestamp and a.segmentkey = "+segment1+" and b.segmentkey = "+segment2+" and a.tid = b.tid order by a.vehicleid;").getresult()
+	
+	if sys.argv[3] == "3":
+		res = [[10423,1],[10380,1],[9492,1],[7285,1],[6918,1]]
 	toplot = []
 	for i in res:
 
@@ -182,7 +188,7 @@ elif TYPE == 'trajectory':
 		
 		if len(res2) > 0:
 			begin = getTime(res2[0][0])
-
+			#print high[0][2] - low[0][2]
 			toplot.append([i[0], high[0][0] - low[0][0]])
 			for r  in range(0,len(res2)):
 
@@ -207,13 +213,13 @@ elif TYPE == 'trajectory':
 
 		cou = 0
 		if v[1]< 0.1:
-			cou = 3
+			cou = 2
 			legend = "[0, 0.1) l"
 		elif v[1] < 0.14:
-			cou = 4
+			cou = 3
 			legend = "[0.1, 0.14) l"
 		elif v[1] < 0.18:
-			cou = 2
+			cou = 4
 			legend = "[0.14, 0.18) l"
 		elif v[1] < 0.22:
 			cou = 9
@@ -226,11 +232,13 @@ elif TYPE == 'trajectory':
 
 		#s += "'"+  path + "data/trajectory/"+str(v[0])+".csv' using 1:2 with lines lc " + str(cou) + "  title '" + str(v[1]) +" l fuel"+ str(v[0]) + "',"
 		#s += "'"+  path + "data/trajectory/"+str(v[0])+".csv' using 1:2 with lines lc " + str(cou) + "  notitle,"
-
-		if(not cou in legendset):
-			s += "'"+  path + "data/trajectory/"+str(v[0])+".csv' using 1:2 with lines lc " + str(cou) + " title '" + str(legend) +" fuel',"
-		else:
-			s += "'"+  path + "data/trajectory/"+str(v[0])+".csv' using 1:2 with lines lc " + str(cou) + " notitle,"
+		if not sys.argv[3] == "3":
+			if(not cou in legendset):
+				s += "'"+  path + "data/trajectory/"+str(v[0])+".csv' using 1:2 with lines lc " + str(cou) + " title '" + str(legend) +" fuel "+ str(v[0])+"',"
+			else:
+				s += "'"+  path + "data/trajectory/"+str(v[0])+".csv' using 1:2 with lines lc " + str(cou) + " notitle,"
+		else:		
+			s += "'"+  path + "data/trajectory/"+str(v[0])+".csv' using 1:2 with lines lc " + str(cou) + " title '" + str(round(v[1],2)) +"l fuel',"
 		legendset[cou] = True
 
 	print s[:-1]
