@@ -148,6 +148,44 @@ elif TYPE == 'TripLengthKml':
 	print "set xlabel 'km'"
 
 	print "plot '" + path + "data/tripLengthKml.csv' notitle"
+elif TYPE == 'frequency':
+
+
+	data = {}
+
+	res = con.query("select timestamp, tid from g_gps_can_data  order by timestamp,tid ").getresult()
+	
+
+
+	output = open(path +'data/frequency.csv', 'wb')
+	#writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+	oldTime = None
+	oldId = res[0][1]
+	for i in res:
+		if i[1] != oldId:
+			oldTime = None
+			oldId = i[1]
+		if(oldTime != None):
+			if not getTime(i[0])-oldTime in data:
+				data[getTime(i[0])-oldTime] = 0
+			data[getTime(i[0])-oldTime] += 1
+		oldTime = getTime(i[0])
+
+	#print data
+	for k,v in data.items():
+		output.write(str(k) + " " + str(v) + "\n")
+
+	
+	print "set output '" + path + "images/frequency.png';"
+	print "set ylabel 'Number of records'"
+	print "set xlabel 'Seconds (s)'"
+	print "set xr[0.5:]"
+	print "set style fill solid border -1"
+	print "set boxwidth  1"
+	print "set logscale y 10"
+	print "plot '" + path + "data/frequency.csv' with boxes lw 1 notitle"
+
+
 
 elif TYPE == 'trajectory':
 
