@@ -36,7 +36,7 @@ if TYPE == 'showClusters':
 	print clusters
 	exit(1)
 
-print "set terminal png size 1000,500;"
+print "set terminal png size 800,400;"
 
 
 def getTime(t):
@@ -1111,6 +1111,59 @@ elif TYPE == 'accelerationRanges4':
 		s += "'" + path + "data/"+str(v[0]) + "accelerationRanges4.csv' using ($1+"+ str(offset) + "):($2) with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + "  title '" + str(v[0]) + "',"
 		offset+=boxwidth
 	print s[:-1]
+	
+elif TYPE == 'acceleration3D':
+	accGranularity = 0.25
+	speedGranularity = 10
+	vehicles = con.query('select distinct vehicleid from g_accdata3 order by vehicleid').getresult()
+	vehicles.insert(0,[0])
+	for v in vehicles:
+		if v[0] == 0:
+			res = con.query("select round(startspeed/10*10) as s, round(avgAcceleration::decimal*4)/4 as a, avg((fuel*1000)/time) as f from g_accdata3 where avgAcceleration>0 and avgAcceleration<=2 and time>=10 group by s, a order by s, a;").getresult()
+		else:
+			res = con.query("select round(startspeed/10*10) as s, round(avgAcceleration::decimal*4)/4 as a, avg(fuel/time) as f from g_accdata3 where avgAcceleration>0 and avgAcceleration<=2 and vehicleid=" +str(v[0]) + " and time>=10 group by s, a order by s, a;").getresult()
+		#res = [[0,0,2], [0,1,3.5], [1,0,1], [1,1,3]]
+		output = open('data/' +str(v[0]) + 'acceleration3D.csv', 'w+')
+		oldX = 0.0
+		temp0 = ''
+		temp1 = ''
+		temp2 = ''
+				
+		for r in range(0, len(res)):
+			if (not oldX==res[r][0]):
+				print >> output, temp0 
+				print >> output, temp1
+				print >> output, temp2
+				temp0 = ''
+				temp1 = ''
+				temp2 = ''
+			oldX = res[r][0]
+			temp0 += str(res[r][0]) + " " + str(float(res[r][1])) + " 0\n"
+			temp0 += str(res[r][0]) + " " + str(float(res[r][1])) + " 0\n"
+			temp0 += str(res[r][0]) + " " + str(float(res[r][1])+accGranularity) + " 0\n"
+
+			temp1 += str(res[r][0]) + " " + str(float(res[r][1])) + " 0\n"
+			temp1 += str(res[r][0]) + " " + str(float(res[r][1])) + " " + str(float(res[r][2])) + "\n"
+			temp1 += str(res[r][0]) + " " + str(float(res[r][1])+accGranularity) + " " + str(float(res[r][2])) + "\n"
+
+			temp2 += str(float(res[r][0])+float(speedGranularity)) + " " + str(float(res[r][1])) + " 0\n"
+			temp2 += str(float(res[r][0])+float(speedGranularity)) + " " + str(float(res[r][1])) + " " + str(float(res[r][2])) + "\n"
+			temp2 += str(float(res[r][0])+float(speedGranularity)) + " " + str(float(res[r][1])+accGranularity) + " " + str(float(res[r][2])) + "\n"
+		print >> output, temp0
+		print >> output, temp1
+		print >> output, temp2
+		
+	
+		print "set output 'images/" +str(v[0]) + "acceleration3D.png'"
+		print "set hidden3d"
+		print "set xlabel 'Start speed km/t'"
+		print "set ylabel 'Acceleration (m/s^2)'"
+		print "set label 1 'Fuel (ml/s)' center rotate by 90 at graph 0, graph 0, graph 0.5 offset -7"
+		
+		print "set zr[0:]"
+		print "set yr[0:2]"
+		print "set xr[0:] reverse"
+		print "splot 'data/" +str(v[0]) + "acceleration3D.csv' with pm3d notitle"
 
 elif TYPE == 'accelerationStddevAcc':
 	temp = con.query("select avgAcceleration from " + TABLE + " where avgAcceleration > 0 order by avgAcceleration").getresult()
@@ -1243,15 +1296,34 @@ elif TYPE == "accelerationFuelCounter":
 	print "set arrow from 10,0 to 10," +temp + " nohead"
 	print "set arrow from 0," + temp + " to 10," +temp + " nohead"
 	print "plot 'data/accelerationFuelCounter.csv' with lines notitle"
+
+elif TYPE == "accelerationCounter":
+	output= open(path + 'data/accelerationCounter.csv', 'wb')
+	for i in range(0,31):
+		res = con.query('select stddev_samp((fuel/time)/(startspeed+1)) from ' + TABLE + ' where time>' + str(i)).getresult()
+		for r in res:
+			print >> output, str(i) + " " + str(r[0])
 	
+	print "set output '" + path + "images/accelerationCounter.png';"
+	print "set ylabel 'Number of acceleration periods'"
+	print "set xlabel 'Min lenght (s)'"
+	print "set yr[0:]"
+	
+	temp = str(con.query('select stddev_samp(avgAcceleration) from ' + TABLE + ' where time>10').getresult()[0][0])
+	print "set arrow from 10,0 to 10," +temp + " nohead"
+	print "set arrow from 0," + temp + " to 10," +temp + " nohead"
+	print "plot 'data/accelerationCounter.csv' with lines notitle"
+
 		
 elif TYPE == 'accelerationFuelStart2' or  TYPE == 'accelerationFuelStart2Data':
 	minTime = '10'
 	starts = con.query("select * from (select distinct round(startspeed/10)*10 as start from " +  TABLE + " where time>" + minTime + ")s where start>0 order by start;").getresult()
 	s = "plot "
+	color = 1
 	for ss in starts:
-		res = con.query("select avgAcceleration, fuel/time from " + TABLE + " where round(startspeed/10)*10=" + str(ss[0]) + " and endspeed>startspeed and time>" + minTime + " order by endspeed;").getresult()
+		res = con.query("select avgAcceleration, (fuel*1000)/time::float from " + TABLE + " where round(startspeed/10)*10=" + str(ss[0]) + " and endspeed>startspeed and time>=" + minTime + " order by endspeed;").getresult()
 		output = open(path + 'data/'+ str(int(ss[0])) + TYPE + '.csv', 'w+')
+		
 		for r in res:
 			print >> output, str(r[0]) + " " + str(r[1])
 		
@@ -1260,15 +1332,14 @@ elif TYPE == 'accelerationFuelStart2' or  TYPE == 'accelerationFuelStart2Data':
 			print "f"+ n + "(x) = a"+ n + "*x + b"+ n
 			print "fit f"+ n + "(x) '" + path + "data/"+ n + TYPE+ ".csv' using 1:2 via a"+ n + ",b"+ n
 			if TYPE == 'accelerationFuelStart2Data':
-				s += "'" + path + "data/"+ n + TYPE +".csv' notitle," #title 'Start speed =  " + n + "',"
-			if len(res)>100 or TYPE == 'accelerationFuelStart2Data':
-				s+= "f"+ n + "(x) title 'Start speed = " + n + "',"
+				s += "'" + path + "data/"+ n + TYPE +".csv' lc " + str(color) + " notitle,"
+			#if len(res)>100 or TYPE == 'accelerationFuelStart2Data':
+			if TYPE == 'accelerationFuelStart2Data':
+				s+= "f"+ n + "(x) lc " + str(color) + " title sprintf('Start speed: %d (%2.1f)'," +n+", a"+ n + "),"#'Start speed: " + n + "',"
+		color += 1
 	
 	print "set output '" + path + "images/" +TYPE + ".png';"
-	if TYPE == 'accelerationFuelStart2':
-		print "set ylabel 'Fuel (l)'"
-	else:
-		print "set ylabel 'Fuel (l/s)'"
+	print "set ylabel 'Fuel (ml/s)'"
 	print "set xlabel 'Acceleration (m/s^2)'"
 	print "set xrange[0:3]"
 #	print "set yrange[0:0.02]"
