@@ -1372,16 +1372,14 @@ elif TYPE == 'accelerationFuelStart2' or  TYPE == 'accelerationFuelStart2Data':
 			if TYPE == 'accelerationFuelStart2Data':
 				s += "'" + path + "data/"+ n + TYPE +".csv' lc " + str(color) + " notitle,"
 			#if len(res)>100 or TYPE == 'accelerationFuelStart2Data':
-			if TYPE == 'accelerationFuelStart2Data':
-				s+= "f"+ n + "(x) lc " + str(color) + " title sprintf('Start speed: %d (%2.1f)'," +n+", a"+ n + "),"#'Start speed: " + n + "',"
+			s+= "f"+ n + "(x) lc " + str(color) + " title sprintf('Start speed: %d (%2.1f)'," +n+", a"+ n + "),"#'Start speed: " + n + "',"
 		color += 1
 	
 	print "set output '" + path + "images/" +TYPE + ".png';"
 	print "set ylabel 'Fuel (ml/s)'"
 	print "set xlabel 'Acceleration (m/s^2)'"
 	print "set xrange[0:3]"
-#	print "set yrange[0:0.02]"
-	print "set key left"
+	print "set key left opaque"
 	
 	if not s == '':
 		print s[:-1]

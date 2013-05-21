@@ -17,6 +17,15 @@ scp extractImages.py d103@172.25.26.191:Dat10/src/
 if [ ! -d $PREFIX"_images" ]; then
     mkdir $PREFIX"_images"
 fi
+
+
+ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py accelerationFuelStart2 $ACCDATA | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/accelerationFuelStart2.png $PREFIX"_images"/accelerationFuelStart2.png
+
+ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py accelerationFuelStart2Data $ACCDATA | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/accelerationFuelStart2Data.png $PREFIX"_images"/accelerationFuelStart2Data.png
+
+
 : << 'COMMENT'
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py trajectoryTrafficLight $GPSDATA 1 | gnuplot  "
@@ -28,14 +37,11 @@ scp d103@172.25.26.191:Dat10/src/images/trajectoryTrafficLight.png $PREFIX"_imag
 
 
 
-ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py accelerationFuelStart2 $ACCDATA | gnuplot"
-scp d103@172.25.26.191:Dat10/src/images/accelerationFuelStart2.png $PREFIX"_images"/accelerationFuelStart2.png
-
-ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py accelerationFuelStart2Data $ACCDATA | gnuplot"
-scp d103@172.25.26.191:Dat10/src/images/accelerationFuelStart2Data.png $PREFIX"_images"/accelerationFuelStart2Data.png
+ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py frequency $GPSDATA | gnuplot "
+scp d103@172.25.26.191:Dat10/src/images/frequency.png $PREFIX"_images"/frequency.png
 
 
-: << 'COMMENT'
+
 
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py accelerationCounter $ACCDATA | gnuplot"
@@ -72,9 +78,6 @@ scp d103@172.25.26.191:Dat10/src/images/trajectoryTrafficLight.png $PREFIX"_imag
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py trajectoryTrafficLight $GPSDATA 2 | gnuplot  "
 scp d103@172.25.26.191:Dat10/src/images/trajectoryTrafficLight.png $PREFIX"_images"/trajectoryTrafficLight2.png
 
-
-ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py frequency $GPSDATA | gnuplot "
-scp d103@172.25.26.191:Dat10/src/images/frequency.png $PREFIX"_images"/frequency.png
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py trajectory $GPSDATA 1 | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/trajectory.png $PREFIX"_images"/trajectory1.png
