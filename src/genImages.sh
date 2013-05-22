@@ -23,16 +23,22 @@ scp d103@172.25.26.191:Dat10/src/images/moterRoad.png $PREFIX"_images"/moterRoad
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py smallRoad $TRIPS | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/smallRoad.png $PREFIX"_images"/smallRoad.png
 
+
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py normalRoad $TRIPS | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/normalRoad.png $PREFIX"_images"/normalRoad.png
 : << 'COMMENT'
+
+ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py song $ACCDATA | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/song.png $PREFIX"_images"/song.png
+
+ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py songData $ACCDATA | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/songData.png $PREFIX"_images"/songData.png
+
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py accelerationFuelStart2 $ACCDATA | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/accelerationFuelStart2.png $PREFIX"_images"/accelerationFuelStart2.png
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py accelerationFuelStart2Data $ACCDATA | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/accelerationFuelStart2Data.png $PREFIX"_images"/accelerationFuelStart2Data.png
-
-
 
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py trajectoryTrafficLight $GPSDATA 1 | gnuplot  "

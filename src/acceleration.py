@@ -19,7 +19,7 @@ except:
 def getTime(t):
 	return float(time.mktime(time.strptime(t, "%Y-%m-%j %H:%M:%S")))
 
-if True:
+if False:
 	interval = 3
 	print "Altering table"
 	con.query('set synchronous_commit = on;')
@@ -57,7 +57,7 @@ if True:
 
 	con.query("DROP INDEX IF EXISTS acceleration2_" + DATATABLE + "_idx CASCADE; create index acceleration2_" + DATATABLE + "_idx on " + DATATABLE + " (acceleration2);")
 
-if False:
+if True:
 	con.query("drop table if exists "+ACCDATA+";")
 	con.query("create table "+ACCDATA+" (vehicleid bigint, tid int, startTime timestamp, endTime timestamp, time int, startSpeed int, endSpeed int, acceleration float, avgAcceleration float, fuel float, km float);")
 

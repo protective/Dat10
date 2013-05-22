@@ -28,7 +28,7 @@ con.query("Create index stopped_" + DATATABLE + "_idx on " + DATATABLE + " (stop
 
 print "Finding stopped periods"
 con.query("drop table if exists "+IDLEDATA+";")
-con.query("create table "+IDLEDATA+" (vehicleid bigint, stopped int, fuel float, startTime timestamp, endTime timestamp, length float, tid int);")
+con.query("create table "+IDLEDATA+" (vehicleid bigint, stopped int, fuel float, startTime timestamp, endTime timestamp, length float, tid int, time int);")
 
 vehicles = con.query("select distinct vehicleid from "+ DATATABLE + ";").getresult()
 for v in vehicles:
@@ -48,7 +48,7 @@ for v in vehicles:
 			length2 = res[r-1][5]
 			if abs(t-s)> 0 and not stoppedAtTL and abs(length2-length)==0:
 				fuel2 = res[r-1][2]
-				q= "insert into "+IDLEDATA+" values (" + str(v[0]) + ", " + str(abs(t-s)) + "," + str(abs(fuel2-fuel)) + ",'" + str(startTime) + "','" + str(res[r-1][0]) + "'," + str(abs(length2-length)) + ", " + str(res[r-1][3]) + ");"
+				q= "insert into "+IDLEDATA+" values (" + str(v[0]) + ", " + str(abs(t-s)) + "," + str(abs(fuel2-fuel)) + ",'" + str(startTime) + "','" + str(res[r-1][0]) + "'," + str(abs(length2-length)) + ", " + str(res[r-1][3]) + ", " + str(abs(t-s)) + ");"
 				con.query(q)
 #				print q
 			stoppedAtTL = False
