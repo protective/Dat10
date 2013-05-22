@@ -1372,7 +1372,7 @@ elif TYPE == 'accelerationFuelStart2' or  TYPE == 'accelerationFuelStart2Data':
 			if TYPE == 'accelerationFuelStart2Data':
 				s += "'" + path + "data/"+ n + TYPE +".csv' lc " + str(color) + " notitle,"
 			#if len(res)>100 or TYPE == 'accelerationFuelStart2Data':
-			s+= "f"+ n + "(x) lc " + str(color) + " title sprintf('Start speed: %d (%2.1f)'," +n+", a"+ n + "),"#'Start speed: " + n + "',"
+			s+= "f"+ n + "(x) lc " + str(color) + " title 'Start speed: " + n + "'," #sprintf('Start speed: %d (%2.1f)'," +n+", a"+ n + "),"
 		color += 1
 	
 	print "set output '" + path + "images/" +TYPE + ".png';"
@@ -1380,6 +1380,29 @@ elif TYPE == 'accelerationFuelStart2' or  TYPE == 'accelerationFuelStart2Data':
 	print "set xlabel 'Acceleration (m/s^2)'"
 	print "set xrange[0:3]"
 	print "set key left opaque"
+	
+	if not s == '':
+		print s[:-1]
+
+elif TYPE == 'song' or  TYPE == 'songData':
+	minTime = '10'
+	starts = con.query("select * from (select distinct round(startspeed/10)*10 as start from " +  TABLE + " where time>" + minTime + ")s where start>0 and start<90 order by start;").getresult()
+	s = "plot "
+	color = 1
+	for ss in starts:
+		n = str(int(ss[0]))
+		print "f"+ n + "(x) = a"+ n + "*x + b"+ n
+		print "fit f"+ n + "(x) '" + path + "data/"+ n + ".0song.csv' using 1:3 via a"+ n + ",b"+ n
+		if TYPE == 'songData':
+			s += "'" + path + "data/"+ n + ".0song.csv' using 1:3 lc " + str(color) + " notitle,"
+		s+= "f"+ n + "(x) lc " + str(color) + " title sprintf('Start speed: %d (%2.1f)'," +n+", a"+ n + ")," #'Start speed: " + n + "'
+		color += 1
+	
+	print "set output '" + path + "images/"+ TYPE + ".png';"
+	print "set ylabel 'Fuel by Song'"
+	print "set xlabel 'Acceleration (m/s^2)'"
+	print "set xrange[0:3]"
+	print "set key outside opaque"
 	
 	if not s == '':
 		print s[:-1]
