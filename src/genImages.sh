@@ -17,6 +17,7 @@ scp extractImages.py d103@172.25.26.191:Dat10/src/
 if [ ! -d $PREFIX"_images" ]; then
     mkdir $PREFIX"_images"
 fi
+
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py compareVehicles $GPSDATA"
 scp d103@172.25.26.191:Dat10/src/images/1Compare.png $PREFIX"_images"/1Compare.png
 scp d103@172.25.26.191:Dat10/src/images/2Compare.png $PREFIX"_images"/2Compare.png
@@ -32,8 +33,8 @@ scp d103@172.25.26.191:Dat10/src/images/2acceleration3D.png $PREFIX"_images"/2ac
 scp d103@172.25.26.191:Dat10/src/images/3acceleration3D.png $PREFIX"_images"/3acceleration3D.png
 scp d103@172.25.26.191:Dat10/src/images/4acceleration3D.png $PREFIX"_images"/4acceleration3D.png
 
-: << 'COMMENT'
 
+: << 'COMMENT'
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py accelerationCounter $ACCDATA | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/accelerationCounter.png $PREFIX"_images"/accelerationCounter.png
@@ -65,14 +66,6 @@ scp d103@172.25.26.191:Dat10/src/images/song.png $PREFIX"_images"/song.png
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py songData $ACCDATA | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/songData.png $PREFIX"_images"/songData.png
-
-
-
-ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py trajectoryTrafficLight $GPSDATA 1 | gnuplot  "
-scp d103@172.25.26.191:Dat10/src/images/trajectoryTrafficLight.png $PREFIX"_images"/trajectoryTrafficLight1.png
-
-ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py trajectoryTrafficLight $GPSDATA 2 | gnuplot  "
-scp d103@172.25.26.191:Dat10/src/images/trajectoryTrafficLight.png $PREFIX"_images"/trajectoryTrafficLight2.png
 
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py frequency $GPSDATA | gnuplot "

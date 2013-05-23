@@ -238,7 +238,7 @@ elif TYPE == 'trajectory':
 
 	
 	print "set output '" + path + "images/trajectory.png';"
-	print "set ylabel 'Speed(km/t)'"
+	print "set ylabel 'Speed(km/h)'"
 	print "set xlabel 'Time(s)'"
 	print "set xr[0:]"
 	s = "plot "
@@ -246,7 +246,7 @@ elif TYPE == 'trajectory':
 	legendset = {}
 
 	toplot.sort(key=lambda tup: tup[1])
-
+	print len(toplot)
 	for v in toplot:
 
 		cou = 0
@@ -350,7 +350,7 @@ elif TYPE == 'trajectoryCruise':
 
 	
 	print "set output '" + path + "images/trajectoryCruise.png';"
-	print "set ylabel 'speed(km/t)'"
+	print "set ylabel 'speed(km/h)'"
 	print "set xlabel 'time(s)'"
 	#print "set xr[0:1.5]"
 	s = "plot "
@@ -413,7 +413,7 @@ elif TYPE == 'trajectoryTrafficLight':
 	#print "avg fuel stop " +str(avgstop[0]/avgstop[2])+ " avg run " +str(avgrun[0]/avgrun[2])+ ""
 	#print "avg time stop " +str(avgstop[1]/avgstop[2])+ " avg run " +str(avgrun[1]/avgrun[2])+ ""
 	print "set output '" + path + "images/trajectoryTrafficLight.png';"
-	print "set ylabel 'Speed(km/t)'"
+	print "set ylabel 'Speed(km/h)'"
 	print "set xlabel 'Time(s)'"
 	
 	if sys.argv[3] == "2":
@@ -514,7 +514,7 @@ elif TYPE == 'idle3':
 	print s + "'" + path + "data/idle3.csv' using 1:" + str(len(clusters)+2) + " with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
 	
 elif TYPE == 'normalRoad':
-	q = "select round((PNormalRoad)::numeric,2),"
+	q = "select round((PNormalRoad)::numeric,2)*100 as round,"
 	for i in clusters:
 		q += "count(case when km_pr_l <"+str(i[0])+" then 1 end)::float/count(*)*100,"
 	q += "count(*) from " + TABLE + " where total_km >= 0.1 and PNormalRoad is not null  group by round order by round;"
@@ -529,7 +529,7 @@ elif TYPE == 'normalRoad':
 	print "set ylabel 'Class distribution (%)'"
 	print "set xlabel 'Driving on main roads (%)'"
 	print "set yrange[0:100]"
-	print "set xrange[0:1]"
+	print "set xrange[0:]"
 	print "set y2tics"
 	print "set y2label 'Number of trips'"
 	print "set key opaque"
@@ -543,7 +543,7 @@ elif TYPE == 'normalRoad':
 elif TYPE == 'smallRoad':
 	#res = con.query("select round((PSmallRoad)::numeric,2),count(case when km_pr_l <"+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l < "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " where total_km >= 0.1 and PSmallRoad is not null group by round order by round;").getresult()
 	
-	q = "select round((PSmallRoad)::numeric,2),"
+	q = "select round((PSmallRoad)::numeric,2)*100 as round,"
 	for i in clusters:
 		q += "count(case when km_pr_l <"+str(i[0])+" then 1 end)::float/count(*)*100,"
 	q += "count(*) from " + TABLE + " where total_km >= 0.1 and PSmallRoad is not null  group by round order by round;"
@@ -573,7 +573,7 @@ elif TYPE == 'smallRoad':
 elif TYPE == 'moterRoad':
 	#res = con.query("select round((pmoterroad)::numeric,2),count(case when km_pr_l <"+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l < "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " where total_km >= 0.1 and pmoterroad is not null group by round order by round;").getresult()
 	
-	q = "select round((pmoterroad)::numeric,2),"
+	q = "select round((pmoterroad)::numeric,2)*100 as round,"
 	for i in clusters:
 		q += "count(case when km_pr_l <"+str(i[0])+" then 1 end)::float/count(*)*100,"
 	q += "count(*) from " + TABLE + " where total_km >= 0.1 and pmoterroad is not null  group by round order by round;"
@@ -588,7 +588,7 @@ elif TYPE == 'moterRoad':
 	print "set ylabel 'Class distribution (%)'"
 	print "set xlabel 'Driving on motorways (%)'"
 	print "set yrange[0:100]"
-	print "set xrange[0:0.1]"
+	print "set xrange[0:10]"
 	print "set y2tics"
 	print "set y2label 'Number of trips'"
 	print "set key opaque"
@@ -1197,8 +1197,7 @@ elif TYPE == 'acceleration3D':
 	
 		print "set output 'images/" +str(v[0]) + "acceleration3D.png'"
 		print "set hidden3d"
-	#	print 'set palette defined (0 "green",0.025 "blue",0.05 "violet",0.025 "yellow",0.1 "red")'
-		print "set xlabel 'Start speed km/t'"
+		print "set xlabel 'Start speed km/h'"
 		print "set ylabel 'Acceleration (m/s^2)'"
 		print "set label 1 'Fuel (ml/s)' center rotate by 90 at graph 0, graph 0, graph 0.5 offset -7"
 		
