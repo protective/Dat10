@@ -74,7 +74,10 @@ if True:
 		dirty = False
 		
 		for r in range(0, len(res)):
-			if str(res[r][2]) == 'None':
+			fuelTemp = 0
+			if r> 0:
+				fuelTemp = int(((res[r][3]-res[r-1][3])*1000)/(getTime(res[r][1])-getTime(res[r-1][1])))
+			if str(res[r][2]) == 'None' or (fuelTemp<0 or fuelTemp>20):
 				dirty = True
 				continue
 			

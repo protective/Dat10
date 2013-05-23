@@ -527,7 +527,7 @@ elif TYPE == 'normalRoad':
 
 	print "set output '" + path + "images/normalRoad.png';"
 	print "set ylabel 'Class distribution (%)'"
-	print "set xlabel 'Normal Road P'"
+	print "set xlabel 'Driving on main roads (%)'"
 	print "set yrange[0:100]"
 	print "set xrange[0:1]"
 	print "set y2tics"
@@ -556,7 +556,7 @@ elif TYPE == 'smallRoad':
 
 	print "set output '" + path + "images/smallRoad.png';"
 	print "set ylabel 'Class distribution (%)'"
-	print "set xlabel 'Small Road P'"
+	print "set xlabel 'Driving on small roads (%)'"
 	print "set yrange[0:100]"
 	print "set xrange[0:]"
 	print "set y2tics"
@@ -586,7 +586,7 @@ elif TYPE == 'moterRoad':
 
 	print "set output '" + path + "images/moterRoad.png';"
 	print "set ylabel 'Class distribution (%)'"
-	print "set xlabel 'Motor Road P'"
+	print "set xlabel 'Driving on motorways (%)'"
 	print "set yrange[0:100]"
 	print "set xrange[0:0.1]"
 	print "set y2tics"
@@ -1155,11 +1155,14 @@ elif TYPE == 'acceleration3D':
 	speedGranularity = 10
 	vehicles = con.query('select distinct vehicleid from g_accdata3 order by vehicleid').getresult()
 	vehicles.insert(0,[0])
+	vehicles.insert(0,[100])
 	for v in vehicles:
-		if v[0] == 0:
-			res = con.query("select round(startspeed/10*10) as s, round(avgAcceleration::decimal*4)/4 as a, avg((fuel*1000)/time) as f from g_accdata3 where avgAcceleration>0 and avgAcceleration<=2 and time>=10 group by s, a order by s, a;").getresult()
+		if v[0] == 100:
+			res = con.query("select s, a, case when stddev_samp(f) is null then 0 else stddev_samp(f) end from (select vehicleid,round(startspeed/10*10) as s, round(avgAcceleration::decimal*4)/4 as a, avg((fuel*1000)/time) as f from g_accdata3 where avgAcceleration>0 and avgAcceleration<=2 and time>=3 group by s, a, vehicleid order by s, a)t group by s,a;").getresult()
+		elif v[0] == 0: 
+			res = con.query("select round(startspeed/10*10) as s, round(avgAcceleration::decimal*4)/4 as a, avg((fuel*1000)/time) as f from g_accdata3 where avgAcceleration>0 and avgAcceleration<=2 and time>=3 group by s, a order by s, a;").getresult()
 		else:
-			res = con.query("select round(startspeed/10*10) as s, round(avgAcceleration::decimal*4)/4 as a, avg(fuel/time) as f from g_accdata3 where avgAcceleration>0 and avgAcceleration<=2 and vehicleid=" +str(v[0]) + " and time>=10 group by s, a order by s, a;").getresult()
+			res = con.query("select round(startspeed/10*10) as s, round(avgAcceleration::decimal*4)/4 as a, avg(fuel*1000/time) as f from g_accdata3 where avgAcceleration>0 and avgAcceleration<=2 and vehicleid=" +str(v[0]) + " and time>=3 group by s, a order by s, a;").getresult()
 		#res = [[0,0,2], [0,1,3.5], [1,0,1], [1,1,3]]
 		output = open('data/' +str(v[0]) + 'acceleration3D.csv', 'w+')
 		oldX = 0.0
@@ -1194,10 +1197,17 @@ elif TYPE == 'acceleration3D':
 	
 		print "set output 'images/" +str(v[0]) + "acceleration3D.png'"
 		print "set hidden3d"
+	#	print 'set palette defined (0 "green",0.025 "blue",0.05 "violet",0.025 "yellow",0.1 "red")'
 		print "set xlabel 'Start speed km/t'"
 		print "set ylabel 'Acceleration (m/s^2)'"
 		print "set label 1 'Fuel (ml/s)' center rotate by 90 at graph 0, graph 0, graph 0.5 offset -7"
 		
+		if v[0]==100:
+			print "set label 1 'Standard deviation (ml/s)' center rotate by 90 at graph 0, graph 0, graph 0.5 offset -7"
+				
+		else:
+			print "set cbrange[0:10]"
+			print "set label 1 'Fuel (ml/s)' center rotate by 90 at graph 0, graph 0, graph 0.5 offset -7"
 		print "set zr[0:]"
 		print "set yr[0:2]"
 		print "set xr[0:] reverse"
@@ -1338,23 +1348,26 @@ elif TYPE == "accelerationFuelCounter":
 elif TYPE == "accelerationCounter":
 	output= open(path + 'data/accelerationCounter.csv', 'wb')
 	for i in range(0,31):
-		res = con.query('select stddev_samp((fuel/time)/(startspeed+1)) from ' + TABLE + ' where time>' + str(i)).getresult()
+		#stddev_samp(((fuel*1000)/time))
+		#count(*)
+		res = con.query('select stddev_samp(((fuel*1000)/time)) from ' + TABLE + ' where time>' + str(i)).getresult()
 		for r in res:
 			print >> output, str(i) + " " + str(r[0])
 	
 	print "set output '" + path + "images/accelerationCounter.png';"
-	print "set ylabel 'Number of acceleration periods'"
+	print "set ylabel 'Standard deviation of ml/s'"
 	print "set xlabel 'Min lenght (s)'"
 	print "set yr[0:]"
 	
-	temp = str(con.query('select stddev_samp(avgAcceleration) from ' + TABLE + ' where time>10').getresult()[0][0])
-	print "set arrow from 10,0 to 10," +temp + " nohead"
-	print "set arrow from 0," + temp + " to 10," +temp + " nohead"
+	mint = '3'
+	temp = str(con.query('select stddev_samp(((fuel*1000)/time)) from ' + TABLE + ' where time>' + mint).getresult()[0][0])
+	print "set arrow from " + mint + ",0 to " + mint + "," +temp + " nohead"
+	print "set arrow from 0," + temp + " to " + mint + "," +temp + " nohead"
 	print "plot 'data/accelerationCounter.csv' with lines notitle"
 
 		
 elif TYPE == 'accelerationFuelStart2' or  TYPE == 'accelerationFuelStart2Data':
-	minTime = '10'
+	minTime = '3'
 	starts = con.query("select * from (select distinct round(startspeed/10)*10 as start from " +  TABLE + " where time>" + minTime + ")s where start>0 order by start;").getresult()
 	s = "plot "
 	color = 1
@@ -1371,15 +1384,15 @@ elif TYPE == 'accelerationFuelStart2' or  TYPE == 'accelerationFuelStart2Data':
 			print "fit f"+ n + "(x) '" + path + "data/"+ n + TYPE+ ".csv' using 1:2 via a"+ n + ",b"+ n
 			if TYPE == 'accelerationFuelStart2Data':
 				s += "'" + path + "data/"+ n + TYPE +".csv' lc " + str(color) + " notitle,"
-			#if len(res)>100 or TYPE == 'accelerationFuelStart2Data':
-			s+= "f"+ n + "(x) lc " + str(color) + " title 'Start speed: " + n + "'," #sprintf('Start speed: %d (%2.1f)'," +n+", a"+ n + "),"
+#			if len(res)>100 or TYPE == 'accelerationFuelStart2Data':
+			s+= "f"+ n + "(x) lc " + str(color) + " title 'Start speed: " + n + "(" + str(len(res)) + ")'," #sprintf('Start speed: %d (%2.1f)'," +n+", a"+ n + "),"
 		color += 1
 	
 	print "set output '" + path + "images/" +TYPE + ".png';"
 	print "set ylabel 'Fuel (ml/s)'"
 	print "set xlabel 'Acceleration (m/s^2)'"
 	print "set xrange[0:3]"
-	print "set key left opaque"
+	print "set key outside opaque"
 	
 	if not s == '':
 		print s[:-1]
@@ -1523,7 +1536,26 @@ elif TYPE == 'speedlimitCount':
 	print s[:-1]
 	
 elif TYPE == "compareVehicles":
-	res = con.query("select a.vehicleid, acc::float/c as a, steady::float/c as s, dec::float/c as d, stopped::float/c as st, idle::float/c as i, o::float/c as o from (select vehicleid, count(case when acceleration3<0 and cruise is false then 1 end) as dec, count(case when cruise is true then 1 end) as steady, count(case when acceleration3>0 and cruise is false then 1 end) as acc, count(case when stopped=1 and idle=0 then 1 end) as stopped, count(case when idle=1 then 1 end) as idle, count(case when acceleration3=0 and cruise is false and stopped =0 then 1 end) as o from g_gps_can_data where dirty is false group by vehicleid)a,(select vehicleid,count(*) as c from g_gps_can_data where dirty is false group by vehicleid)t where a.vehicleid=t.vehicleid;").getresult()
+	"""
+		select a.vehicleid, acc::float/c as a, steady::float/c as s, dec::float/c as d, stopped::float/c as st, idle::float/c as i, o::float/c as o from 
+			(select 
+				vehicleid, 
+				count(case when acceleration3<0 and cruise is false then 1 end) as dec, 
+				count(case when cruise is true then 1 end) as steady, 
+				count(case when acceleration3>0 and cruise is false then 1 end) as acc, 
+				count(case when stopped=1 and idle=0 then 1 end) as stopped, 
+				count(case when idle=1 then 1 end) as idle, 
+				count(case when acceleration3=0 and cruise is false and stopped =0 then 1 end) as o 
+			from g_gps_can_data where dirty is false group by vehicleid)a,
+			(select 
+				vehicleid,
+				count(*) as c 
+		from g_gps_can_data where dirty is false group by vehicleid)t 
+		where a.vehicleid=t.vehicleid;"""
+	res = con.query("""
+		(select vehicleid, sum(fuel) from g_accdata3 where avgAcceleration>0 group by vehicleid) as acc,
+		(select vehicleid, sum(fuel) from g_accdata3 where avgAcceleration<0 group by vehicleid) as dec
+		""").getresult()
 	
 	for r in res:
 		output = open(path + 'data/' + str(r[0]) + 'Compare.csv', 'wb')
@@ -1550,6 +1582,33 @@ elif TYPE == 'accelerationTEST':
 	print "set y2tics"
 
 	print "plot '" + path + "data/accelerationTEST.csv' using 1:4 with lines title 'Acceleration', '" + path + "data/accelerationTEST.csv' using 1:3 with lines title 'RPM' axes x1y2"
+
+
+elif TYPE == 'checkFuel':
+	tids = con.query('select distinct tid from ' + TABLE).getresult()
+	output = open(path + 'data/checkFuel.csv', 'wb+')
+	counter = {}
+#	tids= [['2930']]
+	for t in tids:
+		res = con.query('select timestamp, totalconsumed from ' + TABLE + " where tid=" +str(t[0]) + " order by timestamp;").getresult()
+		for r in range(1,len(res)-1):
+			temp= int(((res[r][1]-res[r-1][1])*1000)/(getTime(res[r][0])-getTime(res[r-1][0])))
+			if temp in counter:
+				counter[temp] += 1
+			else:
+				counter[temp] = 1
+	for k, v in counter.items():
+		print >> output,  str(k) + " " + str(v)
+	
+	print "set output '" + path + "images/checkFuel.png';"
+	print "set boxwidth 1"
+	print "set logscale y 10"
+	print "set xtics 20"
+	print "set xlabel 'Fuel (ml/s)'"
+	print "set ylabel 'Number of records'"
+	print "set xr [-180:180]"
+	
+	print "plot '" + path + "data/checkFuel.csv' with boxes notitle"
 
 elif TYPE == 'idleTime':
 	#TODO: Do not work
@@ -1581,6 +1640,7 @@ elif TYPE == 'idleTime':
 	s+= "'" + path + "data/" + TYPE + "_medium_data.csv' using 1:2:3 with points lt 1 pt 6 ps variable linecolor rgb \"blue\" title 'Medium', "
 	s+= "'" + path + "data/" + TYPE + "_low_data.csv' using 1:2:3 with points lt 1 pt 6 ps variable linecolor rgb \"red\" title 'Low'"
 	print s
+
 	
 elif TYPE == 'idlePercent':
 	#TODO: Do not work
