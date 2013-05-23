@@ -34,7 +34,7 @@ scp d103@172.25.26.191:Dat10/src/images/3acceleration3D.png $PREFIX"_images"/3ac
 scp d103@172.25.26.191:Dat10/src/images/4acceleration3D.png $PREFIX"_images"/4acceleration3D.png
 
 
-: << 'COMMENT'
+
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py accelerationCounter $ACCDATA | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/accelerationCounter.png $PREFIX"_images"/accelerationCounter.png
@@ -168,7 +168,7 @@ scp d103@172.25.26.191:Dat10/src/images/TripsLength.png $PREFIX"_images"/TripsLe
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py TimeTrips $TRIPS | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/TimeTrips.png $PREFIX"_images"/TimeTrips.png
 
-
+: << 'COMMENT'
 COMMENT
 
 
