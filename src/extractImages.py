@@ -883,9 +883,9 @@ elif TYPE == 'idleRange2' or TYPE == 'idleRange22':
 
 	for v in vehicles:
 		if(TYPE == 'idleRange2'):
-			s = "select * from (select round(stopped/100)*100 as idle, sum(stopped),count(stopped) from "+ TABLE + " where vehicleid =" + str(v[0]) + " and stopped < 800 group by idle order by idle)a where count > 0;"
+			s = "select * from (select round(stopped/50)*50 as idle, sum(stopped),count(stopped) from "+ TABLE + " where vehicleid =" + str(v[0]) + " and stopped > 250 and stopped < 1200 group by idle order by idle)a where count > 0;"
 		else:
-			s = "select * from (select round(stopped/100)*100 as idle, sum(stopped),count(stopped) from "+ TABLE + " where vehicleid =" + str(v[0]) + " and stopped >= 800 group by idle order by idle)a where count > 0;"
+			s = "select * from (select round(stopped/100)*100 as idle, sum(stopped),count(stopped) from "+ TABLE + " where vehicleid =" + str(v[0]) + " and stopped >= 1200 group by idle order by idle)a where count > 0;"
 		res = con.query(s).getresult()
 		if(TYPE == 'idleRange2'):
 			output = open(path + 'data/'+str(v[0])+'idleRange2.csv', 'w+')
@@ -895,16 +895,17 @@ elif TYPE == 'idleRange2' or TYPE == 'idleRange22':
 		for r in res:
 			writer.writerow(r)
 
-	boxwidth= 100.0/(len(vehicles)+1)
 	if(TYPE == 'idleRange2'):
+		boxwidth= 50.0/(len(vehicles)+1)
 		print "set output '" + path + "images/idleRange2.png';"
-		print "set xtics 100"
-		print "set xrange[0:800]"
+		print "set xtics 50"
+		print "set xrange[250:1200]"
 
 	else:
+		boxwidth= 100.0/(len(vehicles)+1)
 		print "set output '" + path + "images/idleRange22.png';"
 		print "set xtics 200"
-		print "set xrange[800:5600]"
+		print "set xrange[1200:5600]"
 
 	print "set ylabel 'Sum of seconds in idle (s)'"
 	print "set xlabel 'Idle range (s)'"
@@ -939,7 +940,8 @@ elif TYPE == 'idleRange3':
 	print "set xlabel 'Idle seconds (s)'"
 	print "set xrange[" + xstart + ":]"
 	print "set key left"
-	print "set xtics 250"
+	print "set xtic rotate by -45 scale 0"
+	print "set xtics 300"
 	print "set ytics 0.1"
 	
 	s = "plot "
@@ -1052,7 +1054,7 @@ elif TYPE == 'accelerationRanges2':
 	
 	granularity = 0.125
 	for v in vehicles:
-		res = con.query("select * from (select round(avgAcceleration::decimal*8)/8 as acc, count(*)::float as c from "+ TABLE + " where time > 10 and vehicleid =" + str(v[0]) + " and dirty is false group by acc order by acc)a where (acc > 0);").getresult()
+		res = con.query("select * from (select round(avgAcceleration::decimal*8)/8 as acc, count(*)::float as c from "+ TABLE + " where time > 10 and vehicleid =" + str(v[0]) + " group by acc order by acc)a where (acc > 0);").getresult()
 		output = open(path + 'data/'+str(v[0])+'accelerationRanges2.csv', 'w+')
 		for r in res:
 			print >> output, str(r[0]) + " " + str(float(r[1])/float(v[1]))
@@ -1565,48 +1567,71 @@ elif TYPE == "compareVehicles":
 		os.system("python piechart.py data/" + str(r[0]) + "Compare.csv images/" + str(r[0]) + "Compare.png")
 
 elif TYPE == 'compareVehicles2':
-	"""set nokey
-set polar
-set angles degrees
-npoints = 5
-a1 = 360/npoints*1
-a2= 360/npoints*2
-a3= 360/npoints*3
-a4= 360/npoints*4
-a5= 360/npoints*5
-set grid polar 360.
-set size square
-set style data lines
-unset border
-set arrow nohead from 0,0 to first 1*cos(a1) , 1*sin(a1)
-set arrow nohead from 0,0 to first 1*cos(a2) , 1*sin(a2)
-set arrow nohead from 0,0 to first 1*cos(a3) , 1*sin(a3)
-set arrow nohead from 0,0 to first 1*cos(a4) , 1*sin(a4)
-set arrow nohead from 0,0 to first 1*cos(a5) , 1*sin(a5)
-a1_max = 10
-a2_max = 5
-a3_max = 100
-a4_max = 2020
-a5_max = 1
-a1_min = 0
-a2_min = 0
-a3_min = 50
-a4_min = 1980
-a5_min = 0
-set label "(0:10)" at cos(a1),sin(a1) center offset char 1,1
-set label "(0:5)" at cos(a2),sin(a2) center offset char -1,1
-set label "(50:100)" at cos(a3),sin(a3) center offset char -1,-1
-set label "(1980:2020)" at cos(a4),sin(a4) center offset char 0,-1
-set label "(0:1)" at cos(a5),sin(a5) center offset char 3,0
-set xrange [-1:1]
-set yrange [-1:1]
-unset xtics
-unset ytics
-set rrange [0:1]
-set rtics (""0,""0.25,""0.5,""0.75,""1)
+	res = con.query("""
+	select c.vehicleid, (tottime-cv)/tottime*100 as cruise, iv/tottime*100 as idle, sv/tottime*100 as stopped, av/totfuel*100 as acc, slv/kv*100 as speed
+	from 
+		(select vehicleid, sum(time) as cv from g_cruise_data group by vehicleid)c, 
+		(select vehicleid, sum(stopped) as iv from g_idledatatl where stopped>=250 group by vehicleid)i,
+		(select vehicleid, sum(stopped) as sv from g_idledatatl where stopped<250 group by vehicleid)s,
+		(select vehicleid, sum(fuel) as av from g_accdata3 where avgAcceleration>0 group by vehicleid)a,
+		(select vehicleid, sum(fuel) as dv from g_accdata3 where avgAcceleration<0 group by vehicleid)d,
+		(select vehicleid, count(*) as slv from (select vehicleid, speedmod-kmh as d from osm_dk_20130501 as m, g_gps_can_data as g where m.segmentkey=g.segmentkey and dirty is false)s where d>0 group by vehicleid)sl,
+		(select vehicleid, sum(time)::float as totTime, sum(total_fuel)::float as totFuel from g_trip_data group by vehicleid)t,
+		(select vehicleid, count(*)::float as kv from g_gps_can_data group by vehicleid)k
+	where t.vehicleid=i.vehicleid and t.vehicleid=s.vehicleid and t.vehicleid=c.vehicleid and t.vehicleid=a.vehicleid and t.vehicleid=d.vehicleid and t.vehicleid=sl.vehicleid and t.vehicleid = k.vehicleid;""").getresult()
 
-plot 'data/spider.csv' using ($1==1?a1:($1==2?a2:($1==3?a3:($1==4?a4:($1==5?a5:$1))))):($1==1?(($2-a1_min)/(a1_max-a1_min)):($1==2?(($2-a2_min)/(a2_max-a2_min)):($1==3?(($2-a3_min)/(a3_max-a3_min)):($1==4?(($2-a4_min)/(a4_max-a4_min)):($1==5?(($2-a5_min)/(a5_max-a5_min)):$1))))) w l
-pause -1"""
+	for r in res:
+		output = open(path + 'data/' + str(r[0]) + 'Compare2.csv', 'wb')
+		print >> output, '1 ' + str(r[1]) 
+		print >> output, '2 ' + str(r[2])
+		print >> output, '3 ' + str(r[3])
+		print >> output, '4 ' + str(r[4])
+		print >> output, '5 ' + str(r[5])
+		print >> output, '1 ' + str(r[1]) 
+		output.close()
+	
+		print "set output '" + path + "images/" + str(r[0]) + "Compare.png';"
+		print """set nokey
+		set polar
+		set angles degrees
+		npoints = 5
+		a1 = 360/npoints*1
+		a2= 360/npoints*2
+		a3= 360/npoints*3
+		a4= 360/npoints*4
+		a5= 360/npoints*5
+		set grid polar 360.
+		set size square
+		set style data lines
+		unset border
+		set arrow nohead from 0,0 to first 1*cos(a1) , 1*sin(a1)
+		set arrow nohead from 0,0 to first 1*cos(a2) , 1*sin(a2)
+		set arrow nohead from 0,0 to first 1*cos(a3) , 1*sin(a3)
+		set arrow nohead from 0,0 to first 1*cos(a4) , 1*sin(a4)
+		set arrow nohead from 0,0 to first 1*cos(a5) , 1*sin(a5)
+		a1_max = 100
+		a2_max = 50
+		a3_max = 50
+		a4_max = 50
+		a5_max = 50
+		a1_min = 0
+		a2_min = 0
+		a3_min = 0
+		a4_min = 0
+		a5_min = 0
+		set label "Not at steady speed" at cos(a1),sin(a1) center offset char 1,1
+		set label "Idle" at cos(a2),sin(a2) center offset char -1,1
+		set label "Stopped" at cos(a3),sin(a3) center offset char -1,-1
+		set label "Acceleration" at cos(a4),sin(a4) center offset char 0,-1
+		set label "Speed limit" at cos(a5),sin(a5) center offset char 3,0
+		set xrange [-1:1]
+		set yrange [-1:1]
+		unset xtics
+		unset ytics
+		set rrange [0:1]
+		set rtics (""0,""0.25,""0.5,""0.75,""1)"""
+
+		print "plot 'data/" + str(r[0]) + "Compare2.csv' using ($1==1?a1:($1==2?a2:($1==3?a3:($1==4?a4:($1==5?a5:$1))))):($1==1?(($2-a1_min)/(a1_max-a1_min)):($1==2?(($2-a2_min)/(a2_max-a2_min)):($1==3?(($2-a3_min)/(a3_max-a3_min)):($1==4?(($2-a4_min)/(a4_max-a4_min)):($1==5?(($2-a5_min)/(a5_max-a5_min)):$1))))) w l"
 
 
 elif TYPE == 'accelerationTEST':
