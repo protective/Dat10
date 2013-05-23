@@ -1536,7 +1536,7 @@ elif TYPE == 'speedlimitCount':
 	print s[:-1]
 	
 elif TYPE == "compareVehicles":
-	"""
+	res = con.query("""
 		select a.vehicleid, acc::float/c as a, steady::float/c as s, dec::float/c as d, stopped::float/c as st, idle::float/c as i, o::float/c as o from 
 			(select 
 				vehicleid, 
@@ -1551,11 +1551,7 @@ elif TYPE == "compareVehicles":
 				vehicleid,
 				count(*) as c 
 		from g_gps_can_data where dirty is false group by vehicleid)t 
-		where a.vehicleid=t.vehicleid;"""
-	res = con.query("""
-		(select vehicleid, sum(fuel) from g_accdata3 where avgAcceleration>0 group by vehicleid) as acc,
-		(select vehicleid, sum(fuel) from g_accdata3 where avgAcceleration<0 group by vehicleid) as dec
-		""").getresult()
+		where a.vehicleid=t.vehicleid;""").getresult()
 	
 	for r in res:
 		output = open(path + 'data/' + str(r[0]) + 'Compare.csv', 'wb')
@@ -1568,6 +1564,51 @@ elif TYPE == "compareVehicles":
 		output.close()
 #		print "python piechart.py data/" + str(r[0]) + "Compare.csv images/" + str(r[0]) + "Compare.png"
 		os.system("python piechart.py data/" + str(r[0]) + "Compare.csv images/" + str(r[0]) + "Compare.png")
+
+elif TYPE == 'compareVehicles2':
+	"""set nokey
+set polar
+set angles degrees
+npoints = 5
+a1 = 360/npoints*1
+a2= 360/npoints*2
+a3= 360/npoints*3
+a4= 360/npoints*4
+a5= 360/npoints*5
+set grid polar 360.
+set size square
+set style data lines
+unset border
+set arrow nohead from 0,0 to first 1*cos(a1) , 1*sin(a1)
+set arrow nohead from 0,0 to first 1*cos(a2) , 1*sin(a2)
+set arrow nohead from 0,0 to first 1*cos(a3) , 1*sin(a3)
+set arrow nohead from 0,0 to first 1*cos(a4) , 1*sin(a4)
+set arrow nohead from 0,0 to first 1*cos(a5) , 1*sin(a5)
+a1_max = 10
+a2_max = 5
+a3_max = 100
+a4_max = 2020
+a5_max = 1
+a1_min = 0
+a2_min = 0
+a3_min = 50
+a4_min = 1980
+a5_min = 0
+set label "(0:10)" at cos(a1),sin(a1) center offset char 1,1
+set label "(0:5)" at cos(a2),sin(a2) center offset char -1,1
+set label "(50:100)" at cos(a3),sin(a3) center offset char -1,-1
+set label "(1980:2020)" at cos(a4),sin(a4) center offset char 0,-1
+set label "(0:1)" at cos(a5),sin(a5) center offset char 3,0
+set xrange [-1:1]
+set yrange [-1:1]
+unset xtics
+unset ytics
+set rrange [0:1]
+set rtics (""0,""0.25,""0.5,""0.75,""1)
+
+plot 'data/spider.csv' using ($1==1?a1:($1==2?a2:($1==3?a3:($1==4?a4:($1==5?a5:$1))))):($1==1?(($2-a1_min)/(a1_max-a1_min)):($1==2?(($2-a2_min)/(a2_max-a2_min)):($1==3?(($2-a3_min)/(a3_max-a3_min)):($1==4?(($2-a4_min)/(a4_max-a4_min)):($1==5?(($2-a5_min)/(a5_max-a5_min)):$1))))) w l
+pause -1"""
+
 
 elif TYPE == 'accelerationTEST':
 	res = con.query('select speedmod, rpm, acceleration from ' + TABLE + " where tid=9999 order by timestamp;").getresult()
