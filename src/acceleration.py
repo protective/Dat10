@@ -23,11 +23,11 @@ if True:
 	interval = 3
 	print "Altering table"
 	con.query('set synchronous_commit = on;')
-	#con.query('alter table ' + DATATABLE + ' drop IF EXISTS acceleration3;')
-	#con.query('alter table ' + DATATABLE + ' add column acceleration3 float default null;')
+	con.query('alter table ' + DATATABLE + ' drop IF EXISTS acceleration3;')
+	con.query('alter table ' + DATATABLE + ' add column acceleration3 float default null;')
 
-	con.query('alter table ' + DATATABLE + ' drop IF EXISTS acceleration2;')
-	con.query('alter table ' + DATATABLE + ' add column acceleration2 float default null;')
+	#con.query('alter table ' + DATATABLE + ' drop IF EXISTS acceleration2;')
+	#con.query('alter table ' + DATATABLE + ' add column acceleration2 float default null;')
 
 	print "Calculating acceleration profiles"
 	tids = con.query("select distinct tid from "+ DATATABLE + " order by tid;").getresult()
@@ -52,8 +52,8 @@ if True:
 					acc = ((res[r][1]-oldspeed)/float(getTime(curTime)-getTime(oldTime)))/3.6
 				
 				if(getTime(curTime)-getTime(oldTime) <= 2):
-					#q = "update " + DATATABLE + " set acceleration3 = " + str(acc) + " where tid=" + str(res[2][2]) + " and timestamp='"+ str(res[r][0]) + "';"				
-					q = "update " + DATATABLE + " set acceleration2 = " + str(acc) + " where tid=" + str(res[2][2]) + " and timestamp='"+ str(res[r][0]) + "';"		
+					q = "update " + DATATABLE + " set acceleration3 = " + str(acc) + " where tid=" + str(res[2][2]) + " and timestamp='"+ str(res[r][0]) + "';"				
+					#q = "update " + DATATABLE + " set acceleration2 = " + str(acc) + " where tid=" + str(res[2][2]) + " and timestamp='"+ str(res[r][0]) + "';"		
 					con.query(q)
 				
 				oldspeed = res[r][1]
