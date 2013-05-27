@@ -55,7 +55,8 @@ if False:
 				oldspeed = res[r][1]
 				oldTime = res[r][0]
 
-	con.query("DROP INDEX IF EXISTS acceleration2_" + DATATABLE + "_idx CASCADE; create index acceleration2_" + DATATABLE + "_idx on " + DATATABLE + " (acceleration2);")
+	con.query("update " + DATATABLE + " set acceleration3 = null where acceleration3>3.5 or acceleration<-7.5;")
+	con.query("DROP INDEX IF EXISTS acceleration3_" + DATATABLE + "_idx CASCADE; create index acceleration3_" + DATATABLE + "_idx on " + DATATABLE + " (acceleration3);")
 
 if True:
 	con.query("drop table if exists "+ACCDATA+";")

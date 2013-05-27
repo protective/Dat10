@@ -58,12 +58,14 @@ if TYPE == 'km_pr_l':
 	print "set output '" + path + "images/kmlTrips.png';"
 	print "set ylabel 'Fuel efficiency (km/l)'"
 	print "set xlabel 'Trips'"
-	print "set yrange[0:12]"
-	print "unset xtics"
+	print "set yrange[0:15]"
+	print "set xr[0:"+ str(i) + "]"
+	print "set key left top opaque"
+	#print "unset xtics"
 	s = "plot "
 	for v in vehicles:
 		vid = str(v[0])
-		s+= "'"+path + "data/" + vid + "_kmldata.csv' lc rgb '" + patterns[v[0]][1]+ "' title '" + vid + "', "
+		s+= "'"+path + "data/" + vid + "_kmldata.csv' lc rgb '" + patterns[v[0]][1]+ "' title 'Vehicle " + vid + "', "
 
 	for c in clusters:
 		s += str(c[0])+" lw 2 lc rgb \"black\" notitle,"
@@ -918,9 +920,9 @@ elif TYPE == 'idleRange2' or TYPE == 'idleRange22':
 	s = "plot "
 	for v in vehicles:
 		if(TYPE == 'idleRange2'):
-			s += "'" + path + "data/"+str(v[0]) + "idleRange2.csv' using ($1+"+ str(offset+(boxwidth/2)) + "):2 with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + " title '" + str(v[0]) + "' ,"
+			s += "'" + path + "data/"+str(v[0]) + "idleRange2.csv' using ($1+"+ str(offset+(boxwidth/2)) + "):2 with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + " title 'Vehicle " + str(v[0]) + "' ,"
 		else:
-			s += "'" + path + "data/"+str(v[0]) + "idleRange22.csv' using ($1+"+ str(offset+(boxwidth/2)) + "):2 with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + " title '" + str(v[0]) + "' ,"
+			s += "'" + path + "data/"+str(v[0]) + "idleRange22.csv' using ($1+"+ str(offset+(boxwidth/2)) + "):2 with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + " title 'Vehicle " + str(v[0]) + "' ,"
 		offset+=boxwidth
 	print s[:-1]
 
@@ -950,7 +952,7 @@ elif TYPE == 'idleRange3':
 		print "fit " + patterns[v][0] + "(x) '" + path + "data/"+str(v) + "idleRange3.csv' using 1:2 via a"+str(v)+"," +"b" +str(v)
 		print "set arrow from 3600,0 to 3600,"+patterns[v][0]+"(3600) lw 1 nohead"
 		print "set arrow from "+xstart+","+patterns[v][0]+"(3600) to 3600,"+patterns[v][0]+"(3600) lw 1 nohead"
-		s += "'" + path + "data/"+str(v) + "idleRange3.csv' using 1:2 title '" + str(v) + "' lc rgb '"+ patterns[v][1] +"', " + patterns[v][0] + "(x) notitle lc rgb '"+ patterns[v][1] +"',"
+		s += "'" + path + "data/"+str(v) + "idleRange3.csv' using 1:2 title 'Vehicle " + str(v) + "' lc rgb '"+ patterns[v][1] +"', " + patterns[v][0] + "(x) notitle lc rgb '"+ patterns[v][1] +"',"
 	print s[:-1]
 	
 elif TYPE == 'rpmRanges':
@@ -977,7 +979,7 @@ elif TYPE == 'rpmRanges':
 	offset = 0
 	s = "plot "
 	for v in vehicles:
-		s += "'" + path + "data/"+str(v[0]) + "rpmRanges.csv' using ($1+"+ str(offset) + "):2 with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + " title '" + str(v[0]) + "',"
+		s += "'" + path + "data/"+str(v[0]) + "rpmRanges.csv' using ($1+"+ str(offset) + "):2 with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + " title 'Vehicle " + str(v[0]) + "',"
 		offset+=boxwidth
 	print s[:-1]	
 
@@ -1072,7 +1074,7 @@ elif TYPE == 'accelerationRanges2':
 	offset = 0
 	s = "plot "
 	for v in vehicles: 
-		s += "'" + path + "data/"+str(v[0]) + "accelerationRanges2.csv' using ($1+"+ str(offset) + "):($2*100) with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + "  title '" + str(v[0]) + "',"
+		s += "'" + path + "data/"+str(v[0]) + "accelerationRanges2.csv' using ($1+"+ str(offset) + "):($2*100) with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + "  title 'Vehicle " + str(v[0]) + "',"
 		offset+=boxwidth
 	print s[:-1]
 
@@ -1162,9 +1164,9 @@ elif TYPE == 'acceleration3D':
 		if v[0] == 100:
 			res = con.query("select s, a, case when stddev_samp(f) is null then 0 else stddev_samp(f) end from (select vehicleid,round(startspeed/10*10) as s, round(avgAcceleration::decimal*4)/4 as a, avg((fuel*1000)/time) as f from g_accdata3 where avgAcceleration>0 and avgAcceleration<=2 and time>=3 group by s, a, vehicleid order by s, a)t group by s,a;").getresult()
 		elif v[0] == 0: 
-			res = con.query("select round(startspeed/10*10) as s, round(avgAcceleration::decimal*4)/4 as a, avg((fuel*1000)/time) as f from g_accdata3 where avgAcceleration>0 and avgAcceleration<=2 and time>=3 group by s, a order by s, a;").getresult()
+			res = con.query("select round(startspeed/10*10) as s, round(avgAcceleration::decimal*4)/4 as a, avg((fuel*1000)) as f from g_accdata3 where avgAcceleration>0 and avgAcceleration<=2 and time>=3 group by s, a order by s, a;").getresult()
 		else:
-			res = con.query("select round(startspeed/10*10) as s, round(avgAcceleration::decimal*4)/4 as a, avg(fuel*1000/time) as f from g_accdata3 where avgAcceleration>0 and avgAcceleration<=2 and vehicleid=" +str(v[0]) + " and time>=3 group by s, a order by s, a;").getresult()
+			res = con.query("select round(startspeed/10*10) as s, round(avgAcceleration::decimal*4)/4 as a, avg(fuel*1000) as f from g_accdata3 where avgAcceleration>0 and avgAcceleration<=2 and vehicleid=" +str(v[0]) + " and time>=3 group by s, a order by s, a;").getresult()
 		#res = [[0,0,2], [0,1,3.5], [1,0,1], [1,1,3]]
 		output = open('data/' +str(v[0]) + 'acceleration3D.csv', 'w+')
 		oldX = 0.0
@@ -1207,11 +1209,11 @@ elif TYPE == 'acceleration3D':
 			print "set label 1 'Standard deviation (ml/s)' center rotate by 90 at graph 0, graph 0, graph 0.5 offset -7"
 				
 		else:
-			print "set cbrange[0:10]"
+			print "set cbrange[0:100]"
 			print "set label 1 'Fuel (ml/s)' center rotate by 90 at graph 0, graph 0, graph 0.5 offset -7"
 		print "set zr[0:]"
 		print "set yr[0:2]"
-		print "set xr[0:] reverse"
+		print "set xr[0:150] reverse"
 		print "splot 'data/" +str(v[0]) + "acceleration3D.csv' with pm3d notitle"
 
 elif TYPE == 'accelerationStddevAcc':
@@ -1509,6 +1511,42 @@ elif TYPE == 'steadySpeedExample':
 	print "set arrow from 62,50 to 62,56 lw 4 nohead"
 	print "plot '" + path + "data/steadySpeedExample' with lines lw 2 notitle"
 
+elif TYPE == 'cruiseExample':
+	print "set xrange[100:350]"
+	print "set output '" + path + "images/cruiseExample.png';"
+	print "set ylabel 'Speed (km/h)"
+	print "set xlabel 'Time (s)'"
+	
+	minx = '180'
+	maxx = '276.5'
+	miny = '51'
+	maxy = '53'
+	print "set arrow from " + minx + ",52 to " + maxx + ",52 lw 1 nohead"
+	print "set arrow from " + minx + "," + miny + " to " + maxx + "," + miny + " lw 4 nohead"
+	print "set arrow from " + minx + "," + maxy + " to " + maxx + "," + maxy + " lw 4 nohead"
+	print "set arrow from " + minx + "," + miny + " to " + minx + "," + maxy + " lw 4 nohead"
+	print "set arrow from " + maxx + "," + miny + " to " + maxx + "," + maxy + " lw 4 nohead"
+	
+	print "plot 'data/2012_10_19_torp_10hz.csv' using ($1/10):12 with lines notitle"
+
+elif TYPE == 'cruiseExample2':
+#	print "set xrange[100:350]"
+	print "set output '" + path + "images/cruiseExample2.png';"
+	print "set ylabel 'Speed (km/h)"
+	print "set xlabel 'Time (s)'"
+	
+	minx = '180'
+	maxx = '276.5'
+	miny = '51'
+	maxy = '53'
+	print "set arrow from " + minx + ",52 to " + maxx + ",52 lw 1 nohead"
+	print "set arrow from " + minx + "," + miny + " to " + maxx + "," + miny + " lw 4 nohead"
+	print "set arrow from " + minx + "," + maxy + " to " + maxx + "," + maxy + " lw 4 nohead"
+	print "set arrow from " + minx + "," + miny + " to " + minx + "," + maxy + " lw 4 nohead"
+	print "set arrow from " + maxx + "," + miny + " to " + maxx + "," + maxy + " lw 4 nohead"
+	
+	print "plot 'data/2012_10_19_torp_10hz.csv' using ($1/10):12 with lines notitle"
+
 elif TYPE == 'speedlimitCount':
 	vehicles = con.query("select vehicleid as v, count(*) from " + TABLE + " group by v order by v;").getresult()
 	for v in vehicles:
@@ -1532,7 +1570,7 @@ elif TYPE == 'speedlimitCount':
 	offset = 0
 	s = "plot "
 	for v in vehicles:
-		s += "'" + path + "data/"+str(v[0]) + "speedlimitCount.csv' using ($1+"+ str(offset+boxwidth/2) + "):2 with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + " title '" + str(v[0]) + "',"
+		s += "'" + path + "data/"+str(v[0]) + "speedlimitCount.csv' using ($1+"+ str(offset+boxwidth/2) + "):2 with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + " title 'Vehicle " + str(v[0]) + "',"
 		offset+=boxwidth
 	print s[:-1]
 	
@@ -1568,17 +1606,17 @@ elif TYPE == "compareVehicles":
 
 elif TYPE == 'compareVehicles2':
 	res = con.query("""
-	select c.vehicleid, (tottime-cv)/tottime*100 as cruise, iv/tottime*100 as idle, sv/tottime*100 as stopped, av/totfuel*100 as acc, slv/kv*100 as speed
+	select c.vehicleid, (tottime-cv)/tottime*100 as cruise, iv/tottime*100 as idle, av/totfuel*100 as acc, a2v as acc2, slv/kv*100 as speed
 	from 
 		(select vehicleid, sum(time) as cv from g_cruise_data group by vehicleid)c, 
 		(select vehicleid, sum(stopped) as iv from g_idledatatl where stopped>=250 group by vehicleid)i,
-		(select vehicleid, sum(stopped) as sv from g_idledatatl where stopped<250 group by vehicleid)s,
 		(select vehicleid, sum(fuel) as av from g_accdata3 where avgAcceleration>0 group by vehicleid)a,
+		(select vehicleid, sum(case when g.avgacceleration>avg then fuel else 0 end)/sum(fuel)::float*100 as a2v from (select round(startspeed/10)*10 as s, avg(avgacceleration) as avg from g_accdata3 where avgacceleration>0 and time>3 and avgAcceleration<=2  group by s)sd, (select vehicleid, round(startspeed/10)*10 as s, avgAcceleration, time, fuel from g_accdata3 where avgacceleration> 0 and time>3 and avgAcceleration<=2 )g where sd.s=g.s group by vehicleid)a2,
 		(select vehicleid, sum(fuel) as dv from g_accdata3 where avgAcceleration<0 group by vehicleid)d,
 		(select vehicleid, count(*) as slv from (select vehicleid, speedmod-kmh as d from osm_dk_20130501 as m, g_gps_can_data as g where m.segmentkey=g.segmentkey and dirty is false)s where d>0 group by vehicleid)sl,
 		(select vehicleid, sum(time)::float as totTime, sum(total_fuel)::float as totFuel from g_trip_data group by vehicleid)t,
 		(select vehicleid, count(*)::float as kv from g_gps_can_data group by vehicleid)k
-	where t.vehicleid=i.vehicleid and t.vehicleid=s.vehicleid and t.vehicleid=c.vehicleid and t.vehicleid=a.vehicleid and t.vehicleid=d.vehicleid and t.vehicleid=sl.vehicleid and t.vehicleid = k.vehicleid;""").getresult()
+	where t.vehicleid=i.vehicleid and t.vehicleid=a2.vehicleid and t.vehicleid=c.vehicleid and t.vehicleid=a.vehicleid and t.vehicleid=d.vehicleid and t.vehicleid=sl.vehicleid and t.vehicleid = k.vehicleid;""").getresult()
 
 	for r in res:
 		output = open(path + 'data/' + str(r[0]) + 'Compare2.csv', 'wb')
@@ -1612,18 +1650,18 @@ elif TYPE == 'compareVehicles2':
 		a1_max = 100
 		a2_max = 50
 		a3_max = 50
-		a4_max = 50
+		a4_max = 100
 		a5_max = 50
 		a1_min = 0
 		a2_min = 0
 		a3_min = 0
 		a4_min = 0
 		a5_min = 0
-		set label "Not at steady speed" at cos(a1),sin(a1) center offset char 1,1
-		set label "Idle" at cos(a2),sin(a2) center offset char -1,1
-		set label "Stopped" at cos(a3),sin(a3) center offset char -1,-1
-		set label "Acceleration" at cos(a4),sin(a4) center offset char 0,-1
-		set label "Speed limit" at cos(a5),sin(a5) center offset char 3,0
+		set label "Not at steady speed (0-100%)" at cos(a1),sin(a1) center offset char 1,1
+		set label "Idle (0-50%)" at cos(a2),sin(a2) center offset char -1,1
+		set label "Acceleration (0-50%)" at cos(a3),sin(a3) center offset char -1,-1
+		set label "Acceleration2 (0-100%)" at cos(a4),sin(a4) center offset char 0,-1
+		set label "Speed limit (0-50%)" at cos(a5),sin(a5) center offset char 3,1
 		set xrange [-1:1]
 		set yrange [-1:1]
 		unset xtics
