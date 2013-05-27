@@ -20,8 +20,6 @@ fi
 
 
 
-
-
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py accelerationRanges2 $ACCDATA | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/accelerationRanges2.png $PREFIX"_images"/accelerationRanges2.png
 
@@ -41,14 +39,20 @@ ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py idleRange3 $
 scp d103@172.25.26.191:Dat10/src/images/idleRange3.png $PREFIX"_images"/idleRange3.png
 
 
+ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py km_pr_l $TRIPS | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/kmlTrips.png $PREFIX"_images"/kmlTrips.png
+
+
+ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py cruiseExample $TRIPS | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/cruiseExample.png $PREFIX"_images"/cruiseExample.png
+
+
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py compareVehicles2 $GPSDATA | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/1Compare.png $PREFIX"_images"/1Compare.png
 scp d103@172.25.26.191:Dat10/src/images/2Compare.png $PREFIX"_images"/2Compare.png
 scp d103@172.25.26.191:Dat10/src/images/3Compare.png $PREFIX"_images"/3Compare.png
 scp d103@172.25.26.191:Dat10/src/images/4Compare.png $PREFIX"_images"/4Compare.png
-
-
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py acceleration3D $ACCDATA | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/100acceleration3D.png $PREFIX"_images"/100acceleration3D.png
@@ -57,6 +61,7 @@ scp d103@172.25.26.191:Dat10/src/images/1acceleration3D.png $PREFIX"_images"/1ac
 scp d103@172.25.26.191:Dat10/src/images/2acceleration3D.png $PREFIX"_images"/2acceleration3D.png
 scp d103@172.25.26.191:Dat10/src/images/3acceleration3D.png $PREFIX"_images"/3acceleration3D.png
 scp d103@172.25.26.191:Dat10/src/images/4acceleration3D.png $PREFIX"_images"/4acceleration3D.png
+
 
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py accelerationCounter $ACCDATA | gnuplot"
@@ -128,8 +133,6 @@ ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py showClusters
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py TripsKmlCluster $TRIPS | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/TripsKmlCluster.png $PREFIX"_images"/TripsKmlCluster.png
 
-ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py km_pr_l $TRIPS | gnuplot"
-scp d103@172.25.26.191:Dat10/src/images/kmlTrips.png $PREFIX"_images"/kmlTrips.png
 
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py tlRange $TRIPS | gnuplot"
