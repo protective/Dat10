@@ -1606,30 +1606,21 @@ elif TYPE == "compareVehicles":
 
 elif TYPE == 'compareVehicles2':
 	res = con.query("""
-	select c.vehicleid, (tottime-cv)/tottime*100 as cruise, iv/tottime*100 as idle, av/totfuel*100 as acc, a2v as acc2, slv/kv*100 as speed
+	select c.vehicleid, (tottime-cv)/tottime*100 as cruise, iv/tottime*100 as idle, rv as roads, a2v as acc2, slv/kv*100 as speed
 	from 
 		(select vehicleid, sum(time) as cv from g_cruise_data group by vehicleid)c, 
 		(select vehicleid, sum(stopped) as iv from g_idledatatl where stopped>=250 group by vehicleid)i,
-		(select vehicleid, sum(fuel) as av from g_accdata3 where avgAcceleration>0 group by vehicleid)a,
 		(select vehicleid, sum(case when g.avgacceleration>avg then fuel else 0 end)/sum(fuel)::float*100 as a2v from (select round(startspeed/10)*10 as s, avg(avgacceleration) as avg from g_accdata3 where avgacceleration>0 and time>3 and avgAcceleration<=2  group by s)sd, (select vehicleid, round(startspeed/10)*10 as s, avgAcceleration, time, fuel from g_accdata3 where avgacceleration> 0 and time>3 and avgAcceleration<=2 )g where sd.s=g.s group by vehicleid)a2,
-		(select vehicleid, sum(fuel) as dv from g_accdata3 where avgAcceleration<0 group by vehicleid)d,
+		(select)
 		(select vehicleid, count(*) as slv from (select vehicleid, speedmod-kmh as d from osm_dk_20130501 as m, g_gps_can_data as g where m.segmentkey=g.segmentkey and dirty is false)s where d>0 group by vehicleid)sl,
 		(select vehicleid, sum(time)::float as totTime, sum(total_fuel)::float as totFuel from g_trip_data group by vehicleid)t,
+		(select vehicleid, avg(psmallroad)*100 as rv from g_trip_data group by vehicleid order by vehicleid)r,
 		(select vehicleid, count(*)::float as kv from g_gps_can_data group by vehicleid)k
-	where t.vehicleid=i.vehicleid and t.vehicleid=a2.vehicleid and t.vehicleid=c.vehicleid and t.vehicleid=a.vehicleid and t.vehicleid=d.vehicleid and t.vehicleid=sl.vehicleid and t.vehicleid = k.vehicleid;""").getresult()
-
-	for r in res:
-		output = open(path + 'data/' + str(r[0]) + 'Compare2.csv', 'wb')
-		print >> output, '1 ' + str(r[1]) 
-		print >> output, '2 ' + str(r[2])
-		print >> output, '3 ' + str(r[3])
-		print >> output, '4 ' + str(r[4])
-		print >> output, '5 ' + str(r[5])
-		print >> output, '1 ' + str(r[1]) 
-		output.close()
+	where t.vehicleid=i.vehicleid and t.vehicleid=a2.vehicleid and t.vehicleid=c.vehicleid and t.vehicleid=sl.vehicleid and t.vehicleid = k.vehicleid and t.vehicleid=r.vehicleid;""").getresult()
 	
-		print "set output '" + path + "images/" + str(r[0]) + "Compare.png';"
-		print """set nokey
+	
+	s = "set output '" + path + "images/Compare.png';"
+	s+= """set key at 1.7,0.9 right
 		set polar
 		set angles degrees
 		npoints = 5
@@ -1648,28 +1639,42 @@ elif TYPE == 'compareVehicles2':
 		set arrow nohead from 0,0 to first 1*cos(a4) , 1*sin(a4)
 		set arrow nohead from 0,0 to first 1*cos(a5) , 1*sin(a5)
 		a1_max = 100
-		a2_max = 50
+		a2_max = 25
 		a3_max = 50
 		a4_max = 100
-		a5_max = 50
+		a5_max = 25
 		a1_min = 0
 		a2_min = 0
 		a3_min = 0
 		a4_min = 0
 		a5_min = 0
 		set label "Not at steady speed (0-100%)" at cos(a1),sin(a1) center offset char 1,1
-		set label "Idle (0-50%)" at cos(a2),sin(a2) center offset char -1,1
-		set label "Acceleration (0-50%)" at cos(a3),sin(a3) center offset char -1,-1
-		set label "Acceleration2 (0-100%)" at cos(a4),sin(a4) center offset char 0,-1
-		set label "Speed limit (0-50%)" at cos(a5),sin(a5) center offset char 3,1
+		set label "Idle (0-25%)" at cos(a2),sin(a2) center offset char -1,1
+		set label "Small roads (0-50%)" at cos(a3),sin(a3) center offset char -1,-1
+		set label "Acceleration (0-100%)" at cos(a4),sin(a4) center offset char 0,-1
+		set label "Speed limit (0-25%)" at cos(a5),sin(a5) center offset char 3,1
 		set xrange [-1:1]
 		set yrange [-1:1]
 		unset xtics
 		unset ytics
 		set rrange [0:1]
-		set rtics (""0,""0.25,""0.5,""0.75,""1)"""
+		set rtics (""0,""0.25,""0.5,""0.75,""1)
 
-		print "plot 'data/" + str(r[0]) + "Compare2.csv' using ($1==1?a1:($1==2?a2:($1==3?a3:($1==4?a4:($1==5?a5:$1))))):($1==1?(($2-a1_min)/(a1_max-a1_min)):($1==2?(($2-a2_min)/(a2_max-a2_min)):($1==3?(($2-a3_min)/(a3_max-a3_min)):($1==4?(($2-a4_min)/(a4_max-a4_min)):($1==5?(($2-a5_min)/(a5_max-a5_min)):$1))))) w l"
+		plot """
+		
+	for r in res:
+		output = open(path + 'data/' + str(r[0]) + 'Compare2.csv', 'wb')
+		print >> output, '1 ' + str(r[1]) 
+		print >> output, '2 ' + str(r[2])
+		print >> output, '3 ' + str(r[3])
+		print >> output, '4 ' + str(r[4])
+		print >> output, '5 ' + str(r[5])
+		print >> output, '1 ' + str(r[1]) 
+		output.close()
+
+		s+= "'data/" + str(r[0]) + "Compare2.csv' using ($1==1?a1:($1==2?a2:($1==3?a3:($1==4?a4:($1==5?a5:$1))))):($1==1?(($2-a1_min)/(a1_max-a1_min)):($1==2?(($2-a2_min)/(a2_max-a2_min)):($1==3?(($2-a3_min)/(a3_max-a3_min)):($1==4?(($2-a4_min)/(a4_max-a4_min)):($1==5?(($2-a5_min)/(a5_max-a5_min)):$1))))) w l lw 2 title 'Vehicle " + str(r[0]) + "',"
+
+	print s[:-1]
 
 
 elif TYPE == 'accelerationTEST':
