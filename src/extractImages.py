@@ -1056,7 +1056,7 @@ elif TYPE == 'accelerationRanges2':
 	
 	granularity = 0.125
 	for v in vehicles:
-		res = con.query("select * from (select round(avgAcceleration::decimal*8)/8 as acc, count(*)::float as c from "+ TABLE + " where time > 3 and vehicleid =" + str(v[0]) + " group by acc order by acc)a where (acc > 0);").getresult()
+		res = con.query("select * from (select round(avgAcceleration::decimal*8)/8 as acc, count(*)::float as c from "+ TABLE + " where time >= 3 and vehicleid =" + str(v[0]) + " group by acc order by acc)a where (acc > 0);").getresult()
 		output = open(path + 'data/'+str(v[0])+'accelerationRanges2.csv', 'w+')
 		for r in res:
 			print >> output, str(r[0]) + " " + str(float(r[1])/float(v[1]))
@@ -1193,7 +1193,7 @@ elif TYPE == 'acceleration3D':
 		if v[0] == 100:
 			res = con.query("select s, a, case when stddev_samp(f) is null then 0 else stddev_samp(f) end from (select vehicleid,round(startspeed/10*10) as s, round(avgAcceleration::decimal*4)/4 as a, avg((fuel*1000)/time) as f from g_accdata3 where avgAcceleration>0 and avgAcceleration<=2 and time>=3 group by s, a, vehicleid order by s, a)t group by s,a;").getresult()
 		elif v[0] == 101:
-			res = con.query("select s, a, count(f) from (select vehicleid,round(startspeed/10*10) as s, round(avgAcceleration::decimal*4)/4 as a, count(*) as f from g_accdata3 where avgAcceleration>0 and avgAcceleration<=2 and time>=3 group by s, a, vehicleid order by s, a)t group by s,a;").getresult()
+			res = con.query("select s,a,f from(select round(startspeed/10*10) as s, round(avgAcceleration::decimal*4)/4 as a, count(fuel) as f from g_accdata3 where avgAcceleration>0 and avgAcceleration<=2 and time>=3 group by s, a order by s, a)y where f > 0;").getresult()
 		elif v[0] == 0: 
 			res = con.query("select round(startspeed/10*10) as s, round(avgAcceleration::decimal*4)/4 as a, avg((fuel*1000)) as f from g_accdata3 where avgAcceleration>0 and avgAcceleration<=2 and time>=3 group by s, a order by s, a;").getresult()
 		else:
@@ -1204,7 +1204,9 @@ elif TYPE == 'acceleration3D':
 		temp0 = ''
 		temp1 = ''
 		temp2 = ''
-				
+		zero  = '0'
+		if v[0]==101:
+			zero = '1'	
 		for r in range(0, len(res)):
 			if (not oldX==res[r][0]):
 				print >> output, temp0 
@@ -1214,15 +1216,15 @@ elif TYPE == 'acceleration3D':
 				temp1 = ''
 				temp2 = ''
 			oldX = res[r][0]
-			temp0 += str(res[r][0]) + " " + str(float(res[r][1])) + " 0\n"
-			temp0 += str(res[r][0]) + " " + str(float(res[r][1])) + " 0\n"
-			temp0 += str(res[r][0]) + " " + str(float(res[r][1])+accGranularity) + " 0\n"
+			temp0 += str(res[r][0]) + " " + str(float(res[r][1])) + " "+ zero +"\n"
+			temp0 += str(res[r][0]) + " " + str(float(res[r][1])) + " "+ zero +"\n"
+			temp0 += str(res[r][0]) + " " + str(float(res[r][1])+accGranularity) + " "+ zero +"\n"
 
-			temp1 += str(res[r][0]) + " " + str(float(res[r][1])) + " 0\n"
+			temp1 += str(res[r][0]) + " " + str(float(res[r][1])) + " "+ zero +"\n"
 			temp1 += str(res[r][0]) + " " + str(float(res[r][1])) + " " + str(float(res[r][2])) + "\n"
 			temp1 += str(res[r][0]) + " " + str(float(res[r][1])+accGranularity) + " " + str(float(res[r][2])) + "\n"
 
-			temp2 += str(float(res[r][0])+float(speedGranularity)) + " " + str(float(res[r][1])) + " 0\n"
+			temp2 += str(float(res[r][0])+float(speedGranularity)) + " " + str(float(res[r][1])) + " "+ zero +"\n"
 			temp2 += str(float(res[r][0])+float(speedGranularity)) + " " + str(float(res[r][1])) + " " + str(float(res[r][2])) + "\n"
 			temp2 += str(float(res[r][0])+float(speedGranularity)) + " " + str(float(res[r][1])+accGranularity) + " " + str(float(res[r][2])) + "\n"
 		print >> output, temp0
@@ -1234,18 +1236,30 @@ elif TYPE == 'acceleration3D':
 		print "set hidden3d"
 		print "set xlabel 'Start speed km/h'"
 		print "set ylabel 'Acceleration (m/s^2)'"
-		print "set label 1 'Fuel (ml/s)' center rotate by 90 at graph 0, graph 0, graph 0.5 offset -7"
-		
+
 		if v[0]==100:
 			print "set label 1 'Standard deviation (ml/s)' center rotate by 90 at graph 0, graph 0, graph 0.5 offset -7"
+			print "unset logscale"
+			print "unset zr; set zr[0:]"
+			print "unset xr; set xr[0:160] reverse"
+			print "unset yr; set yr[0:2]"
 		elif v[0]==101:
-			print "set label 1 'Standard deviation (ml/s)' center rotate by 90 at graph 0, graph 0, graph 0.5 offset -7"		
+			print "set label 1 'Standard deviation (ml/s)' center rotate by 90 at graph 0, graph 0, graph 0.5 offset -7"
+
+			print "set logscale z 10"
+			print "set logscale cb 10"
+			print "unset zr; set zr[:]"
+			print "unset xr; set xr[0:160]"
+			print "unset yr; set yr[0:2] reverse"
+			
 		else:
 			print "set cbrange[0:100]"
+			print "unset logscale"
 			print "set label 1 'Fuel (ml/s)' center rotate by 90 at graph 0, graph 0, graph 0.5 offset -7"
-		print "set zr[0:]"
-		print "set yr[0:2]"
-		print "set xr[0:160] reverse"
+			print "unset zr; set  zr[0:]"
+			print "unset xr; set xr[0:160] reverse"
+			print "unset yr; set yr[0:2]"
+			
 		print "splot 'data/" +str(v[0]) + "acceleration3D.csv' with pm3d notitle"
 
 elif TYPE == 'accelerationStddevAcc':
@@ -1403,7 +1417,7 @@ elif TYPE == "accelerationCounter":
 		
 elif TYPE == 'accelerationFuelStart2' or  TYPE == 'accelerationFuelStart2Data':
 	minTime = '3'
-	starts = con.query("select * from (select distinct round(startspeed/10)*10 as start from " +  TABLE + " where time>" + minTime + ")s where start>0 order by start;").getresult()
+	starts = con.query("select * from (select distinct round(startspeed/10)*10 as start from " +  TABLE + " where time>=" + minTime + ")s where start>0 order by start;").getresult()
 	s = "plot "
 	color = 1
 	for ss in starts:
