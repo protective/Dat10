@@ -1056,7 +1056,7 @@ elif TYPE == 'accelerationRanges2':
 	
 	granularity = 0.125
 	for v in vehicles:
-		res = con.query("select * from (select round(avgAcceleration::decimal*8)/8 as acc, count(*)::float as c from "+ TABLE + " where time > 10 and vehicleid =" + str(v[0]) + " group by acc order by acc)a where (acc > 0);").getresult()
+		res = con.query("select * from (select round(avgAcceleration::decimal*8)/8 as acc, count(*)::float as c from "+ TABLE + " where time > 3 and vehicleid =" + str(v[0]) + " group by acc order by acc)a where (acc > 0);").getresult()
 		output = open(path + 'data/'+str(v[0])+'accelerationRanges2.csv', 'w+')
 		for r in res:
 			print >> output, str(r[0]) + " " + str(float(r[1])/float(v[1]))
@@ -1077,7 +1077,36 @@ elif TYPE == 'accelerationRanges2':
 		s += "'" + path + "data/"+str(v[0]) + "accelerationRanges2.csv' using ($1+"+ str(offset) + "):($2*100) with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + "  title 'Vehicle " + str(v[0]) + "',"
 		offset+=boxwidth
 	print s[:-1]
+elif TYPE == 'accelerationRanges2a':
 
+	#vehicles = con.query("select vehicleid, count(*) from " + TABLE + " group by vehicleid order by vehicleid;").getresult()
+	
+	#granularity = 1
+
+	res = con.query("select * from (select round(acceleration2::decimal*2)/2 as acc, count(*)::float as c from g_gps_can_data  group by acc order by acc)a where acc is not Null and (acc < -2 or acc > 2);").getresult()
+	output = open(path + 'data/accelerationRanges2a.csv', 'w+')
+	for r in res:
+		print >> output, str(r[0]) + " " + str(float(r[1]))
+		
+	#boxwidth= (float(granularity))/(len(vehicles)+1)
+	print "set output '" + path + "images/accelerationRanges2a.png';"
+	print "set ylabel 'Number of records'"
+	print "set xlabel 'Acceleration (m/s^2)'"
+	print "set style fill solid border -1"
+	print "set boxwidth " + str(0.5)
+	print "set xtic rotate by -40 scale 0"
+	print "set xtics " + str(1)
+	print "set xr [-10.25:6.25]"
+	print "set yr[0:25000]"
+	#print "set logscale y 10"
+	offset = 0
+	print "set arrow from 3.5,0 to 3.5,25000 lw 2 nohead front"
+	print "set arrow from -7.5,0 to -7.5,25000 lw 2 nohead front"
+	s = "plot "
+
+	s += "'" + path + "data/accelerationRanges2a.csv' with boxes notitle,"
+	#offset+=boxwidth
+	print s[:-1]
 elif TYPE == 'accelerationRanges3a':
 	res = con.query("select b.vehicleid, round((b.count::float/c.count*100)::numeric,2) from (select vehicleid, count(*) from (select vehicleid, round(acceleration/5)*5 as acc from " + TABLE + ")a where acc=0 group by vehicleid)b, (select vehicleid, count(*) from " + TABLE + " group by vehicleid)c where b.vehicleid=c.vehicleid;").getresult()
 	output = open(path + 'images/accelerationRanges3a', 'w+')
@@ -1160,9 +1189,12 @@ elif TYPE == 'acceleration3D':
 	vehicles = con.query('select distinct vehicleid from g_accdata3 order by vehicleid').getresult()
 	vehicles.insert(0,[0])
 	vehicles.insert(0,[100])
+	vehicles.insert(0,[101])
 	for v in vehicles:
 		if v[0] == 100:
 			res = con.query("select s, a, case when stddev_samp(f) is null then 0 else stddev_samp(f) end from (select vehicleid,round(startspeed/10*10) as s, round(avgAcceleration::decimal*4)/4 as a, avg((fuel*1000)/time) as f from g_accdata3 where avgAcceleration>0 and avgAcceleration<=2 and time>=3 group by s, a, vehicleid order by s, a)t group by s,a;").getresult()
+		elif v[0] == 101:
+			res = con.query("select s, a, count(f) from (select vehicleid,round(startspeed/10*10) as s, round(avgAcceleration::decimal*4)/4 as a, count(*) as f from g_accdata3 where avgAcceleration>0 and avgAcceleration<=2 and time>=3 group by s, a, vehicleid order by s, a)t group by s,a;").getresult()
 		elif v[0] == 0: 
 			res = con.query("select round(startspeed/10*10) as s, round(avgAcceleration::decimal*4)/4 as a, avg((fuel*1000)) as f from g_accdata3 where avgAcceleration>0 and avgAcceleration<=2 and time>=3 group by s, a order by s, a;").getresult()
 		else:
@@ -1207,13 +1239,14 @@ elif TYPE == 'acceleration3D':
 		
 		if v[0]==100:
 			print "set label 1 'Standard deviation (ml/s)' center rotate by 90 at graph 0, graph 0, graph 0.5 offset -7"
-				
+		elif v[0]==101:
+			print "set label 1 'Standard deviation (ml/s)' center rotate by 90 at graph 0, graph 0, graph 0.5 offset -7"		
 		else:
 			print "set cbrange[0:100]"
 			print "set label 1 'Fuel (ml/s)' center rotate by 90 at graph 0, graph 0, graph 0.5 offset -7"
 		print "set zr[0:]"
 		print "set yr[0:2]"
-		print "set xr[0:150] reverse"
+		print "set xr[0:160] reverse"
 		print "splot 'data/" +str(v[0]) + "acceleration3D.csv' with pm3d notitle"
 
 elif TYPE == 'accelerationStddevAcc':
@@ -1394,7 +1427,7 @@ elif TYPE == 'accelerationFuelStart2' or  TYPE == 'accelerationFuelStart2Data':
 	print "set output '" + path + "images/" +TYPE + ".png';"
 	print "set ylabel 'Fuel (ml/s)'"
 	print "set xlabel 'Acceleration (m/s^2)'"
-	print "set xrange[0:3]"
+	print "set xrange[0:3.5]"
 	print "set key outside opaque"
 	
 	if not s == '':
