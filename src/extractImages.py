@@ -1192,7 +1192,7 @@ elif TYPE == 'acceleration3D':
 	vehicles.insert(0,[101])
 	for v in vehicles:
 		if v[0] == 100:
-			res = con.query("select s, a, case when stddev_samp(f) is null then 0 else stddev_samp(f) end from (select vehicleid,round(startspeed/10*10) as s, round(avgAcceleration::decimal*4)/4 as a, avg((fuel*1000)/time) as f from g_accdata3 where avgAcceleration>0 and avgAcceleration<=2 and time>=3 group by s, a, vehicleid order by s, a)t group by s,a;").getresult()
+			res = con.query("select s, a, case when stddev_samp(f) is null then 0 else stddev_samp(f) end from (select vehicleid,round(startspeed/10*10) as s, round(avgAcceleration::decimal*4)/4 as a, avg((fuel*1000)/time) as f from g_accdata3 where avgAcceleration>0 and avgAcceleration<=2 and time>=3 group by s, a, vehicleid order by s, a)t group by s,a order by s,a;").getresult()
 		elif v[0] == 101:
 			res = con.query("select s,a,f from(select round(startspeed/10*10) as s, round(avgAcceleration::decimal*4)/4 as a, count(fuel) as f from g_accdata3 where avgAcceleration>0 and avgAcceleration<=2 and time>=3 group by s, a order by s, a)y where f > 0;").getresult()
 		elif v[0] == 0: 
@@ -1205,32 +1205,59 @@ elif TYPE == 'acceleration3D':
 		temp0 = ''
 		temp1 = ''
 		temp2 = ''
+		temp3 = ''
 		zero  = '0'
+		resRange = range(len(res)-1, -1, -1)
 		if v[0]==101:
-			zero = '1'	
-		for r in range(0, len(res)):
+			zero = '1'
+			resRange = range(0, len(res))
+			
+		for r in resRange:
+			if v[0]==101:
+				x1 = str(float(res[r][0]))
+				y1 = str(float(res[r][1]))
+				x2 = str(float(res[r][0])+float(speedGranularity))
+				y2 = str(float(res[r][1])+float(accGranularity))
+			else:
+				x1 = str(float(res[r][0])+float(speedGranularity))
+				y1 = str(float(res[r][1]))
+				x2 = str(float(res[r][0]))
+				y2 = str(float(res[r][1])-float(accGranularity))
+
+				
 			if (not oldX==res[r][0]):
 				print >> output, temp0 
 				print >> output, temp1
 				print >> output, temp2
+				print >> output, temp3 + '\n'
 				temp0 = ''
 				temp1 = ''
 				temp2 = ''
+				temp3 = ''
 			oldX = res[r][0]
-			temp0 += str(res[r][0]) + " " + str(float(res[r][1])) + " "+ zero +"\n"
-			temp0 += str(res[r][0]) + " " + str(float(res[r][1])) + " "+ zero +"\n"
-			temp0 += str(res[r][0]) + " " + str(float(res[r][1])+accGranularity) + " "+ zero +"\n"
+			temp0 += x1 + " " + y1 + " "+ zero +"\n"
+			temp0 += x1 + " " + y1 + " "+ zero +"\n"
+			temp0 += x1 + " " + y2 + " "+ zero +"\n"
+			temp0 += x1 + " " + y2 + " "+ zero +"\n"
 
-			temp1 += str(res[r][0]) + " " + str(float(res[r][1])) + " "+ zero +"\n"
-			temp1 += str(res[r][0]) + " " + str(float(res[r][1])) + " " + str(float(res[r][2])) + "\n"
-			temp1 += str(res[r][0]) + " " + str(float(res[r][1])+accGranularity) + " " + str(float(res[r][2])) + "\n"
+			temp1 += x1 + " " + y1 + " "+ zero +"\n"
+			temp1 += x1 + " " + y1 + " " + str(float(res[r][2])) + "\n"
+			temp1 += x1 + " " + y2 + " " + str(float(res[r][2])) + "\n"
+			temp1 += x1 + " " + y2 + " " + zero + "\n"
 
-			temp2 += str(float(res[r][0])+float(speedGranularity)) + " " + str(float(res[r][1])) + " "+ zero +"\n"
-			temp2 += str(float(res[r][0])+float(speedGranularity)) + " " + str(float(res[r][1])) + " " + str(float(res[r][2])) + "\n"
-			temp2 += str(float(res[r][0])+float(speedGranularity)) + " " + str(float(res[r][1])+accGranularity) + " " + str(float(res[r][2])) + "\n"
+			temp2 += x2 + " " + y1 + " "+ zero +"\n"
+			temp2 += x2 + " " + y1 + " " + str(float(res[r][2])) + "\n"
+			temp2 += x2 + " " + y2 + " " + str(float(res[r][2])) + "\n"
+			temp2 += x2 + " " + y2 + " " + zero + "\n"
+			
+			temp3 += x2 + " " + y1 + " " + zero + "\n"
+			temp3 += x2 + " " + y1 + " " + zero + "\n"
+			temp3 += x2 + " " + y2 + " " + zero + "\n"
+			temp3 += x2 + " " + y2 + " " + zero + "\n"
 		print >> output, temp0
 		print >> output, temp1
 		print >> output, temp2
+		print >> output, temp3
 		
 	
 		print "set output 'images/" +str(v[0]) + "acceleration3D.png'"
@@ -1665,7 +1692,7 @@ elif TYPE == 'compareVehicles2':
 		(select vehicleid, sum(stopped) as iv from g_idledatatl where stopped>=250 group by vehicleid)i,
 		(select vehicleid, avg(tlcounter/total_km) as tlv from g_trip_data where total_km>0 group by vehicleid)tl,
 		(select vehicleid, count(*) as slv from (select vehicleid, speedmod-kmh as d from osm_dk_20130501 as m, g_gps_can_data as g where m.segmentkey=g.segmentkey and dirty is false)s where d>0 group by vehicleid)sl,
-		(select vehicleid, avg(psmallroad)*100 as rv from g_trip_data group by vehicleid order by vehicleid)r,
+		(select vehicleid, 100-avg(pnormalroad)*100 as rv from g_trip_data group by vehicleid order by vehicleid)r,
 		(select vehicleid, avg(avgAcceleration) as av from g_accdata3 where time>=3 and avgacceleration>0 and startspeed<=80 group by vehicleid)a,
 		(select vehicleid, avg(fuel*1000/time) as afv from g_accdata3 where avgacceleration>0 and time>=3 group by vehicleid)af,
 		(select vehicleid, sum(time)::float as totTime, sum(total_fuel)::float as totFuel from g_trip_data group by vehicleid)t,
@@ -1699,7 +1726,7 @@ elif TYPE == 'compareVehicles2':
 		a1_max = 100
 		a2_max = 20
 		a3_max = 0.25
-		a4_max = 50
+		a4_max = 100
 		a5_max = 25
 		a6_max = 1
 		a7_max = 5
@@ -1713,7 +1740,7 @@ elif TYPE == 'compareVehicles2':
 		set label "Not at steady speed (0-100%)" at cos(a1),sin(a1) center offset char 1,1
 		set label "Idle (0-20%)" at cos(a2),sin(a2) center offset char -2,0.5
 		set label "Traffic lights per km (0-0.25)" at cos(a3),sin(a3) center offset char -3,1
-		set label "Small roads (0-50%)" at cos(a4),sin(a4) center offset char -3,-1
+		set label "Not on main roads (0-100%)" at cos(a4),sin(a4) center offset char -3,-1
 		set label "Speed limit (0-25%)" at cos(a5),sin(a5) center offset char -3,-1
 		set label "Acceleration (0-1 m/s)" at cos(a6),sin(a6) center offset char 3,-1
 		set label "Acceleration fuel (0-5 ml/s)" at cos(a7),sin(a7) center offset char 5,1
