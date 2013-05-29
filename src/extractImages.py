@@ -155,7 +155,7 @@ elif TYPE == 'frequency':
 
 	data = {}
 
-	res = con.query("select timestamp, tid from g_gps_can_data  order by timestamp,tid ").getresult()
+	res = con.query("select timestamp, tid from g_gps_can_data order by tid, timestamp ").getresult()
 	
 
 
