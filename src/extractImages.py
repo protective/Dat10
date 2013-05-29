@@ -1052,11 +1052,11 @@ elif TYPE == 'accelerationRanges':
 
 elif TYPE == 'accelerationRanges2':
 
-	vehicles = con.query("select vehicleid, count(*) from " + TABLE + " group by vehicleid order by vehicleid;").getresult()
+	vehicles = con.query("select vehicleid, count(*) from " + TABLE + " where startspeed <=80 group by vehicleid order by vehicleid;").getresult()
 	
 	granularity = 0.125
 	for v in vehicles:
-		res = con.query("select * from (select round(avgAcceleration::decimal*8)/8 as acc, count(*)::float as c from "+ TABLE + " where time > 3 and vehicleid =" + str(v[0]) + " group by acc order by acc)a where (acc > 0);").getresult()
+		res = con.query("select * from (select round(avgAcceleration::decimal*8)/8 as acc, count(*)::float as c from "+ TABLE + " where time >= 3 and vehicleid =" + str(v[0]) + " and startspeed<=80 group by acc order by acc)a where (acc > 0);").getresult()
 		output = open(path + 'data/'+str(v[0])+'accelerationRanges2.csv', 'w+')
 		for r in res:
 			print >> output, str(r[0]) + " " + str(float(r[1])/float(v[1]))
@@ -1194,7 +1194,7 @@ elif TYPE == 'acceleration3D':
 		if v[0] == 100:
 			res = con.query("select s, a, case when stddev_samp(f) is null then 0 else stddev_samp(f) end from (select vehicleid,round(startspeed/10*10) as s, round(avgAcceleration::decimal*4)/4 as a, avg((fuel*1000)/time) as f from g_accdata3 where avgAcceleration>0 and avgAcceleration<=2 and time>=3 group by s, a, vehicleid order by s, a)t group by s,a;").getresult()
 		elif v[0] == 101:
-			res = con.query("select s, a, count(f) from (select vehicleid,round(startspeed/10*10) as s, round(avgAcceleration::decimal*4)/4 as a, count(*) as f from g_accdata3 where avgAcceleration>0 and avgAcceleration<=2 and time>=3 group by s, a, vehicleid order by s, a)t group by s,a;").getresult()
+			res = con.query("select s,a,f from(select round(startspeed/10*10) as s, round(avgAcceleration::decimal*4)/4 as a, count(fuel) as f from g_accdata3 where avgAcceleration>0 and avgAcceleration<=2 and time>=3 group by s, a order by s, a)y where f > 0;").getresult()
 		elif v[0] == 0: 
 			res = con.query("select round(startspeed/10*10) as s, round(avgAcceleration::decimal*4)/4 as a, avg((fuel*1000)) as f from g_accdata3 where avgAcceleration>0 and avgAcceleration<=2 and time>=3 group by s, a order by s, a;").getresult()
 		else:
@@ -1205,7 +1205,9 @@ elif TYPE == 'acceleration3D':
 		temp0 = ''
 		temp1 = ''
 		temp2 = ''
-				
+		zero  = '0'
+		if v[0]==101:
+			zero = '1'	
 		for r in range(0, len(res)):
 			if (not oldX==res[r][0]):
 				print >> output, temp0 
@@ -1215,15 +1217,15 @@ elif TYPE == 'acceleration3D':
 				temp1 = ''
 				temp2 = ''
 			oldX = res[r][0]
-			temp0 += str(res[r][0]) + " " + str(float(res[r][1])) + " 0\n"
-			temp0 += str(res[r][0]) + " " + str(float(res[r][1])) + " 0\n"
-			temp0 += str(res[r][0]) + " " + str(float(res[r][1])+accGranularity) + " 0\n"
+			temp0 += str(res[r][0]) + " " + str(float(res[r][1])) + " "+ zero +"\n"
+			temp0 += str(res[r][0]) + " " + str(float(res[r][1])) + " "+ zero +"\n"
+			temp0 += str(res[r][0]) + " " + str(float(res[r][1])+accGranularity) + " "+ zero +"\n"
 
-			temp1 += str(res[r][0]) + " " + str(float(res[r][1])) + " 0\n"
+			temp1 += str(res[r][0]) + " " + str(float(res[r][1])) + " "+ zero +"\n"
 			temp1 += str(res[r][0]) + " " + str(float(res[r][1])) + " " + str(float(res[r][2])) + "\n"
 			temp1 += str(res[r][0]) + " " + str(float(res[r][1])+accGranularity) + " " + str(float(res[r][2])) + "\n"
 
-			temp2 += str(float(res[r][0])+float(speedGranularity)) + " " + str(float(res[r][1])) + " 0\n"
+			temp2 += str(float(res[r][0])+float(speedGranularity)) + " " + str(float(res[r][1])) + " "+ zero +"\n"
 			temp2 += str(float(res[r][0])+float(speedGranularity)) + " " + str(float(res[r][1])) + " " + str(float(res[r][2])) + "\n"
 			temp2 += str(float(res[r][0])+float(speedGranularity)) + " " + str(float(res[r][1])+accGranularity) + " " + str(float(res[r][2])) + "\n"
 		print >> output, temp0
@@ -1235,18 +1237,30 @@ elif TYPE == 'acceleration3D':
 		print "set hidden3d"
 		print "set xlabel 'Start speed km/h'"
 		print "set ylabel 'Acceleration (m/s^2)'"
-		print "set label 1 'Fuel (ml/s)' center rotate by 90 at graph 0, graph 0, graph 0.5 offset -7"
-		
+
 		if v[0]==100:
 			print "set label 1 'Standard deviation (ml/s)' center rotate by 90 at graph 0, graph 0, graph 0.5 offset -7"
+			print "unset logscale"
+			print "unset zr; set zr[0:]"
+			print "unset xr; set xr[0:160] reverse"
+			print "unset yr; set yr[0:2]"
 		elif v[0]==101:
-			print "set label 1 'Standard deviation (ml/s)' center rotate by 90 at graph 0, graph 0, graph 0.5 offset -7"		
+			print "set label 1 'Standard deviation (ml/s)' center rotate by 90 at graph 0, graph 0, graph 0.5 offset -7"
+
+			print "set logscale z 10"
+			print "set logscale cb 10"
+			print "unset zr; set zr[:]"
+			print "unset xr; set xr[0:160]"
+			print "unset yr; set yr[0:2] reverse"
+			
 		else:
-			print "set cbrange[0:100]"
+			print "set cbrange[0:80]"
+			print "unset logscale"
 			print "set label 1 'Fuel (ml/s)' center rotate by 90 at graph 0, graph 0, graph 0.5 offset -7"
-		print "set zr[0:]"
-		print "set yr[0:2]"
-		print "set xr[0:160] reverse"
+			print "unset zr; set  zr[0:]"
+			print "unset xr; set xr[0:160] reverse"
+			print "unset yr; set yr[0:2]"
+			
 		print "splot 'data/" +str(v[0]) + "acceleration3D.csv' with pm3d notitle"
 
 elif TYPE == 'accelerationStddevAcc':
@@ -1402,13 +1416,13 @@ elif TYPE == "accelerationCounter":
 	print "plot 'data/accelerationCounter.csv' with lines notitle"
 
 		
-elif TYPE == 'accelerationFuelStart2' or  TYPE == 'accelerationFuelStart2Data':
+elif TYPE == 'accelerationFuelStart2' or  TYPE == 'accelerationFuelStart2DataA' or  TYPE == 'accelerationFuelStart2DataB':
 	minTime = '3'
-	starts = con.query("select * from (select distinct round(startspeed/10)*10 as start from " +  TABLE + " where time>" + minTime + ")s where start>0 order by start;").getresult()
+	starts = con.query("select * from (select distinct round(startspeed/10)*10 as start from " +  TABLE + " where time>=" + minTime + ")s where start>0 order by start;").getresult()
 	s = "plot "
 	color = 1
 	for ss in starts:
-		res = con.query("select avgAcceleration, (fuel*1000)/time::float from " + TABLE + " where round(startspeed/10)*10=" + str(ss[0]) + " and endspeed>startspeed and time>=" + minTime + " order by endspeed;").getresult()
+		res = con.query("select avgAcceleration, (fuel*1000)/time::float from " + TABLE + " where round(startspeed/10)*10=" + str(ss[0]) + " and endspeed>startspeed and time>=" + minTime + " and (fuel*1000)/time::float>0 order by endspeed;").getresult()
 		output = open(path + 'data/'+ str(int(ss[0])) + TYPE + '.csv', 'w+')
 		
 		for r in res:
@@ -1418,17 +1432,21 @@ elif TYPE == 'accelerationFuelStart2' or  TYPE == 'accelerationFuelStart2Data':
 			n = str(int(ss[0]))
 			print "f"+ n + "(x) = a"+ n + "*x + b"+ n
 			print "fit f"+ n + "(x) '" + path + "data/"+ n + TYPE+ ".csv' using 1:2 via a"+ n + ",b"+ n
-			if TYPE == 'accelerationFuelStart2Data':
+
+			if (TYPE == 'accelerationFuelStart2DataA' and ss[0]<=80) or (TYPE == 'accelerationFuelStart2DataB' and ss[0]>80):
+				s += "f"+ n + "(x) lc " + str(color) + " lw 2 title '" + n + " km/h',"
+				#s+= "f"+ n + "(x) lc " + str(color) + " title sprintf('%d km/h (%2.1f, %d)'," +n+", a"+ n + ", " + str(len(res)) +"),"
 				s += "'" + path + "data/"+ n + TYPE +".csv' lc " + str(color) + " notitle,"
-#			if len(res)>100 or TYPE == 'accelerationFuelStart2Data':
-			s+= "f"+ n + "(x) lc " + str(color) + " title 'Start speed: " + n + "(" + str(len(res)) + ")'," #sprintf('Start speed: %d (%2.1f)'," +n+", a"+ n + "),"
+			elif TYPE == 'accelerationFuelStart2' and ss[0]<=80:
+				s+= "f"+ n + "(x) lc " + str(color) + " lw 2 title '" + n + " km/h',"
+				#s+= "f"+ n + "(x) lc " + str(color) + " title sprintf('%d km/h (%2.1f, %d)'," +n+", a"+ n + ", " + str(len(res)) +"),"
 		color += 1
 	
 	print "set output '" + path + "images/" +TYPE + ".png';"
 	print "set ylabel 'Fuel (ml/s)'"
 	print "set xlabel 'Acceleration (m/s^2)'"
 	print "set xrange[0:3.5]"
-	print "set key outside opaque"
+	print "set key right bottom opaque"
 	
 	if not s == '':
 		print s[:-1]
@@ -1638,30 +1656,35 @@ elif TYPE == "compareVehicles":
 		os.system("python piechart.py data/" + str(r[0]) + "Compare.csv images/" + str(r[0]) + "Compare.png")
 
 elif TYPE == 'compareVehicles2':
+	#(select vehicleid, sum(case when g.avgacceleration>avg then fuel else 0 end)/sum(fuel)::float*100 as a2v from (select round(startspeed/10)*10 as s, avg(avgacceleration) as avg from g_accdata3 where avgacceleration>0 and time>3 and avgAcceleration<=2  group by s)sd, (select vehicleid, round(startspeed/10)*10 as s, avgAcceleration, time, fuel from g_accdata3 where avgacceleration> 0 and time>3 and avgAcceleration<=2 )g where sd.s=g.s group by vehicleid)a2,
+
 	res = con.query("""
-	select c.vehicleid, (tottime-cv)/tottime*100 as cruise, iv/tottime*100 as idle, rv as roads, a2v as acc2, slv/kv*100 as speed
+	select c.vehicleid, (tottime-cv)/tottime*100 as cruise, iv/tottime*100 as idle, tlv as trafficlights, rv as roads, slv/kv*100 as speed, av, afv 
 	from 
 		(select vehicleid, sum(time) as cv from g_cruise_data group by vehicleid)c, 
 		(select vehicleid, sum(stopped) as iv from g_idledatatl where stopped>=250 group by vehicleid)i,
-		(select vehicleid, sum(case when g.avgacceleration>avg then fuel else 0 end)/sum(fuel)::float*100 as a2v from (select round(startspeed/10)*10 as s, avg(avgacceleration) as avg from g_accdata3 where avgacceleration>0 and time>3 and avgAcceleration<=2  group by s)sd, (select vehicleid, round(startspeed/10)*10 as s, avgAcceleration, time, fuel from g_accdata3 where avgacceleration> 0 and time>3 and avgAcceleration<=2 )g where sd.s=g.s group by vehicleid)a2,
-		(select)
+		(select vehicleid, avg(tlcounter/total_km) as tlv from g_trip_data where total_km>0 group by vehicleid)tl,
 		(select vehicleid, count(*) as slv from (select vehicleid, speedmod-kmh as d from osm_dk_20130501 as m, g_gps_can_data as g where m.segmentkey=g.segmentkey and dirty is false)s where d>0 group by vehicleid)sl,
-		(select vehicleid, sum(time)::float as totTime, sum(total_fuel)::float as totFuel from g_trip_data group by vehicleid)t,
 		(select vehicleid, avg(psmallroad)*100 as rv from g_trip_data group by vehicleid order by vehicleid)r,
+		(select vehicleid, avg(avgAcceleration) as av from g_accdata3 where time>=3 and avgacceleration>0 and startspeed<=80 group by vehicleid)a,
+		(select vehicleid, avg(fuel*1000/time) as afv from g_accdata3 where avgacceleration>0 and time>=3 group by vehicleid)af,
+		(select vehicleid, sum(time)::float as totTime, sum(total_fuel)::float as totFuel from g_trip_data group by vehicleid)t,
 		(select vehicleid, count(*)::float as kv from g_gps_can_data group by vehicleid)k
-	where t.vehicleid=i.vehicleid and t.vehicleid=a2.vehicleid and t.vehicleid=c.vehicleid and t.vehicleid=sl.vehicleid and t.vehicleid = k.vehicleid and t.vehicleid=r.vehicleid;""").getresult()
+	where t.vehicleid=i.vehicleid and t.vehicleid=tl.vehicleid and t.vehicleid=c.vehicleid and t.vehicleid=sl.vehicleid and t.vehicleid = k.vehicleid and t.vehicleid=r.vehicleid and t.vehicleid=a.vehicleid and t.vehicleid=af.vehicleid order by vehicleid;""").getresult()
 	
 	
 	s = "set output '" + path + "images/Compare.png';"
-	s+= """set key at 1.7,0.9 right
+	s+= """set key at 1.8,0.7 right
 		set polar
 		set angles degrees
-		npoints = 5
+		npoints = 7
 		a1 = 360/npoints*1
 		a2= 360/npoints*2
 		a3= 360/npoints*3
 		a4= 360/npoints*4
 		a5= 360/npoints*5
+		a6= 360/npoints*6
+		a7= 360/npoints*7+3.25
 		set grid polar 360.
 		set size square
 		set style data lines
@@ -1671,27 +1694,35 @@ elif TYPE == 'compareVehicles2':
 		set arrow nohead from 0,0 to first 1*cos(a3) , 1*sin(a3)
 		set arrow nohead from 0,0 to first 1*cos(a4) , 1*sin(a4)
 		set arrow nohead from 0,0 to first 1*cos(a5) , 1*sin(a5)
+		set arrow nohead from 0,0 to first 1*cos(a6) , 1*sin(a6)
+		set arrow nohead from 0,0 to first 1*cos(a7) , 1*sin(a7)
 		a1_max = 100
-		a2_max = 25
-		a3_max = 50
-		a4_max = 100
+		a2_max = 20
+		a3_max = 0.25
+		a4_max = 50
 		a5_max = 25
+		a6_max = 1
+		a7_max = 5
 		a1_min = 0
 		a2_min = 0
 		a3_min = 0
 		a4_min = 0
 		a5_min = 0
+		a6_min = 0
+		a7_min = 0
 		set label "Not at steady speed (0-100%)" at cos(a1),sin(a1) center offset char 1,1
-		set label "Idle (0-25%)" at cos(a2),sin(a2) center offset char -1,1
-		set label "Small roads (0-50%)" at cos(a3),sin(a3) center offset char -1,-1
-		set label "Acceleration (0-100%)" at cos(a4),sin(a4) center offset char 0,-1
-		set label "Speed limit (0-25%)" at cos(a5),sin(a5) center offset char 3,1
+		set label "Idle (0-20%)" at cos(a2),sin(a2) center offset char -2,0.5
+		set label "Traffic lights per km (0-0.25)" at cos(a3),sin(a3) center offset char -3,1
+		set label "Small roads (0-50%)" at cos(a4),sin(a4) center offset char -3,-1
+		set label "Speed limit (0-25%)" at cos(a5),sin(a5) center offset char -3,-1
+		set label "Acceleration (0-1 m/s)" at cos(a6),sin(a6) center offset char 3,-1
+		set label "Acceleration fuel (0-5 ml/s)" at cos(a7),sin(a7) center offset char 5,1
 		set xrange [-1:1]
 		set yrange [-1:1]
 		unset xtics
 		unset ytics
 		set rrange [0:1]
-		set rtics (""0,""0.25,""0.5,""0.75,""1)
+		set rtics (""0,""0.25,""0.5,""0.75, ""1)
 
 		plot """
 		
@@ -1702,10 +1733,12 @@ elif TYPE == 'compareVehicles2':
 		print >> output, '3 ' + str(r[3])
 		print >> output, '4 ' + str(r[4])
 		print >> output, '5 ' + str(r[5])
+		print >> output, '6 ' + str(r[6])
+		print >> output, '7 ' + str(r[7])
 		print >> output, '1 ' + str(r[1]) 
 		output.close()
 
-		s+= "'data/" + str(r[0]) + "Compare2.csv' using ($1==1?a1:($1==2?a2:($1==3?a3:($1==4?a4:($1==5?a5:$1))))):($1==1?(($2-a1_min)/(a1_max-a1_min)):($1==2?(($2-a2_min)/(a2_max-a2_min)):($1==3?(($2-a3_min)/(a3_max-a3_min)):($1==4?(($2-a4_min)/(a4_max-a4_min)):($1==5?(($2-a5_min)/(a5_max-a5_min)):$1))))) w l lw 2 title 'Vehicle " + str(r[0]) + "',"
+		s+= "'data/" + str(r[0]) + """Compare2.csv' using ($1==1?a1:($1==2?a2:($1==3?a3:($1==4?a4:($1==5?a5:($1==6?a6:($1==7?a7:$1))))))):($1==1?(($2-a1_min)/(a1_max-a1_min)):($1==2?(($2-a2_min)/(a2_max-a2_min)):($1==3?(($2-a3_min)/(a3_max-a3_min)):($1==4?(($2-a4_min)/(a4_max-a4_min)):($1==5?(($2-a5_min)/(a5_max-a5_min)):($1==6?(($2-a6_min)/(a6_max-a6_min)):($1==7?(($2-a7_min)/(a7_max-a7_min)):$1))))))) w l lw 2 title 'Vehicle """ + str(r[0]) + "',"
 
 	print s[:-1]
 
