@@ -843,8 +843,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.7"
-     inkscape:cx="527.49358"
-     inkscape:cy="65.416614"
+     inkscape:cx="380.8277"
+     inkscape:cy="154.97706"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -1471,7 +1471,7 @@
        xml:space="preserve"
        style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
        x="-105.77972"
-       y="875.02435"
+       y="873.02435"
        id="text5936-2"
        sodipodi:linespacing="125%"
        inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
@@ -1480,18 +1480,18 @@
          sodipodi:role="line"
          id="tspan5938-9"
          x="-105.77972"
-         y="875.02435"
+         y="873.02435"
          style="font-size:30px">Property</tspan><tspan
          sodipodi:role="line"
          x="-105.77972"
-         y="912.52435"
+         y="910.52435"
          style="font-size:30px"
          id="tspan3227">'Same Speed'</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
        x="-105.77972"
-       y="786.98267"
+       y="785.93207"
        id="text5940-8"
        sodipodi:linespacing="125%"
        inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
@@ -1500,16 +1500,16 @@
          sodipodi:role="line"
          id="tspan5942-3"
          x="-105.77972"
-         y="786.98267"
+         y="785.93207"
          style="font-size:30px">Property</tspan><tspan
          sodipodi:role="line"
          x="-105.77972"
-         y="824.48267"
+         y="823.43207"
          style="font-size:30px"
          id="tspan3229">'Acceleration'</tspan></text>
     <path
        style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#StopL);marker-end:url(#StopL)"
-       d="m 107.54393,795.01001 c 303.38318,0 303.38318,0 303.38318,0"
+       d="m 107.54393,793.95941 c 303.38318,0 303.38318,0 303.38318,0"
        id="path4561-2-5"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc"
@@ -1518,7 +1518,7 @@
        inkscape:export-ydpi="100" />
     <path
        style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#StopL);marker-end:url(#StopL)"
-       d="m 460.82967,795.01001 c 256.01732,0 256.01732,0 256.01732,0"
+       d="m 460.82967,793.95941 c 256.01732,0 256.01732,0 256.01732,0"
        id="path4561-1-8-9"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc"
@@ -1527,7 +1527,7 @@
        inkscape:export-ydpi="100" />
     <path
        style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#StopL);marker-end:url(#StopL)"
-       d="m 737.54394,795.01001 c 142.85714,0 142.85714,0 142.85714,0"
+       d="m 737.54394,793.95941 c 142.85714,0 142.85714,0 142.85714,0"
        id="path4561-4-8-6"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc"
@@ -1536,7 +1536,7 @@
        inkscape:export-ydpi="100" />
     <path
        style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#StopL);marker-end:url(#StopL)"
-       d="m 106.11536,885.95941 c 303.38318,0 303.38318,0 303.38318,0"
+       d="m 106.11536,883.95941 c 303.38318,0 303.38318,0 303.38318,0"
        id="path4561-9-5"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc"
@@ -1545,7 +1545,7 @@
        inkscape:export-ydpi="100" />
     <path
        style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#StopL);marker-end:url(#StopL)"
-       d="m 460.82967,885.95941 c 256.01732,0 256.01732,0 256.01732,0"
+       d="m 460.82967,883.95941 c 256.01732,0 256.01732,0 256.01732,0"
        id="path4561-1-88-5"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc"
@@ -1554,7 +1554,7 @@
        inkscape:export-ydpi="100" />
     <path
        style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#StopL);marker-end:url(#StopL)"
-       d="m 737.54394,885.95941 c 142.85714,0 142.85714,0 142.85714,0"
+       d="m 737.54394,883.95941 c 142.85714,0 142.85714,0 142.85714,0"
        id="path4561-4-88-3"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc"
@@ -1562,12 +1562,12 @@
        inkscape:export-xdpi="100"
        inkscape:export-ydpi="100" />
     <rect
-       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:3.1535573;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:2.82566476;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        id="rect3507"
-       width="66.05941"
+       width="53.036453"
        height="16.590689"
-       x="106.25"
-       y="786.71466"
+       x="150.53571"
+       y="875.66406"
        inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
        inkscape:export-xdpi="100"
        inkscape:export-ydpi="100" />
@@ -1576,8 +1576,8 @@
        id="rect3507-8"
        width="25.797405"
        height="16.590689"
-       x="231.256"
-       y="786.71466"
+       x="245.54172"
+       y="875.66406"
        inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
        inkscape:export-xdpi="100"
        inkscape:export-ydpi="100" />
@@ -1586,8 +1586,8 @@
        id="rect3507-3"
        width="29.064764"
        height="16.590689"
-       x="378.96497"
-       y="786.71466"
+       x="518.50958"
+       y="875.66406"
        inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
        inkscape:export-xdpi="100"
        inkscape:export-ydpi="100" />
@@ -1596,8 +1596,8 @@
        id="rect3507-2"
        width="57.433311"
        height="16.590689"
-       x="461.97028"
-       y="786.71466"
+       x="805.94629"
+       y="875.66406"
        inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
        inkscape:export-xdpi="100"
        inkscape:export-ydpi="100" />
@@ -1606,8 +1606,8 @@
        id="rect3507-9"
        width="28.350475"
        height="16.590689"
-       x="561.25598"
-       y="786.71466"
+       x="603.92749"
+       y="875.66406"
        inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
        inkscape:export-xdpi="100"
        inkscape:export-ydpi="100" />
@@ -1616,8 +1616,8 @@
        id="rect3507-95"
        width="10.323164"
        height="16.590689"
-       x="106.97029"
-       y="877.66406"
+       x="108.39886"
+       y="785.66406"
        inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
        inkscape:export-xdpi="100"
        inkscape:export-ydpi="100" />
@@ -1626,8 +1626,8 @@
        id="rect3507-5"
        width="12.453445"
        height="16.590689"
-       x="121.9703"
-       y="877.66406"
+       x="123.39887"
+       y="785.66406"
        inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
        inkscape:export-xdpi="100"
        inkscape:export-ydpi="100" />
@@ -1636,18 +1636,8 @@
        id="rect3507-24"
        width="5.3269978"
        height="16.590689"
-       x="138.39886"
-       y="877.66406"
-       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
-       inkscape:export-xdpi="100"
-       inkscape:export-ydpi="100" />
-    <rect
-       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.40304673;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       id="rect3507-86"
-       width="13.076078"
-       height="16.590689"
-       x="155.54173"
-       y="877.66406"
+       x="139.82744"
+       y="785.66406"
        inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
        inkscape:export-xdpi="100"
        inkscape:export-ydpi="100" />
@@ -1656,8 +1646,8 @@
        id="rect3507-93"
        width="8.1232481"
        height="16.590689"
-       x="206.25601"
-       y="877.66406"
+       x="207.68459"
+       y="785.66406"
        inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
        inkscape:export-xdpi="100"
        inkscape:export-ydpi="100" />
@@ -1666,18 +1656,18 @@
        id="rect3507-93-9"
        width="8.1232481"
        height="16.590689"
-       x="261.65265"
-       y="877.66406"
+       x="289.08121"
+       y="785.66406"
        inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
        inkscape:export-xdpi="100"
        inkscape:export-ydpi="100" />
     <rect
-       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.10585511;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:2.11204338;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        id="rect3507-93-3"
-       width="8.1232481"
+       width="29.630495"
        height="16.590689"
-       x="325.22409"
-       y="877.66406"
+       x="352.65265"
+       y="785.66406"
        inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
        inkscape:export-xdpi="100"
        inkscape:export-ydpi="100" />
@@ -1686,8 +1676,8 @@
        id="rect3507-93-0"
        width="8.1232481"
        height="16.590689"
-       x="298.08124"
-       y="877.66406"
+       x="325.5098"
+       y="785.66406"
        inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
        inkscape:export-xdpi="100"
        inkscape:export-ydpi="100" />
@@ -1696,8 +1686,8 @@
        id="rect3507-93-5"
        width="8.1232481"
        height="16.590689"
-       x="472.36694"
-       y="877.66406"
+       x="462.36694"
+       y="785.66406"
        inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
        inkscape:export-xdpi="100"
        inkscape:export-ydpi="100" />
@@ -1706,8 +1696,8 @@
        id="rect3507-93-1"
        width="8.1232481"
        height="16.590689"
-       x="488.79553"
-       y="877.66406"
+       x="478.79553"
+       y="785.66406"
        inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
        inkscape:export-xdpi="100"
        inkscape:export-ydpi="100" />
@@ -1716,8 +1706,8 @@
        id="rect3507-93-2"
        width="8.1232481"
        height="16.590689"
-       x="513.79553"
-       y="877.66406"
+       x="503.79553"
+       y="785.66406"
        inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
        inkscape:export-xdpi="100"
        inkscape:export-ydpi="100" />
@@ -1726,8 +1716,8 @@
        id="rect3507-93-18"
        width="8.1232481"
        height="16.590689"
-       x="562.36694"
-       y="877.66406"
+       x="552.36694"
+       y="785.66406"
        inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
        inkscape:export-xdpi="100"
        inkscape:export-ydpi="100" />
@@ -1736,8 +1726,8 @@
        id="rect3507-93-01"
        width="8.1232481"
        height="16.590689"
-       x="576.65265"
-       y="877.66406"
+       x="566.65265"
+       y="785.66406"
        inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
        inkscape:export-xdpi="100"
        inkscape:export-ydpi="100" />
@@ -1746,8 +1736,8 @@
        id="rect3507-93-08"
        width="8.1232481"
        height="16.590689"
-       x="592.36694"
-       y="877.66406"
+       x="582.36694"
+       y="785.66406"
        inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
        inkscape:export-xdpi="100"
        inkscape:export-ydpi="100" />
@@ -1756,8 +1746,8 @@
        id="rect3507-93-25"
        width="8.1232481"
        height="16.590689"
-       x="661.65265"
-       y="877.66406"
+       x="651.65265"
+       y="785.66406"
        inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
        inkscape:export-xdpi="100"
        inkscape:export-ydpi="100" />
@@ -1766,8 +1756,8 @@
        id="rect3507-93-16"
        width="8.1232481"
        height="16.590689"
-       x="679.50983"
-       y="877.66406"
+       x="669.50983"
+       y="785.66406"
        inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
        inkscape:export-xdpi="100"
        inkscape:export-ydpi="100" />
@@ -1776,8 +1766,8 @@
        id="rect3507-93-39"
        width="8.1232481"
        height="16.590689"
-       x="752.36694"
-       y="877.66406"
+       x="739.50983"
+       y="785.66406"
        inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
        inkscape:export-xdpi="100"
        inkscape:export-ydpi="100" />
@@ -1786,8 +1776,8 @@
        id="rect3507-93-6"
        width="8.1232481"
        height="16.590689"
-       x="768.79553"
-       y="877.66406"
+       x="755.93842"
+       y="785.66406"
        inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
        inkscape:export-xdpi="100"
        inkscape:export-ydpi="100" />
@@ -1796,18 +1786,8 @@
        id="rect3507-93-8"
        width="8.1232481"
        height="16.590689"
-       x="819.50983"
-       y="877.66406"
-       inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
-       inkscape:export-xdpi="100"
-       inkscape:export-ydpi="100" />
-    <rect
-       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.10585511;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       id="rect3507-93-15"
-       width="8.1232481"
-       height="16.590689"
-       x="828.79553"
-       y="877.66406"
+       x="788.46997"
+       y="785.66406"
        inkscape:export-filename="/home/sabrine/speciale/images/groupings.png"
        inkscape:export-xdpi="100"
        inkscape:export-ydpi="100" />
