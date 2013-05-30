@@ -21,12 +21,12 @@ con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 #clusters.append(con.query('select avg(km_pr_l) from '+TABLE+' where km_pr_l > (select avg(km_pr_l)-stddev_samp(km_pr_l) as s from '+TABLE+')').getresult()[0][0])
 
 noClasses= 3
-clusters = [[3.5, 'Outliers', 13]]
+clusters = [[3.5, 'Outliers', 9]] #13
 r = con.query("select count(case when km_pr_l >=" + str(clusters[0][0]) + " then 1 end)::float/" + str(noClasses) + " from g_trip_data ;").getresult()
 kmprl = con.query("select km_pr_l from g_trip_data where km_pr_l >=" + str(clusters[0][0]) + " order by km_pr_l;").getresult()
-clusters.append([kmprl[int(r[0][0])][0], 'Low', '1'])
-clusters.append([kmprl[int(r[0][0])*2][0], 'Medium', '9'])
-clusters.append([100, 'High', '2']) #100 is dummy value
+clusters.append([kmprl[int(r[0][0])][0], 'Low', '1']) # 1
+clusters.append([kmprl[int(r[0][0])*2][0], 'Medium', '6'])# 9
+clusters.append([100, 'High', '2']) #100 is dummy value    2
 
 
 #Letter, color, pattern
@@ -36,8 +36,9 @@ if TYPE == 'showClusters':
 	print clusters
 	exit(1)
 
-print "set terminal png size 800,400;"
-
+#print "set terminal png size 800,400;"
+#print 'set key font ",30"'
+print "set terminal pngcairo size 800,400 enhanced font 'Verdana,12'"
 
 def getTime(t):
 	return float(time.mktime(time.strptime(t, "%Y-%m-%j %H:%M:%S")))
@@ -248,25 +249,31 @@ elif TYPE == 'trajectory':
 	legendset = {}
 
 	toplot.sort(key=lambda tup: tup[1])
-	print len(toplot)
+	#print len(toplot)
 	for v in toplot:
 
 		cou = 0
+		lt = 0
 		if v[1]< 0.1:
 			cou = 2
 			legend = "[0, 0.1) l"
+			lt = 2
 		elif v[1] < 0.14:
-			cou = 3
+			cou = 5
 			legend = "[0.1, 0.14) l"
+			lt = 10
 		elif v[1] < 0.18:
-			cou = 4
+			cou = 3
 			legend = "[0.14, 0.18) l"
+			lt = 9
 		elif v[1] < 0.22:
-			cou = 9
+			cou = 4
 			legend = "[0.18, 0.22) l"
+			lt = 8
 		elif v[1] <= 0.26:
-			cou = 13
+			cou = 1
 			legend = "[0.22, 0.26] l"
+			lt = 7
 
 
 
@@ -274,11 +281,11 @@ elif TYPE == 'trajectory':
 		#s += "'"+  path + "data/trajectory/"+str(v[0])+".csv' using 1:2 with lines lc " + str(cou) + "  notitle,"
 		if not sys.argv[3] == "3":
 			if(not cou in legendset):
-				s += "'"+  path + "data/trajectory/"+str(v[0])+".csv' using 1:2 with lines lc " + str(cou) + " title '" + str(legend) +" fuel "+ str(v[0])+"',"
+				s += "'"+  path + "data/trajectory/"+str(v[0])+".csv' using 1:2 with linespoints pi 3 ps 1.5 lt " +str(lt) +  " lc " + str(cou) + " title '" + str(legend) +" fuel "+ str(v[0])+"',"
 			else:
-				s += "'"+  path + "data/trajectory/"+str(v[0])+".csv' using 1:2 with lines lc " + str(cou) + " notitle,"
+				s += "'"+  path + "data/trajectory/"+str(v[0])+".csv' using 1:2 with linespoints pi 3 ps 1.5 lt " +str(lt) +  " lc " + str(cou) + " notitle,"
 		else:		
-			s += "'"+  path + "data/trajectory/"+str(v[0])+".csv' using 1:2 with lines lc " + str(cou) + " title '" + str(round(v[1],2)) +"l fuel',"
+			s += "'"+  path + "data/trajectory/"+str(v[0])+".csv' using 1:2 with linespoints pi 3 ps 1.5 lt " +str(lt) +  " lc " + str(cou) + " title '" + str(round(v[1],2)) +"l fuel',"
 		legendset[cou] = True
 
 	print s[:-1]
@@ -484,7 +491,7 @@ elif TYPE == 'idle2':
 		j= i-2
 		s += "'" + path + "data/idle2.csv' using 1:" + str(i) + " w filledcurves x1 linestyle " + str(clusters[j][2]) + " title '" + str(clusters[j][1]) + "', "
 	
-	print s + "'" + path + "data/idle2.csv' using 1:" + str(len(clusters)+2) + " with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
+	print s + "'" + path + "data/idle2.csv' using 1:" + str(len(clusters)+2) + " with lines lw 3 lc rgb \"black\" title 'Number of trips' axes x1y2"
 	
 elif TYPE == 'idle3':
 	q = "select * from (select round(idle_time::numeric/50,0)*50 as idle,"
@@ -513,7 +520,7 @@ elif TYPE == 'idle3':
 		j= i-2
 		s += "'" + path + "data/idle3.csv' using 1:" + str(i) + " w filledcurves x1 linestyle " + str(clusters[j][2]) + " title '" + str(clusters[j][1]) + "', "
 	
-	print s + "'" + path + "data/idle3.csv' using 1:" + str(len(clusters)+2) + " with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
+	print s + "'" + path + "data/idle3.csv' using 1:" + str(len(clusters)+2) + " with lines lw 3 lc rgb \"black\" title 'Number of trips' axes x1y2"
 	
 elif TYPE == 'normalRoad':
 	q = "select round((PNormalRoad)::numeric,2)*100 as round,"
@@ -540,7 +547,7 @@ elif TYPE == 'normalRoad':
 	for i in range(len(clusters)+1, 1, -1):
 		j= i-2
 		s += "'" + path + "data/normalRoad.csv' using 1:" + str(i) + " w filledcurves x1 linestyle " + str(clusters[j][2]) + " title '" + str(clusters[j][1]) + "', "
-	print s + "'" + path + "data/normalRoad.csv' using 1:" + str(len(clusters)+2) + " with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
+	print s + "'" + path + "data/normalRoad.csv' using 1:" + str(len(clusters)+2) + " with lines lw 3 lc rgb \"black\" title 'Number of trips' axes x1y2"
 
 elif TYPE == 'smallRoad':
 	#res = con.query("select round((PSmallRoad)::numeric,2),count(case when km_pr_l <"+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l < "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " where total_km >= 0.1 and PSmallRoad is not null group by round order by round;").getresult()
@@ -564,13 +571,13 @@ elif TYPE == 'smallRoad':
 	print "set y2tics"
 	print "set y2label 'Number of trips'"
 	print "set key opaque"
-	#print "plot '" + path + "data/smallRoad.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/smallRoad.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/smallRoad.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/smallRoad.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
+	#print "plot '" + path + "data/smallRoad.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/smallRoad.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/smallRoad.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/smallRoad.csv' using 1:5 with lines lw 3 lc rgb \"black\" title 'Number of trips' axes x1y2"
 	
 	s = "plot "	
 	for i in range(len(clusters)+1, 1, -1):
 		j= i-2
 		s += "'" + path + "data/smallRoad.csv' using 1:" + str(i) + " w filledcurves x1 linestyle " + str(clusters[j][2]) + " title '" + str(clusters[j][1]) + "', "
-	print s + "'" + path + "data/smallRoad.csv' using 1:" + str(len(clusters)+2) + " with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
+	print s + "'" + path + "data/smallRoad.csv' using 1:" + str(len(clusters)+2) + " with lines lw 3 lc rgb \"black\" title 'Number of trips' axes x1y2"
 
 elif TYPE == 'moterRoad':
 	#res = con.query("select round((pmoterroad)::numeric,2),count(case when km_pr_l <"+str(clusters[0])+" then 1 end)::float/count(*)*100 as low,count(case when km_pr_l < "+str(clusters[1])+" then 1 end)::float/count(*)*100 as medium,100 as high ,count(*) from " + TABLE + " where total_km >= 0.1 and pmoterroad is not null group by round order by round;").getresult()
@@ -594,12 +601,12 @@ elif TYPE == 'moterRoad':
 	print "set y2tics"
 	print "set y2label 'Number of trips'"
 	print "set key opaque"
-	#print "plot '" + path + "data/moterRoad.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/moterRoad.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/moterRoad.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/moterRoad.csv' using 1:5 with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
+	#print "plot '" + path + "data/moterRoad.csv' using 1:4 t \"High\" w filledcurves x1 linestyle 2, '"+path+"data/moterRoad.csv' using 1:3 t \"Medium\" w filledcurves x1 linestyle 3, '"+path+"data/moterRoad.csv' using 1:2 t \"Low\" w filledcurves x1 linestyle 1, '" + path + "data/moterRoad.csv' using 1:5 with lines lw 3 lc rgb \"black\" title 'Number of trips' axes x1y2"
 	s = "plot "	
 	for i in range(len(clusters)+1, 1, -1):
 		j= i-2
 		s += "'" + path + "data/moterRoad.csv' using 1:" + str(i) + " w filledcurves x1 linestyle " + str(clusters[j][2]) + " title '" + str(clusters[j][1]) + "', "
-	print s + "'" + path + "data/moterRoad.csv' using 1:" + str(len(clusters)+2) + " with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
+	print s + "'" + path + "data/moterRoad.csv' using 1:" + str(len(clusters)+2) + " with lines lw 3 lc rgb \"black\" title 'Number of trips' axes x1y2"
 	
 
 elif TYPE == 'testRoad':
@@ -659,7 +666,7 @@ elif TYPE == 'cruisep':
 	for i in range(len(clusters)+1, 1, -1):
 		j= i-2
 		s += "'" + path + "data/cruisep.csv' using 1:" + str(i) + " w filledcurves x1 linestyle " + str(clusters[j][2]) + " title '" + str(clusters[j][1]) + "', "
-	print s + "'" + path + "data/cruisep.csv' using 1:" + str(len(clusters)+2) + " with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
+	print s + "'" + path + "data/cruisep.csv' using 1:" + str(len(clusters)+2) + " with lines lw 3 lc rgb \"black\" title 'Number of trips' axes x1y2"
 
 elif TYPE == 'cruiseSpeedKml':
 	vehicles = con.query("select distinct vehicleid from " + TABLE + " order by vehicleid;").getresult()
@@ -737,7 +744,7 @@ elif TYPE == 'trafficlight':
 	for i in range(len(clusters)+1, 1, -1):
 		j= i-2
 		s += "'" + path + "data/trafficlight.csv' using 1:" + str(i) + " w filledcurves x1 linestyle " + str(clusters[j][2]) + " title '" + str(clusters[j][1]) + "', "
-	print s + "'" + path + "data/trafficlight.csv' using 1:" + str(len(clusters)+2) + " with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
+	print s + "'" + path + "data/trafficlight.csv' using 1:" + str(len(clusters)+2) + " with lines lw 3 lc rgb \"black\" title 'Number of trips' axes x1y2"
 
 elif TYPE == 'trafficlightgreen':
 	q = "select round((tlgreencounter)::numeric,1),"
@@ -765,7 +772,7 @@ elif TYPE == 'trafficlightgreen':
 	for i in range(len(clusters)+1, 1, -1):
 		j= i-2
 		s += "'" + path + "data/trafficlightgreen.csv' using 1:" + str(i) + " w filledcurves x1 linestyle " + str(clusters[j][2]) + " title '" + str(clusters[j][1]) + "', "
-	print s + "'" + path + "data/trafficlightgreen.csv' using 1:" + str(len(clusters)+2) + " with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
+	print s + "'" + path + "data/trafficlightgreen.csv' using 1:" + str(len(clusters)+2) + " with lines lw 3 lc rgb \"black\" title 'Number of trips' axes x1y2"
 
 elif TYPE == 'trafficlightred':
 	q = "select round((tlredcounter)::numeric,1),"
@@ -793,7 +800,7 @@ elif TYPE == 'trafficlightred':
 	for i in range(len(clusters)+1, 1, -1):
 		j= i-2
 		s += "'" + path + "data/trafficlightred.csv' using 1:" + str(i) + " w filledcurves x1 linestyle " + str(clusters[j][2]) + " title '" + str(clusters[j][1]) + "', "
-	print s + "'" + path + "data/trafficlightred.csv' using 1:" + str(len(clusters)+2) + " with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
+	print s + "'" + path + "data/trafficlightred.csv' using 1:" + str(len(clusters)+2) + " with lines lw 3 lc rgb \"black\" title 'Number of trips' axes x1y2"
 
 elif TYPE == 'trafficlightratio':
 	q = "select round((tlredcounter/tlcounter)::numeric,1),"
@@ -821,7 +828,7 @@ elif TYPE == 'trafficlightratio':
 	for i in range(len(clusters)+1, 1, -1):
 		j= i-2
 		s += "'" + path + "data/trafficlightratio.csv' using 1:" + str(i) + " w filledcurves x1 linestyle " + str(clusters[j][2]) + " title '" + str(clusters[j][1]) + "', "
-	print s + "'" + path + "data/trafficlightratio.csv' using 1:" + str(len(clusters)+2) + " with lines lw 3 lc rgb \"#ffff00\" title 'Number of trips' axes x1y2"
+	print s + "'" + path + "data/trafficlightratio.csv' using 1:" + str(len(clusters)+2) + " with lines lw 3 lc rgb \"black\" title 'Number of trips' axes x1y2"
 
 
 elif TYPE == 'idleDuration':
@@ -1500,6 +1507,31 @@ elif TYPE == 'song' or  TYPE == 'songData':
 	
 	if not s == '':
 		print s[:-1]
+
+elif TYPE== 'sidra':
+	print "set output 'images/sidra.png'"
+	print "set ylabel 'Fuel (l/km)'"
+	print "set xlabel 'Steady Speed (km/h)'"
+	print "set yr[0:0.5]"
+	
+	print "f(x) = a*x**2 + b*x+c"
+	print "fit f(x) '" + path + "data/sidra.csv' using 1:6 via a,b, c"
+	print "g(x) = i*x**2 + j*x+k"
+	print "fit g(x) '" + path + "data/sidra.csv' using 1:5 via i,j, k"
+	
+	print "plot 'data/sidra.csv' using 1:6 lt 4 lc rgb 'blue' title 'CANBus', 'data/sidra.csv' using 1:5 lt 2 lc rgb 'green' title 'SIDRA', f(x) with linespoints pi 7 lc rgb 'black' lw 2 lt 4 notitle, g(x) with linespoints pi 7 lc rgb 'black' lw 2 lt 2 notitle"
+
+elif TYPE== 'sidraAcc':
+	print "set output 'images/sidraAcc.png'"
+	print "set ylabel 'Fuel (l/s)'"
+	print "set xlabel 'Acceleration (m/s^2)'"
+	
+	print "f(x) = a*x**2 + b*x+c"
+	print "fit f(x) '" + path + "data/sidraAcc.csv' using 1:6 via a,b, c"
+	print "g(x) = i*x**2 + j*x+k"
+	print "fit g(x) '" + path + "data/sidraAcc.csv' using 1:5 via i,j, k"
+	
+	print "plot 'data/sidraAcc.csv' using 1:6 lt 4 lc rgb 'blue' title 'CANBus', 'data/sidraAcc.csv' using 1:5 lt 2 lc rgb 'green' title 'SIDRA', f(x) with linespoints pi 7 lc rgb 'black' lw 2 lt 4 notitle, g(x) with linespoints pi 7 lc rgb 'black' lw 2 lt 2 notitle"
 
 elif TYPE == 'accelerationSpeedFuelTime':
 	vehicles = con.query("select distinct vehicleid as v from " + TABLE + " order by v;").getresult()
