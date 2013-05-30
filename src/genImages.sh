@@ -18,6 +18,14 @@ if [ ! -d $PREFIX"_images" ]; then
     mkdir $PREFIX"_images"
 fi
 
+ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py sidra $CRUISEDATA | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/sidra.png $PREFIX"_images"/sidra.png
+
+
+: << 'COMMENT'
+
+ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py accelerationFuelStart2 $ACCDATA | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/accelerationFuelStart2.png $PREFIX"_images"/accelerationFuelStart2.png
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py acceleration3D $ACCDATA | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/101acceleration3D.png $PREFIX"_images"/101acceleration3D.png
@@ -28,19 +36,16 @@ scp d103@172.25.26.191:Dat10/src/images/2acceleration3D.png $PREFIX"_images"/2ac
 scp d103@172.25.26.191:Dat10/src/images/3acceleration3D.png $PREFIX"_images"/3acceleration3D.png
 scp d103@172.25.26.191:Dat10/src/images/4acceleration3D.png $PREFIX"_images"/4acceleration3D.png
 
-
-: << 'COMMENT'
-
-
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py compareVehicles2 $GPSDATA | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/Compare.png $PREFIX"_images"/Compare.png
+
+
+
 
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py frequency $GPSDATA | gnuplot "
 scp d103@172.25.26.191:Dat10/src/images/frequency.png $PREFIX"_images"/frequency.png
 
-ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py accelerationFuelStart2 $ACCDATA | gnuplot"
-scp d103@172.25.26.191:Dat10/src/images/accelerationFuelStart2.png $PREFIX"_images"/accelerationFuelStart2.png
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py accelerationFuelStart2DataB $ACCDATA | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/accelerationFuelStart2DataB.png $PREFIX"_images"/accelerationFuelStart2DataB.png
@@ -196,6 +201,7 @@ scp d103@172.25.26.191:Dat10/src/images/TripsLength.png $PREFIX"_images"/TripsLe
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py TimeTrips $TRIPS | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/TimeTrips.png $PREFIX"_images"/TimeTrips.png
+
 
 COMMENT
 

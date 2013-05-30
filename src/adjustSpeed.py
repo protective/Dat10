@@ -31,7 +31,7 @@ trips = con.query('select distinct tid from ' + DATATABLE +' where tid is not nu
 	
 for t in trips:
 	trip = t[0]
-	res = con.query("select timestamp, speed from " + DATATABLE + " where tid=" + str(trip) + " and dirty is false order by timestamp;").getresult()
+	res = con.query("select timestamp, speed from " + DATATABLE + " where tid=" + str(trip) + " order by timestamp;").getresult()
 	for r in range (1, len(res)-2):
 		acc = ((res[r][1]-res[r-1][1])/(getTime(res[r][0])-getTime(res[r-1][0]))/3.6)
 		#print acc

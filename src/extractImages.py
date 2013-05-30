@@ -36,8 +36,9 @@ if TYPE == 'showClusters':
 	print clusters
 	exit(1)
 
-print "set terminal png size 800,400;"
-
+#print "set terminal png size 800,400;"
+#print 'set key font ",30"'
+print "set terminal pngcairo size 800,400 enhanced font 'Verdana,12'"
 
 def getTime(t):
 	return float(time.mktime(time.strptime(t, "%Y-%m-%j %H:%M:%S")))
@@ -1500,6 +1501,19 @@ elif TYPE == 'song' or  TYPE == 'songData':
 	
 	if not s == '':
 		print s[:-1]
+
+elif TYPE== 'sidra':
+	print "set output 'images/sidra.png'"
+	print "set ylabel 'Fuel (ml)'"
+	print "set xlabel 'Steady Speed (km/h)'"
+	print "set yr[0:0.5]"
+	
+	print "f(x) = a*x**2 + b*x + c"
+	print "fit f(x) '" + path + "data/sidra.csv' using 1:6 via a,b,c"
+	print "g(x) = i*x**2 + j*x + k"
+	print "fit g(x) '" + path + "data/sidra.csv' using 1:5 via i,j,k"
+	
+	print "plot 'data/sidra.csv' using 1:6 lt 4 lc rgb 'blue' title 'CANBus', 'data/sidra.csv' using 1:5 lt 2 lc rgb 'green' title 'SIDRA', f(x) with linespoints pi 7 lc rgb 'black' lw 2 lt 4 notitle, g(x) with linespoints pi 7 lc rgb 'black' lw 2 lt 2 notitle"
 
 elif TYPE == 'accelerationSpeedFuelTime':
 	vehicles = con.query("select distinct vehicleid as v from " + TABLE + " order by v;").getresult()
