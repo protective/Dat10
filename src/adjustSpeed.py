@@ -35,14 +35,14 @@ for t in trips:
 	for r in range (1, len(res)-2):
 		acc = ((res[r][1]-res[r-1][1])/(getTime(res[r][0])-getTime(res[r-1][0]))/3.6)
 		#print acc
-		if acc < -7.5 or acc > 3.5:
+		if acc < -6 or acc > 3.5:
 			#print res[r]
 			s1 = float(res[r-1][1])
 			s3 = float(res[r+1][1])
 			
 			acc2 = ((res[r+1][1]-res[r-1][1])/(getTime(res[r+1][0])-getTime(res[r-1][0]))/3.6)
 			
-			if acc2 < 3.5 and acc2 > -7.5:
+			if acc2 < 3.5 and acc2 > -6:
 				t1 = float(time.mktime(time.strptime(res[r-1][0], "%Y-%m-%j %H:%M:%S")))
 				t2 = float(time.mktime(time.strptime(res[r][0], "%Y-%m-%j %H:%M:%S")))
 				t3 = float(time.mktime(time.strptime(res[r+1][0], "%Y-%m-%j %H:%M:%S")))
