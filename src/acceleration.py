@@ -64,17 +64,18 @@ if True:
 
 if True:
 	con.query("drop table if exists "+ACCDATA+";")
-	con.query("create table "+ACCDATA+" (vehicleid bigint, tid int, startTime timestamp, endTime timestamp, time int, startSpeed int, endSpeed int, acceleration float, avgAcceleration float, fuel float, km float);")
+	con.query("create table "+ACCDATA+" (vehicleid bigint, tid int, startTime timestamp, endTime timestamp, time int, startSpeed int, endSpeed int, acceleration float, avgAcceleration float, fuel float, km float, avgrpm float);")
 
 	print "Calculating"
 	vehicles = con.query("select distinct vehicleid from "+ DATATABLE + ";").getresult()
 	for v in vehicles:
 		print "Vehicle " + str(v[0])
-		res = con.query("select tid, timestamp, acceleration3, totalconsumed, speedmod, kmcounter from " + DATATABLE + " where vehicleid=" + str(v[0]) +" and dirty is false order by timestamp;").getresult()
+		res = con.query("select tid, timestamp, acceleration3, totalconsumed, speedmod, kmcounter,rpm from " + DATATABLE + " where vehicleid=" + str(v[0]) +" and dirty is false order by timestamp;").getresult()
 		startIndex = 0		
 		
 		counter = 0
 		totalAcc = 0
+		rpm = 0
 		oldAccSign = 0
 		dirty = False
 		
@@ -99,6 +100,7 @@ if True:
 				if r== len(res)-1:
 					endIndex = r
 					totalAcc += acc
+					rpm += float(res[r][6])
 					counter += 1
 			
 				timeDiff= abs(getTime(res[startIndex][1])-getTime(res[endIndex][1]))
@@ -106,13 +108,15 @@ if True:
 				if timeDiff>0 and not dirty:
 					curAcc = (int(res[endIndex][4]) - int(res[startIndex][4]))/timeDiff
 					avgAcc = float(totalAcc)/counter
+					avgRpm = float(rpm)/counter
 					fuel = abs(float(res[endIndex][3]) - float(res[startIndex][3]))
 					km = abs(float(res[endIndex][5]) - float(res[startIndex][5]))
 				
-					q= "insert into " + str(ACCDATA) + " values (" + str(v[0]) + ", " +str(res[endIndex][0]) + ", '" + str(res[startIndex][1]) + "', '" + str(res[endIndex][1]) + "', " + str(timeDiff) + ", " + str(res[startIndex][4]) + ", " + str(res[endIndex][4]) + ", " + str(curAcc) + ", " + str(avgAcc) + ", " + str(fuel) + ", " + str(km) + ")"
+					q= "insert into " + str(ACCDATA) + " values (" + str(v[0]) + ", " +str(res[endIndex][0]) + ", '" + str(res[startIndex][1]) + "', '" + str(res[endIndex][1]) + "', " + str(timeDiff) + ", " + str(res[startIndex][4]) + ", " + str(res[endIndex][4]) + ", " + str(curAcc) + ", " + str(avgAcc) + ", " + str(fuel) + ", " + str(km) + ", " + str(avgRpm) + ")"
 					#print q
 					con.query(q)
 				totalAcc = 0
+				rpm = 0
 				counter = 0
 				startIndex = r
 				dirty = False

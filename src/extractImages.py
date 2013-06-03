@@ -1077,6 +1077,7 @@ elif TYPE == 'accelerationRanges2':
 	print "set xtic rotate by -40 scale 0"
 	print "set xtics " + str(float(granularity))
 	print "set xr [:2]"
+	print "set yr [:4.5]"
 	
 	offset = 0
 	s = "plot "
@@ -1090,7 +1091,7 @@ elif TYPE == 'accelerationRanges2a':
 	
 	#granularity = 1
 
-	res = con.query("select * from (select round(acceleration2::decimal*2)/2 as acc, count(*)::float as c from g_gps_can_data  group by acc order by acc)a where acc is not Null and (acc < -2 or acc > 2);").getresult()
+	res = con.query("select * from (select round(acceleration2::decimal*4)/4 as acc, count(*)::float as c from g_gps_can_data  group by acc order by acc)a where acc is not Null;").getresult()
 	output = open(path + 'data/accelerationRanges2a.csv', 'w+')
 	for r in res:
 		print >> output, str(r[0]) + " " + str(float(r[1]))
@@ -1100,7 +1101,7 @@ elif TYPE == 'accelerationRanges2a':
 	print "set ylabel 'Number of records'"
 	print "set xlabel 'Acceleration (m/s^2)'"
 	print "set style fill solid border -1"
-	print "set boxwidth " + str(0.5)
+	print "set boxwidth " + str(0.25)
 	print "set xtic rotate by -40 scale 0"
 	print "set xtics " + str(1)
 	print "set xr [-10.25:6.25]"
@@ -1718,14 +1719,14 @@ elif TYPE == 'compareVehicles2':
 	#(select vehicleid, sum(case when g.avgacceleration>avg then fuel else 0 end)/sum(fuel)::float*100 as a2v from (select round(startspeed/10)*10 as s, avg(avgacceleration) as avg from g_accdata3 where avgacceleration>0 and time>3 and avgAcceleration<=2  group by s)sd, (select vehicleid, round(startspeed/10)*10 as s, avgAcceleration, time, fuel from g_accdata3 where avgacceleration> 0 and time>3 and avgAcceleration<=2 )g where sd.s=g.s group by vehicleid)a2,
 
 	res = con.query("""
-	select c.vehicleid, (tottime-cv)/tottime*100 as cruise, iv/tottime*100 as idle, tlv as trafficlights, rv as roads, slv/kv*100 as speed, av, afv 
+	select c.vehicleid, (tottime-cv)/tottime*100 as cruise, iv/tottime*100 as idle, slv/kv*100 as speed, rv as roads, tlv as trafficlights, afv, av
 	from 
 		(select vehicleid, sum(time) as cv from g_cruise_data group by vehicleid)c, 
 		(select vehicleid, sum(stopped) as iv from g_idledatatl where stopped>=250 group by vehicleid)i,
 		(select vehicleid, avg(tlcounter/total_km) as tlv from g_trip_data where total_km>0 group by vehicleid)tl,
 		(select vehicleid, count(*) as slv from (select vehicleid, speedmod-kmh as d from osm_dk_20130501 as m, g_gps_can_data as g where m.segmentkey=g.segmentkey and dirty is false)s where d>0 group by vehicleid)sl,
 		(select vehicleid, 100-avg(pnormalroad)*100 as rv from g_trip_data group by vehicleid order by vehicleid)r,
-		(select vehicleid, avg(avgAcceleration) as av from g_accdata3 where time>=3 and avgacceleration>0 and startspeed<=80 group by vehicleid)a,
+		(select vehicleid, avg(avgrpm) as av from g_accdata3 where avgAcceleration>0 and time>=3 group by vehicleid)a,
 		(select vehicleid, avg(fuel*1000/time) as afv from g_accdata3 where avgacceleration>0 and time>=3 group by vehicleid)af,
 		(select vehicleid, sum(time)::float as totTime, sum(total_fuel)::float as totFuel from g_trip_data group by vehicleid)t,
 		(select vehicleid, count(*)::float as kv from g_gps_can_data group by vehicleid)k
@@ -1757,25 +1758,25 @@ elif TYPE == 'compareVehicles2':
 		set arrow nohead from 0,0 to first 1*cos(a7) , 1*sin(a7)
 		a1_max = 100
 		a2_max = 20
-		a3_max = 0.25
+		a3_max = 25
 		a4_max = 100
-		a5_max = 25
-		a6_max = 1
-		a7_max = 5
+		a5_max = 0.25
+		a6_max = 5
+		a7_max = 3000
 		a1_min = 0
 		a2_min = 0
 		a3_min = 0
 		a4_min = 0
 		a5_min = 0
 		a6_min = 0
-		a7_min = 0
+		a7_min = 1000
 		set label "Not at steady speed (0-100%)" at cos(a1),sin(a1) center offset char 1,1
 		set label "Idle (0-20%)" at cos(a2),sin(a2) center offset char -2,0.5
-		set label "Traffic lights per km (0-0.25)" at cos(a3),sin(a3) center offset char -3,1
+		set label "Speed limit (0-25%)" at cos(a3),sin(a3) center offset char -3,1
 		set label "Not on main roads (0-100%)" at cos(a4),sin(a4) center offset char -3,-1
-		set label "Speed limit (0-25%)" at cos(a5),sin(a5) center offset char -3,-1
-		set label "Acceleration (0-1 m/s)" at cos(a6),sin(a6) center offset char 3,-1
-		set label "Acceleration fuel (0-5 ml/s)" at cos(a7),sin(a7) center offset char 5,1
+		set label "Traffic lights per km (0-0.25)" at cos(a5),sin(a5) center offset char -3,-1
+		set label "Acceleration (0-5 ml/s)" at cos(a6),sin(a6) center offset char 3,-1
+		set label "RPM (1000-3000)" at cos(a7),sin(a7) center offset char 5,1
 		set xrange [-1:1]
 		set yrange [-1:1]
 		unset xtics
