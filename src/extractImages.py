@@ -151,6 +151,33 @@ elif TYPE == 'TripLengthKml':
 	print "set xlabel 'km'"
 
 	print "plot '" + path + "data/tripLengthKml.csv' notitle"
+elif TYPE == 'RPMfuelprsec':
+
+
+	data = {}
+
+	res = con.query("select round(avgrpm/100)*100 as r, avg(fuel/time)*1000,count(*) from g_accdata3 where avgAcceleration>0 and time>=3 group by r order by r;").getresult()
+	
+
+
+	output = open(path +'data/RPMfuelprsec.csv', 'wb')
+
+	#print data
+	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+
+	for r in res:
+		writer.writerow(r)
+
+	
+	print "set output '" + path + "images/RPMfuelprsec.png';"
+	print "set ylabel 'Fuel cost (ml/s)'"
+	print "set xlabel 'RPM'"
+	print "set boxwidth  100"
+	print "set y2tics"
+	print "plot '" + path + "data/RPMfuelprsec.csv' using 1:2 with boxes lw 1 notitle, 'data/RPMfuelprsec.csv' using 1:3 with lines lw 3 lc rgb \"black\" title 'Number of data points' axes x1y2"
+
+
+
 elif TYPE == 'frequency':
 
 
