@@ -19,7 +19,7 @@ except:
 def getTime(t):
 	return float(time.mktime(time.strptime(t, "%Y-%m-%j %H:%M:%S")))
 
-if True:
+if False:
 	interval = 3
 	print "Altering table"
 	con.query('set synchronous_commit = on;')
@@ -124,3 +124,5 @@ if True:
 			oldAccSign = accSign
 			counter += 1
 			totalAcc += acc
+			rpm += float(res[r][6])
+
