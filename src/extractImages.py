@@ -251,7 +251,6 @@ elif TYPE == 'trajectory':
 	toplot.sort(key=lambda tup: tup[1])
 	#print len(toplot)
 	for v in toplot:
-
 		cou = 0
 		lt = 0
 		if v[1]< 0.1:
@@ -437,27 +436,33 @@ elif TYPE == 'trajectoryTrafficLight':
 	for v in toplot:
 		#print "len " + str(v[2]) 
 		cou = 0
+		lt = 0
 		if v[1]< 0.01:
-			cou = 3
+			cou = 5
 			legend = "[0, 0.01) l"
+			lt = 10
 		elif v[1] < 0.03:
-			cou = 4
-			legend = "[0.01, 0.03) l"
-		elif v[1] < 0.05:
 			cou = 2
+			legend = "[0.01, 0.03) l"
+			lt = 2
+		elif v[1] < 0.05:
+			cou = 3
 			legend = "[0.03, 0.05) l"
+			lt = 9
 		elif v[1] < 0.07:
-			cou = 9
+			cou = 4
 			legend = "[0.05, 0.07) l"
+			lt = 8
 		elif v[1] <= 0.09:
-			cou = 13
+			cou = 1
 			legend = "[0.07, 0.09] l"
-
+			lt = 7
+	
 		#print cou
 		if(not cou in legendset):
-			s += "'"+  path + "data/trajectory/"+str(v[0])+".csv' using 1:2 with lines lc " + str(cou) + " title '" + str(legend) +"',"
+			s += "'"+  path + "data/trajectory/"+str(v[0])+".csv' using 1:2 with linespoints pi 3 ps 1.5 lt " +str(lt) +  " lc " + str(cou) + " title '" + str(legend) +"',"
 		else:
-			s += "'"+  path + "data/trajectory/"+str(v[0])+".csv' using 1:2 with lines lc " + str(cou) + " notitle,"
+			s += "'"+  path + "data/trajectory/"+str(v[0])+".csv' using 1:2 with linespoints pi 3 ps 1.5 lt " +str(lt) +  " lc " + str(cou) + " notitle,"
 
 		legendset[cou] = True
 	print s[:-1]
@@ -1102,14 +1107,14 @@ elif TYPE == 'accelerationRanges2a':
 	print "set xlabel 'Acceleration (m/s^2)'"
 	print "set style fill solid border -1"
 	print "set boxwidth " + str(0.25)
-	print "set xtic rotate by -40 scale 0"
-	print "set xtics " + str(1)
+	print "set xtic rotate by -60 scale 0"
+	print "set xtics 0.5"
 	print "set xr [-10.25:6.25]"
 	print "set yr[0:25000]"
 	#print "set logscale y 10"
 	offset = 0
 	print "set arrow from 3.5,0 to 3.5,25000 lw 2 nohead front"
-	print "set arrow from -7.5,0 to -7.5,25000 lw 2 nohead front"
+	print "set arrow from -6,0 to -6,25000 lw 2 nohead front"
 	s = "plot "
 
 	s += "'" + path + "data/accelerationRanges2a.csv' with boxes notitle,"
@@ -1726,15 +1731,15 @@ elif TYPE == 'compareVehicles2':
 		(select vehicleid, avg(tlcounter/total_km) as tlv from g_trip_data where total_km>0 group by vehicleid)tl,
 		(select vehicleid, count(*) as slv from (select vehicleid, speedmod-kmh as d from osm_dk_20130501 as m, g_gps_can_data as g where m.segmentkey=g.segmentkey and dirty is false)s where d>0 group by vehicleid)sl,
 		(select vehicleid, 100-avg(pnormalroad)*100 as rv from g_trip_data group by vehicleid order by vehicleid)r,
-		(select vehicleid, avg(avgrpm) as av from g_accdata3 where avgAcceleration>0 and time>=3 group by vehicleid)a,
+		(select vehicleid, sum(case when avgrpm>2000 then 1 else 0 end)/count(*)::float*100 as av from g_accdata3 group by vehicleid)a,
 		(select vehicleid, avg(fuel*1000/time) as afv from g_accdata3 where avgacceleration>0 and time>=3 group by vehicleid)af,
 		(select vehicleid, sum(time)::float as totTime, sum(total_fuel)::float as totFuel from g_trip_data group by vehicleid)t,
 		(select vehicleid, count(*)::float as kv from g_gps_can_data group by vehicleid)k
 	where t.vehicleid=i.vehicleid and t.vehicleid=tl.vehicleid and t.vehicleid=c.vehicleid and t.vehicleid=sl.vehicleid and t.vehicleid = k.vehicleid and t.vehicleid=r.vehicleid and t.vehicleid=a.vehicleid and t.vehicleid=af.vehicleid order by vehicleid;""").getresult()
 	
-	
-	s = "set output '" + path + "images/Compare.png';"
-	s+= """set key at 1.8,0.7 right
+	s = "set terminal pngcairo size 800,700 enhanced font 'Verdana,12';"
+	s += "set output '" + path + "images/Compare.png';"
+	s+= """set key at 1.2,0.7 right top
 		set polar
 		set angles degrees
 		npoints = 7
@@ -1757,26 +1762,26 @@ elif TYPE == 'compareVehicles2':
 		set arrow nohead from 0,0 to first 1*cos(a6) , 1*sin(a6)
 		set arrow nohead from 0,0 to first 1*cos(a7) , 1*sin(a7)
 		a1_max = 100
-		a2_max = 20
+		a2_max = 25
 		a3_max = 25
 		a4_max = 100
 		a5_max = 0.25
 		a6_max = 5
-		a7_max = 3000
+		a7_max = 50
 		a1_min = 0
 		a2_min = 0
 		a3_min = 0
 		a4_min = 0
 		a5_min = 0
 		a6_min = 0
-		a7_min = 1000
+		a7_min = 0
 		set label "Not at steady speed (0-100%)" at cos(a1),sin(a1) center offset char 1,1
-		set label "Idle (0-20%)" at cos(a2),sin(a2) center offset char -2,0.5
-		set label "Speed limit (0-25%)" at cos(a3),sin(a3) center offset char -3,1
-		set label "Not on main roads (0-100%)" at cos(a4),sin(a4) center offset char -3,-1
+		set label "Idle (0-25%)" at cos(a2),sin(a2) center offset char -2,0.5
+		set label "Speed limit (0-25%)" at cos(a3),sin(a3) center offset char -2,1
+		set label "Not on main \\rroads (0-100%)" at cos(a4),sin(a4) center offset char -1,-1
 		set label "Traffic lights per km (0-0.25)" at cos(a5),sin(a5) center offset char -3,-1
 		set label "Acceleration (0-5 ml/s)" at cos(a6),sin(a6) center offset char 3,-1
-		set label "RPM (1000-3000)" at cos(a7),sin(a7) center offset char 5,1
+		set label "RPM (0-50%)" at cos(a7),sin(a7) center offset char -1,1
 		set xrange [-1:1]
 		set yrange [-1:1]
 		unset xtics
