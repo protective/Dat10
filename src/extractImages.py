@@ -86,7 +86,7 @@ elif TYPE == 'TripsKmlCluster':
 	print "set output '" + path + "images/TripsKmlCluster.png';"
 	print "set ylabel 'Number of trips"
 	print "set xlabel 'Fuel efficiency (km/l)'"
-	print "set xtic 0.5"
+	print "set xtic 1"
 
 	for i in clusters:
 		print "set arrow from " + str(i[0]) + ",0 to " + str(i[0]) + ",300 lw 2 nohead"
@@ -678,7 +678,7 @@ elif TYPE == 'cruiseSpeedKml':
 	allOutput = open(path + 'data/cruiseSpeedKml.csv', 'wb')
 	allWriter = csv.writer(allOutput, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 	for v in vehicles:
-		res = con.query("select  cruisespeed, case when length = 0 then 0 else fuel/length end from " + TABLE + " where cruisespeed>0 and cruisespeed<200 and vehicleid = " + str(v[0]) +" and time> 0;").getresult()
+		res = con.query("select  cruisespeed, case when length = 0 then 0 else (fuel*1000)/length end from " + TABLE + " where cruisespeed>0 and cruisespeed<200 and vehicleid = " + str(v[0]) +" and time> 0;").getresult()
 		output = open(path + 'data/'+str(v[0])+'cruiseSpeedKml.csv', 'wb')
 		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 		for r in res:
@@ -686,10 +686,10 @@ elif TYPE == 'cruiseSpeedKml':
 			allWriter.writerow(r)
 		
 	print "set output '" + path + "images/cruiseSpeedKml.png';"
-	print "set ylabel 'Fuel efficiency (l/km)'"
+	print "set ylabel 'Fuel efficiency (ml/km)'"
 	print "set xlabel 'Cruise speed (km/h)'"
 #	print "set xrange[0:150]"
-	print "set yr [0:0.5]"
+	print "set yr [0:500]"
 	print "set xtics 10"
 	
 	print "f(x) = a*x**2 + b*x + c"
@@ -701,7 +701,7 @@ elif TYPE == 'cruiseSpeedKml':
 		#print "fit " + patterns[v[0]][0] + "(x) '" + path + "data/"+str(v[0]) + "cruiseSpeedKml.csv' using 1:2 via a"+str(v[0])+"," +"b" +str(v[0])+"," +"c" +str(v[0])
 		s += "'"+  path + "data/"+str(v[0])+"cruiseSpeedKml.csv' title 'Vehicle " + str(v[0]) + "'lc rgb '"+ patterns[v[0]][1] +"',"
 		#s+=patterns[v[0]][0] + "(x) notitle lc rgb '"+ patterns[v[0]][1] +"',"
-	print s + " f(x) lw 2 lc rgb 'black' title 'Regression line'"
+	print s + " f(x) lw 2 lc rgb 'black' title 'Regression line'"#, f(80) title sprintf('%f', f(80)), f(130) title sprintf('%f', f(130))"
 
 elif TYPE == 'cruiseSpeedKmlAvg':
 	res = con.query("select cruisespeed, avg(case when length = 0 then 0 else fuel/length end) from " + TABLE + " group by cruiseSpeed;").getresult()
@@ -1781,7 +1781,7 @@ elif TYPE == 'compareVehicles2':
 		set label "Not on main \\rroads (0-100%)" at cos(a4),sin(a4) center offset char -1,-1
 		set label "Traffic lights per km (0-0.25)" at cos(a5),sin(a5) center offset char -3,-1
 		set label "Acceleration (0-5 ml/s)" at cos(a6),sin(a6) center offset char 3,-1
-		set label "RPM (0-50%)" at cos(a7),sin(a7) center offset char -1,1
+		set label "RPM above \\r2000 (0-50%)" at cos(a7),sin(a7) center offset char 0,2
 		set xrange [-1:1]
 		set yrange [-1:1]
 		unset xtics
@@ -1803,7 +1803,7 @@ elif TYPE == 'compareVehicles2':
 		print >> output, '1 ' + str(r[1]) 
 		output.close()
 
-		s+= "'data/" + str(r[0]) + """Compare2.csv' using ($1==1?a1:($1==2?a2:($1==3?a3:($1==4?a4:($1==5?a5:($1==6?a6:($1==7?a7:$1))))))):($1==1?(($2-a1_min)/(a1_max-a1_min)):($1==2?(($2-a2_min)/(a2_max-a2_min)):($1==3?(($2-a3_min)/(a3_max-a3_min)):($1==4?(($2-a4_min)/(a4_max-a4_min)):($1==5?(($2-a5_min)/(a5_max-a5_min)):($1==6?(($2-a6_min)/(a6_max-a6_min)):($1==7?(($2-a7_min)/(a7_max-a7_min)):$1))))))) w l lw 2 title 'Vehicle """ + str(r[0]) + "',"
+		s+= "'data/" + str(r[0]) + "Compare2.csv' using ($1==1?a1:($1==2?a2:($1==3?a3:($1==4?a4:($1==5?a5:($1==6?a6:($1==7?a7:$1))))))):($1==1?(($2-a1_min)/(a1_max-a1_min)):($1==2?(($2-a2_min)/(a2_max-a2_min)):($1==3?(($2-a3_min)/(a3_max-a3_min)):($1==4?(($2-a4_min)/(a4_max-a4_min)):($1==5?(($2-a5_min)/(a5_max-a5_min)):($1==6?(($2-a6_min)/(a6_max-a6_min)):($1==7?(($2-a7_min)/(a7_max-a7_min)):$1))))))) w l lw 2 lc rgb '" + patterns[r[0]][1]+ "' title 'Vehicle " + str(r[0]) + "',"
 
 	print s[:-1]
 
