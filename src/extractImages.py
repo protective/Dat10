@@ -1222,7 +1222,26 @@ elif TYPE == 'accelerationRanges4':
 		s += "'" + path + "data/"+str(v[0]) + "accelerationRanges4.csv' using ($1+"+ str(offset) + "):($2) with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + "  title '" + str(v[0]) + "',"
 		offset+=boxwidth
 	print s[:-1]
-	
+
+elif TYPE == 'accelerationLength':
+
+	res = con.query("select round(time), count(time) from g_accdata3 group by round order by round;").getresult()
+	output = open(path + 'data/accelerationLength.csv', 'w+')
+	for r in res:
+		print >> output, str(r[0]) + " " + str(r[1])#str(float(r[1])/float(v[1]))
+
+	print "set output '" + path + "images/accelerationLength.png';"
+	print "set ylabel 'Number of periods'"
+	print "set xlabel 'Acceleration Length (s)'"
+	print "set style fill solid border -1"
+	print "set xtic rotate by -45 scale 0"
+	print "set xr [0:40]"
+
+	s = "plot "
+
+	s += "'" + path + "data/accelerationLength.csv' with boxes  title 'test'"
+	print s
+
 elif TYPE == 'acceleration3D':
 	accGranularity = 0.25
 	speedGranularity = 10
