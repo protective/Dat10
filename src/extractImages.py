@@ -151,6 +151,33 @@ elif TYPE == 'TripLengthKml':
 	print "set xlabel 'km'"
 
 	print "plot '" + path + "data/tripLengthKml.csv' notitle"
+elif TYPE == 'RPMfuelprsec':
+
+
+	data = {}
+
+	res = con.query("select round(avgrpm/100)*100 as r, avg(fuel/time)*1000,count(*) from g_accdata3 where avgAcceleration>0 and time>=3 group by r order by r;").getresult()
+	
+
+
+	output = open(path +'data/RPMfuelprsec.csv', 'wb')
+
+	#print data
+	writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+
+	for r in res:
+		writer.writerow(r)
+
+	
+	print "set output '" + path + "images/RPMfuelprsec.png';"
+	print "set ylabel 'Fuel cost (ml/s)'"
+	print "set xlabel 'RPM'"
+	print "set boxwidth  100"
+	print "set y2tics"
+	print "plot '" + path + "data/RPMfuelprsec.csv' using 1:2 with boxes lw 1 notitle, 'data/RPMfuelprsec.csv' using 1:3 with lines lw 3 lc rgb \"black\" title 'Number of data points' axes x1y2"
+
+
+
 elif TYPE == 'frequency':
 
 
@@ -677,31 +704,74 @@ elif TYPE == 'cruiseSpeedKml':
 	vehicles = con.query("select distinct vehicleid from " + TABLE + " order by vehicleid;").getresult()
 	allOutput = open(path + 'data/cruiseSpeedKml.csv', 'wb')
 	allWriter = csv.writer(allOutput, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+	minSpeed = '0'
+	maxSpeed = '160'
+	if TYPE == 'cruiseSpeedKmlCompare':
+		minSpeed = '49'
+		maxSpeed = '91'
 	for v in vehicles:
-		res = con.query("select  cruisespeed, case when length = 0 then 0 else (fuel*1000)/length end from " + TABLE + " where cruisespeed>0 and cruisespeed<200 and vehicleid = " + str(v[0]) +" and time> 0;").getresult()
+		res = con.query("select cruisespeed, case when length = 0 then 0 else (fuel*1000)/length end from " + TABLE + " where cruisespeed>" + minSpeed +" and cruisespeed<" + maxSpeed + " and vehicleid = " + str(v[0]) +" and time> 0;").getresult()
 		output = open(path + 'data/'+str(v[0])+'cruiseSpeedKml.csv', 'wb')
 		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 		for r in res:
 			writer.writerow(r)
 			allWriter.writerow(r)
-		
-	print "set output '" + path + "images/cruiseSpeedKml.png';"
+	
+	print "set output '" + path + "images/" + TYPE + ".png';"
 	print "set ylabel 'Fuel efficiency (ml/km)'"
 	print "set xlabel 'Cruise speed (km/h)'"
-#	print "set xrange[0:150]"
-	print "set yr [0:500]"
+	print "set xrange["+minSpeed+":"+maxSpeed+"]"
+	if TYPE == 'cruiseSpeedKml':
+		print "set yr [0:500]"
 	print "set xtics 10"
 	
-	print "f(x) = a*x**2 + b*x + c"
-	print "fit f(x) '" + path + "data/cruiseSpeedKml.csv' using 1:2 via a,b,c"
+	if TYPE == 'cruiseSpeedKml':
+		print "f(x) = a*x**2 + b*x + c"
+		print "fit f(x) '" + path + "data/cruiseSpeedKml.csv' using 1:2 via a,b,c"
 	
 	s = "plot "
 	for v in vehicles:
-		#print patterns[v[0]][0] + "(x) = a" + str(v[0]) + "*x**2 + b"+str(v[0])+"*x + c"+str(v[0])
-		#print "fit " + patterns[v[0]][0] + "(x) '" + path + "data/"+str(v[0]) + "cruiseSpeedKml.csv' using 1:2 via a"+str(v[0])+"," +"b" +str(v[0])+"," +"c" +str(v[0])
-		s += "'"+  path + "data/"+str(v[0])+"cruiseSpeedKml.csv' title 'Vehicle " + str(v[0]) + "'lc rgb '"+ patterns[v[0]][1] +"',"
-		#s+=patterns[v[0]][0] + "(x) notitle lc rgb '"+ patterns[v[0]][1] +"',"
-	print s + " f(x) lw 2 lc rgb 'black' title 'Regression line'"#, f(80) title sprintf('%f', f(80)), f(130) title sprintf('%f', f(130))"
+		if TYPE == 'cruiseSpeedKmlCompare':
+			print patterns[v[0]][0] + "(x) = a" + str(v[0]) + "*x**2 + b"+str(v[0])+"*x + c"+str(v[0])
+			print "fit " + patterns[v[0]][0] + "(x) '" + path + "data/"+str(v[0]) + "cruiseSpeedKml.csv' using 1:2 via a"+str(v[0])+"," +"b" +str(v[0])+"," +"c" +str(v[0])
+			s+=patterns[v[0]][0] + "(x) notitle lc rgb '"+ patterns[v[0]][1] +"',"
+		if TYPE == 'cruiseSpeedKml':
+			s += "'"+  path + "data/"+str(v[0])+"cruiseSpeedKml.csv' title 'Vehicle " + str(v[0]) + "'lc rgb '"+ patterns[v[0]][1] +"',"
+
+	if TYPE == 'cruiseSpeedKml':
+		print s + " f(x) lw 2 lc rgb 'black' title 'Regression line'"#, f(80) title sprintf('%f', f(80)), f(130) title sprintf('%f', f(130))"
+	else:
+		print s[:-1]
+		
+elif TYPE == 'cruiseSpeedKmlCompare':
+	vehicles = con.query("select distinct vehicleid from " + TABLE + " order by vehicleid;").getresult()
+	minSpeed = 0
+	maxSpeed = 160
+	
+	for v in vehicles:
+		res = con.query("select round(cruisespeed/10)*10 as cs, avg(case when length = 0 then 0 else (fuel*1000)/length end) from " + TABLE + " where cruisespeed>=" + str(minSpeed) +" and cruisespeed<=" + str(maxSpeed) + " and vehicleid = " + str(v[0]) +" and time> 0 group by cs;").getresult()
+		output = open(path + 'data/'+str(v[0])+'cruiseSpeedKmlCompare.csv', 'wb')
+		writer = csv.writer(output, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+		for r in res:
+			writer.writerow(r)
+	
+	print "set output '" + path + "images/cruiseSpeedKmlCompare.png';"
+	print "set ylabel 'Fuel efficiency (ml/km)'"
+	print "set xlabel 'Cruise speed (km/h)'"
+	print "set xtics 10"
+	boxwidth= 10.0/(len(vehicles)+1)
+	print "set style fill solid border -1"
+	print "set boxwidth " + str(boxwidth)
+	print "set key center top"
+	print "set xr ["+str(minSpeed-(boxwidth/2)) + ":" + str(maxSpeed+(boxwidth*4-boxwidth/2))+ "]"
+	
+	offset = 0
+	s = "plot "
+	for v in vehicles:
+		s += "'" + path + "data/"+str(v[0]) + "cruiseSpeedKmlCompare.csv' using ($1+"+ str(offset) + "):2 with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + " title 'Vehicle " + str(v[0]) + "',"
+		offset+=boxwidth
+	print s[:-1]	
+		
 
 elif TYPE == 'cruiseSpeedKmlAvg':
 	res = con.query("select cruisespeed, avg(case when length = 0 then 0 else fuel/length end) from " + TABLE + " group by cruiseSpeed;").getresult()
@@ -1195,7 +1265,26 @@ elif TYPE == 'accelerationRanges4':
 		s += "'" + path + "data/"+str(v[0]) + "accelerationRanges4.csv' using ($1+"+ str(offset) + "):($2) with boxes lc rgb '" + patterns[v[0]][1]+ "' fs pattern " + patterns[v[0]][2] + "  title '" + str(v[0]) + "',"
 		offset+=boxwidth
 	print s[:-1]
-	
+
+elif TYPE == 'accelerationLength':
+
+	res = con.query("select round(time), count(time) from g_accdata3 group by round order by round;").getresult()
+	output = open(path + 'data/accelerationLength.csv', 'w+')
+	for r in res:
+		print >> output, str(r[0]) + " " + str(r[1])#str(float(r[1])/float(v[1]))
+
+	print "set output '" + path + "images/accelerationLength.png';"
+	print "set ylabel 'Number of periods'"
+	print "set xlabel 'Acceleration Length (s)'"
+	print "set style fill solid border -1"
+	print "set xtic rotate by -45 scale 0"
+	print "set xr [0:40]"
+
+	s = "plot "
+
+	s += "'" + path + "data/accelerationLength.csv' with boxes  title 'test'"
+	print s
+
 elif TYPE == 'acceleration3D':
 	accGranularity = 0.25
 	speedGranularity = 10
@@ -1486,6 +1575,7 @@ elif TYPE == 'accelerationFuelStart2' or  TYPE == 'accelerationFuelStart2DataA' 
 	print "set ylabel 'Fuel (ml/s)'"
 	print "set xlabel 'Acceleration (m/s^2)'"
 	print "set xrange[0:3.5]"
+	print "set yr[0:15]"
 	print "set key right bottom opaque"
 	
 	if not s == '':
