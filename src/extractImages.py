@@ -213,7 +213,7 @@ elif TYPE == 'frequency':
 	print "set style fill solid border -1"
 	print "set boxwidth  1"
 	print "set logscale y 10"
-	print "plot '" + path + "data/frequency.csv' with boxes lw 1 notitle"
+	print "plot '" + path + "data/frequency.csv' with lines lw 1 notitle"
 
 
 
@@ -461,7 +461,7 @@ elif TYPE == 'trajectoryTrafficLight':
 	toplot.sort(key=lambda tup: tup[1])
 	
 	for v in toplot:
-		#print "len " + str(v[2]) 
+		print "len " + str(v[2]) 
 		cou = 0
 		lt = 0
 		if v[1]< 0.01:
