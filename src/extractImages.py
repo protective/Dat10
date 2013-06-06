@@ -45,7 +45,7 @@ def getTime(t):
 
 
 if TYPE == 'km_pr_l':
-	vehicles = con.query("select distinct vehicleid from " + TABLE + ";").getresult()
+	vehicles = con.query("select distinct vehicleid from " + TABLE + " order by vehicleid;").getresult()
 
 	i = 0
 	for v in vehicles:
@@ -1366,6 +1366,7 @@ elif TYPE == 'acceleration3D':
 		print "set hidden3d"
 		print "set xlabel 'Start speed (km/h)'"
 		print "set ylabel 'Acceleration (m/s^2)'"
+		print "set ytics 0.25"
 
 		if v[0]==100:
 			print "set label 1 'Standard deviation (ml/s)' center rotate by 90 at graph 0, graph 0, graph 0.5 offset -7"
