@@ -461,7 +461,7 @@ elif TYPE == 'trajectoryTrafficLight':
 	toplot.sort(key=lambda tup: tup[1])
 	
 	for v in toplot:
-		#print "len " + str(v[2]) 
+		print "len " + str(v[2]) 
 		cou = 0
 		lt = 0
 		if v[1]< 0.01:
