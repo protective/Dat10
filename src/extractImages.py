@@ -58,7 +58,7 @@ if TYPE == 'km_pr_l':
  
 	print "set output '" + path + "images/kmlTrips.png';"
 	print "set ylabel 'Fuel efficiency (km/l)'"
-	print "set xlabel 'Trips'"
+	print "set xlabel 'Trip identifiers'"
 	print "set yrange[0:15]"
 	print "set xr[0:"+ str(i) + "]"
 	print "set key left top opaque"
@@ -97,7 +97,7 @@ elif TYPE == 'TripsKmlCluster':
 elif TYPE == 'TimeTrips':
 	print "set output '" + path + "images/TimeTrips.png';"
 	print "set ylabel 'Number of trips"
-	print "set xlabel 'Timeframe (s)'"
+	print "set xlabel 'Time gap (s)'"
 	print "set yrange[0:]"
 	print "set xrange[5:]"
 
@@ -174,7 +174,7 @@ elif TYPE == 'RPMfuelprsec':
 	print "set xlabel 'RPM'"
 	print "set boxwidth  100"
 	print "set y2tics"
-	print "plot '" + path + "data/RPMfuelprsec.csv' using 1:2 with boxes lw 1 notitle, 'data/RPMfuelprsec.csv' using 1:3 with lines lw 3 lc rgb \"black\" title 'Number of data points' axes x1y2"
+	print "plot '" + path + "data/RPMfuelprsec.csv' using 1:2 with boxes lw 1 title 'Fuel consumption', 'data/RPMfuelprsec.csv' using 1:3 with lines lw 3 lc rgb \"black\" title 'Number of data points' axes x1y2"
 
 
 
@@ -510,7 +510,7 @@ elif TYPE == 'idle2':
 
 	print "set output '" + path + "images/idle2.png';"
 	print "set ylabel 'Class distribution (%)'"
-	print "set xlabel 'Percent of trip in idle (%)'"
+	print "set xlabel 'Percent of idle in trip (%)'"
 	print "set xtics 10"
 	print "set yrange[0:100]"
 	print "set y2tics"
@@ -938,7 +938,7 @@ elif TYPE == 'idleDuration2':
 elif TYPE == 'tlRange':
 	print "set output '" + path + "images/tlRange.png';"
 	print "set ylabel '"
-	print "set xlabel 'Radius from Traficlight (m)'"
+	print "set xlabel 'Radius from Traffic light (m)'"
 	#print "set logscale y 10"
 	print "set yrange[0.1:]"
 	
@@ -992,7 +992,7 @@ elif TYPE == 'idleRange2' or TYPE == 'idleRange22':
 		print "set xrange[1200:5600]"
 
 	print "set ylabel 'Sum of seconds in idle (s)'"
-	print "set xlabel 'Idle range (s)'"
+	print "set xlabel 'Idle time (s)'"
 	print "set style fill solid border -1"
 	print "set boxwidth " + str(boxwidth)
 	print "set xtic rotate by -45 scale 0"
@@ -1275,7 +1275,7 @@ elif TYPE == 'accelerationLength':
 
 	print "set output '" + path + "images/accelerationLength.png';"
 	print "set ylabel 'Number of periods'"
-	print "set xlabel 'Acceleration Length (s)'"
+	print "set xlabel 'Length of acceleration periods (s)'"
 	print "set style fill solid border -1"
 	print "set xtic rotate by -45 scale 0"
 	print "set xr [0:40]"
@@ -1364,7 +1364,7 @@ elif TYPE == 'acceleration3D':
 	
 		print "set output 'images/" +str(v[0]) + "acceleration3D.png'"
 		print "set hidden3d"
-		print "set xlabel 'Start speed km/h'"
+		print "set xlabel 'Start speed (km/h)'"
 		print "set ylabel 'Acceleration (m/s^2)'"
 
 		if v[0]==100:
@@ -1534,8 +1534,8 @@ elif TYPE == "accelerationCounter":
 			print >> output, str(i) + " " + str(r[0])
 	
 	print "set output '" + path + "images/accelerationCounter.png';"
-	print "set ylabel 'Standard deviation of ml/s'"
-	print "set xlabel 'Min lenght (s)'"
+	print "set ylabel 'Standard deviation of fuel consumption (ml/s)'"
+	print "set xlabel 'Minimum lenght (s)'"
 	print "set yr[0:]"
 	
 	mint = '3'
@@ -1765,7 +1765,7 @@ elif TYPE == 'speedlimitCount':
 	boxwidth= 5.0/(len(vehicles)+1)
 	print "set output '" + path + "images/speedlimitCount.png';"
 	print "set ylabel 'Number of records (%)'"
-	print "set xlabel 'Faster than the speedlimit (km/h)';"
+	print "set xlabel 'Faster than the speed limit (km/h)';"
 	print "set style fill solid border -1"
 	print "set boxwidth " + str(boxwidth)
 	print "set xtic rotate by -45 scale 0"
@@ -1814,12 +1814,12 @@ elif TYPE == 'compareVehicles2':
 	#(select vehicleid, sum(case when g.avgacceleration>avg then fuel else 0 end)/sum(fuel)::float*100 as a2v from (select round(startspeed/10)*10 as s, avg(avgacceleration) as avg from g_accdata3 where avgacceleration>0 and time>3 and avgAcceleration<=2  group by s)sd, (select vehicleid, round(startspeed/10)*10 as s, avgAcceleration, time, fuel from g_accdata3 where avgacceleration> 0 and time>3 and avgAcceleration<=2 )g where sd.s=g.s group by vehicleid)a2,
 
 	res = con.query("""
-	select c.vehicleid, (tottime-cv)/tottime*100 as cruise, iv/tottime*100 as idle, slv/kv*100 as speed, rv as roads, tlv as trafficlights, afv, av
+	select c.vehicleid, (tottime-cv)/tottime*100 as cruise, iv/tottime*100 as idle, slv as speed, rv as roads, tlv as trafficlights, afv, av
 	from 
 		(select vehicleid, sum(time) as cv from g_cruise_data group by vehicleid)c, 
 		(select vehicleid, sum(stopped) as iv from g_idledatatl where stopped>=250 group by vehicleid)i,
 		(select vehicleid, avg(tlcounter/total_km) as tlv from g_trip_data where total_km>0 group by vehicleid)tl,
-		(select vehicleid, count(*) as slv from (select vehicleid, speedmod-kmh as d from osm_dk_20130501 as m, g_gps_can_data as g where m.segmentkey=g.segmentkey and dirty is false)s where d>0 group by vehicleid)sl,
+		(select vehicleid, count(case when speedmod>kmh then 1 end)/count(*)::float*100 as slv from osm_dk_20130501 as m, g_gps_can_data as g where m.segmentkey=g.segmentkey group by vehicleid)sl,
 		(select vehicleid, 100-avg(pnormalroad)*100 as rv from g_trip_data group by vehicleid order by vehicleid)r,
 		(select vehicleid, sum(case when avgrpm>2000 then 1 else 0 end)/count(*)::float*100 as av from g_accdata3 group by vehicleid)a,
 		(select vehicleid, avg(fuel*1000/time) as afv from g_accdata3 where avgacceleration>0 and time>=3 group by vehicleid)af,
@@ -1853,7 +1853,7 @@ elif TYPE == 'compareVehicles2':
 		set arrow nohead from 0,0 to first 1*cos(a7) , 1*sin(a7)
 		a1_max = 100
 		a2_max = 25
-		a3_max = 25
+		a3_max = 50
 		a4_max = 100
 		a5_max = 0.25
 		a6_max = 5
@@ -1867,7 +1867,7 @@ elif TYPE == 'compareVehicles2':
 		a7_min = 0
 		set label "Not at steady speed (0-100%)" at cos(a1),sin(a1) center offset char 1,1
 		set label "Idle (0-25%)" at cos(a2),sin(a2) center offset char -2,0.5
-		set label "Speed limit (0-25%)" at cos(a3),sin(a3) center offset char -2,1
+		set label "Speed limit (0-50%)" at cos(a3),sin(a3) center offset char -2,1
 		set label "Not on main \\rroads (0-100%)" at cos(a4),sin(a4) center offset char -1,-1
 		set label "Traffic lights per km (0-0.25)" at cos(a5),sin(a5) center offset char -3,-1
 		set label "Acceleration (0-5 ml/s)" at cos(a6),sin(a6) center offset char 3,-1
