@@ -18,14 +18,23 @@ if [ ! -d $PREFIX"_images" ]; then
     mkdir $PREFIX"_images"
 fi
 
-ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py compareVehicles2 $GPSDATA | gnuplot"
-scp d103@172.25.26.191:Dat10/src/images/Compare.png $PREFIX"_images"/Compare.png
 
-
-
+ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py cruiseSpeedKml $CRUISEDATA | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/cruiseSpeedKml.png $PREFIX"_images"/cruiseSpeedKml.png
 
 : << 'COMMENT'
 
+
+ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py TripsKmlCluster $TRIPS | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/TripsKmlCluster.png $PREFIX"_images"/TripsKmlCluster.png
+
+ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py RPMfuelprsec $ACCDATA | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/RPMfuelprsec.png $PREFIX"_images"/RPMfuelprsec.png
+
+
+
+ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py compareVehicles2 $GPSDATA | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/Compare.png $PREFIX"_images"/Compare.png
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py normalRoad $TRIPS | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/normalRoad.png $PREFIX"_images"/normalRoad.png
@@ -85,9 +94,6 @@ scp d103@172.25.26.191:Dat10/src/images/TimeTrips.png $PREFIX"_images"/TimeTrips
 
 
 
-ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py cruiseSpeedKml $CRUISEDATA | gnuplot"
-scp d103@172.25.26.191:Dat10/src/images/cruiseSpeedKml.png $PREFIX"_images"/cruiseSpeedKml.png
-
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py accelerationLength $ACCDATA | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/accelerationLength.png $PREFIX"_images"/accelerationLength.png
@@ -106,12 +112,6 @@ ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py cruiseSpeedK
 scp d103@172.25.26.191:Dat10/src/images/cruiseSpeedKmlCompare.png $PREFIX"_images"/cruiseSpeedKmlCompare.png
 
 
-
-ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py RPMfuelprsec $ACCDATA | gnuplot"
-scp d103@172.25.26.191:Dat10/src/images/RPMfuelprsec.png $PREFIX"_images"/RPMfuelprsec.png
-
-ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py TripsKmlCluster $TRIPS | gnuplot"
-scp d103@172.25.26.191:Dat10/src/images/TripsKmlCluster.png $PREFIX"_images"/TripsKmlCluster.png
 
 
 

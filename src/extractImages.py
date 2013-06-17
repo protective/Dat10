@@ -23,7 +23,7 @@ r = con.query("select count(case when km_pr_l >=" + str(clusters[0][0]) + " then
 kmprl = con.query("select km_pr_l from g_trip_data where km_pr_l >=" + str(clusters[0][0]) + " order by km_pr_l;").getresult()
 clusters.append([kmprl[int(r[0][0])][0], 'Low', '1'])
 clusters.append([kmprl[int(r[0][0])*2][0], 'Medium', '6'])
-clusters.append([100, 'High', '2']) #100 is dummy value
+clusters.append([12, 'High', '2']) #12 is dummy value
 
 
 #Letter, color, pattern
@@ -118,11 +118,24 @@ elif TYPE == 'TripsKmlCluster':
 		print "set ylabel 'Number of trips"
 		print "set xlabel 'Fuel efficiency (km/l)'"
 	print "set xtic 1"
+	print "set xr[0:]"
+	print "set style fill solid border -1"
 
+	output2 = open(path +'data/TripsKmlClusterColors.csv', 'wb')
+	c = ''
+	d = ""
+	counter = 1
+	t = 0
 	for i in clusters:
 		print "set arrow from " + str(i[0]) + ",0 to " + str(i[0]) + ",300 lw 2 nohead"
+		c+=str(t+(float(i[0])-t)/2) + " "
+		if counter <=4:
+			d += "'data/TripsKmlClusterColors.csv' using " + str(counter) + ":(300):("+str(float(i[0])-t)+") with boxes linestyle "+str(i[2])+" notitle,"
+		counter+=1
+		t = float(i[0])
+	print>>output2, c
 	
-	print "plot '" + path + "data/TripsKmlCluster.csv' with lines lw 3 notitle"
+	print "plot " + d + "'" + path + "data/TripsKmlCluster.csv' with lines lc rgb 'black' lw 3 notitle"
 
 
 elif TYPE == 'TimeTrips':
@@ -180,7 +193,7 @@ elif TYPE == 'RPMfuelprsec':
 	if LANG == 'en':
 		title1 = 'Fuel consumption'
 		title2 = 'Number of data points'
-	print "plot '" + path + "data/RPMfuelprsec.csv' using 1:2 with boxes lw 1 title '" + title1 + "', 'data/RPMfuelprsec.csv' using 1:3 with lines lw 3 lc rgb \"black\" title '" + title2 +"' axes x1y2"
+	print "plot '" + path + "data/RPMfuelprsec.csv' using 1:2 with lines lw 3 title '" + title1 + "', 'data/RPMfuelprsec.csv' using 1:3 with lines lw 2 lc rgb \"black\" title '" + title2 +"' axes x1y2"
 
 
 
@@ -750,7 +763,7 @@ elif TYPE == 'cruiseSpeedKml':
 			print "fit " + patterns[v[0]][0] + "(x) '" + path + "data/"+str(v[0]) + "cruiseSpeedKml.csv' using 1:2 via a"+str(v[0])+"," +"b" +str(v[0])+"," +"c" +str(v[0])
 			s+=patterns[v[0]][0] + "(x) notitle lc rgb '"+ patterns[v[0]][1] +"',"
 		if TYPE == 'cruiseSpeedKml':
-			s += "'"+  path + "data/"+str(v[0])+"cruiseSpeedKml.csv' title '" + title + str(v[0]) + "'lc rgb '"+ patterns[v[0]][1] +"',"
+			s += "'"+  path + "data/"+str(v[0])+"cruiseSpeedKml.csv' title '" + title + str(v[0]) + " ' lc rgb '"+ patterns[v[0]][1] +"',"
 
 	if TYPE == 'cruiseSpeedKml':
 		print s + " f(x) lw 2 lc rgb 'black' title '" + title2 + "'"#, f(80) title sprintf('%f', f(80)), f(130) title sprintf('%f', f(130))"
