@@ -1455,15 +1455,17 @@ elif TYPE == 'compareVehicles2':
 		a4_min = 0
 		a5_min = 0
 		a6_min = 0
-		a7_min = 0"""
+		a7_min = 0
+		"""
 	if LANG == 'da':
 		s+= """set label "Ikke ved j\346vn hastighed(0-100%)" at cos(a1),sin(a1) center offset char 1,1
 		set label "Tomgang (0-25%)" at cos(a2),sin(a2) center offset char -2,0.5
-		set label "Hastighedsgr\346nse (0-50%)" at cos(a3),sin(a3) center offset char -2,1
-		set label "Ikke p\345 hovedveje (0-100%)" at cos(a4),sin(a4) center offset char -1,-1
+		set label "Hastighedsgr\346nse (0-50%)" at cos(a3),sin(a3) center offset char 1.5,1
+		set label "Ikke p\345 \\rhovedveje (0-100%)" at cos(a4),sin(a4) center offset char 0,-1
 		set label "Trafiklys per km (0-0.25)" at cos(a5),sin(a5) center offset char -3,-1
 		set label "Acceleration (0-5 ml/s)" at cos(a6),sin(a6) center offset char 3,-1
-		set label "RPM over \\r2000 (0-50%)" at cos(a7),sin(a7) center offset char 0,2"""
+		set label "RPM over \\r2000 (0-50%)" at cos(a7),sin(a7) center offset char 0,2
+		"""
 		title = 'Bil '
 	if LANG == 'en':
 		s+= """set label "Not at steady speed (0-100%)" at cos(a1),sin(a1) center offset char 1,1
@@ -1472,7 +1474,8 @@ elif TYPE == 'compareVehicles2':
 		set label "Not on main \\rroads (0-100%)" at cos(a4),sin(a4) center offset char -1,-1
 		set label "Traffic lights per km (0-0.25)" at cos(a5),sin(a5) center offset char -3,-1
 		set label "Acceleration (0-5 ml/s)" at cos(a6),sin(a6) center offset char 3,-1
-		set label "RPM above \\r2000 (0-50%)" at cos(a7),sin(a7) center offset char 0,2"""
+		set label "RPM above \\r2000 (0-50%)" at cos(a7),sin(a7) center offset char 0,2
+		"""
 		title = 'Vehicle '
 	s+="""set xrange [-1:1]
 		set yrange [-1:1]
