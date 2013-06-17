@@ -38,7 +38,7 @@ if TYPE == 'showClusters':
 
 #print "set terminal png size 800,400;"
 #print 'set key font ",30"'
-print "set terminal pngcairo size 800,400 enhanced font 'Verdana,12'"
+print "set terminal pngcairo size 800,400 enhanced font 'Verdana,12'; set encoding iso_8859_1"
 
 def getTime(t):
 	return float(time.mktime(time.strptime(t, "%Y-%m-%j %H:%M:%S")))
@@ -74,6 +74,24 @@ if TYPE == 'km_pr_l':
 	print s[:-1]
 	#print s + ""+str(clusters[0])+" lw 2 lc rgb \"black\" notitle, "+str(clusters[1])+" lw 2 lc rgb \"black\" notitle"
 	
+elif TYPE == 'avgKmprl':
+	res = con.query("select vehicleid, avg(km_pr_l) from " + TABLE + " group by vehicleid order by vehicleid;").getresult()
+	s = 'plot '
+	t = ''
+	for r in res:
+		output = open(path + 'data/' + str(r[0])+'avgKmprl.csv', 'wb')
+		print >> output, str(r[0]) + " " + str(r[1])
+		s += "'"+path + "data/"+str(r[0]) + "avgKmprl.csv' with boxes lc rgb '" + patterns[r[0]][1]+ "' title 'Bil " + str(r[0]) + "',"
+		t += str(r[1]) + " lw 3 lc rgb '" + patterns[r[0]][1]+ "' notitle,"
+ 
+	print "set output '" + path + "images/avgKmprl.png'"
+	print "set ylabel 'Br\346ndstofeffektivitet (km/l)'"
+	print "unset xtics; set ytics 0.5"
+	print "set xr[0.5:4.5]"
+	print "set yr[0:9.5]"
+	print "set boxwidth 0.8;set style fill solid border -1"
+	print "set key opaque"
+	print s + t[:-1]
 
 elif TYPE == 'TripsKmlCluster':
 	res = con.query("select round(km_pr_l::decimal*4,0)/4 as round, count(*) from " + TABLE + " group by round order by round;").getresult()
@@ -1550,6 +1568,7 @@ elif TYPE == 'accelerationFuelStart2' or  TYPE == 'accelerationFuelStart2DataA' 
 	minTime = '3'
 	starts = con.query("select * from (select distinct round(startspeed/10)*10 as start from " +  TABLE + " where time>=" + minTime + ")s where start>0 order by start;").getresult()
 	s = "plot "
+	t = ''
 	color = 1
 	for ss in starts:
 		res = con.query("select avgAcceleration, (fuel*1000)/time::float from " + TABLE + " where round(startspeed/10)*10=" + str(ss[0]) + " and endspeed>startspeed and time>=" + minTime + " and (fuel*1000)/time::float>0 order by endspeed;").getresult()
@@ -1564,11 +1583,11 @@ elif TYPE == 'accelerationFuelStart2' or  TYPE == 'accelerationFuelStart2DataA' 
 			print "fit f"+ n + "(x) '" + path + "data/"+ n + TYPE+ ".csv' using 1:2 via a"+ n + ",b"+ n
 
 			if (TYPE == 'accelerationFuelStart2DataA' and ss[0]<=80) or (TYPE == 'accelerationFuelStart2DataB' and ss[0]>80):
-				s += "f"+ n + "(x) lc " + str(color) + " lw 2 title '" + n + " km/h',"
+				t += "f"+ n + "(x) lc " + str(color) + " lw 2 title '" + n + " km/h',"
 				#s+= "f"+ n + "(x) lc " + str(color) + " title sprintf('%d km/h (%2.1f, %d)'," +n+", a"+ n + ", " + str(len(res)) +"),"
 				s += "'" + path + "data/"+ n + TYPE +".csv' lc " + str(color) + " notitle,"
 			elif TYPE == 'accelerationFuelStart2' and ss[0]<=80:
-				s+= "f"+ n + "(x) lc " + str(color) + " lw 2 title '" + n + " km/h',"
+				t+= "f"+ n + "(x) lc " + str(color) + " lw 2 title '" + n + " km/h',"
 				#s+= "f"+ n + "(x) lc " + str(color) + " title sprintf('%d km/h (%2.1f, %d)'," +n+", a"+ n + ", " + str(len(res)) +"),"
 		color += 1
 	
@@ -1580,7 +1599,7 @@ elif TYPE == 'accelerationFuelStart2' or  TYPE == 'accelerationFuelStart2DataA' 
 	print "set key right bottom opaque"
 	
 	if not s == '':
-		print s[:-1]
+		print s + t[:-1]
 
 elif TYPE == 'song' or  TYPE == 'songData':
 	minTime = '10'
