@@ -18,12 +18,20 @@ LANG = 'da'
 con = pg.connect(dbname=DB, host='localhost', user=USER,passwd='F1ff')
 
 noClasses= 3
-clusters = [[3.5, 'Outliers', 9]]
+if LANG == 'da':
+	clusters = [[3.5, 'Unormale', 9]]
+if LANG == 'en':
+	clusters = [[3.5, 'Outliers', 9]]
 r = con.query("select count(case when km_pr_l >=" + str(clusters[0][0]) + " then 1 end)::float/" + str(noClasses) + " from g_trip_data ;").getresult()
 kmprl = con.query("select km_pr_l from g_trip_data where km_pr_l >=" + str(clusters[0][0]) + " order by km_pr_l;").getresult()
-clusters.append([kmprl[int(r[0][0])][0], 'Low', '1'])
-clusters.append([kmprl[int(r[0][0])*2][0], 'Medium', '6'])
-clusters.append([12, 'High', '2']) #12 is dummy value
+if LANG == 'da':
+	clusters.append([kmprl[int(r[0][0])][0], 'Lav', '1'])
+	clusters.append([kmprl[int(r[0][0])*2][0], 'Medium', '6'])
+	clusters.append([12, 'H\370j', '2']) #12 is dummy value
+if LANG == 'en':
+	clusters.append([kmprl[int(r[0][0])][0], 'Low', '1'])
+	clusters.append([kmprl[int(r[0][0])*2][0], 'Medium', '6'])
+	clusters.append([12, 'High', '2']) #12 is dummy value
 
 
 #Letter, color, pattern
@@ -120,6 +128,7 @@ elif TYPE == 'TripsKmlCluster':
 	print "set xtic 1"
 	print "set xr[0:]"
 	print "set style fill solid border -1"
+	print "set key opaque"
 
 	output2 = open(path +'data/TripsKmlClusterColors.csv', 'wb')
 	c = ''
@@ -130,7 +139,7 @@ elif TYPE == 'TripsKmlCluster':
 		print "set arrow from " + str(i[0]) + ",0 to " + str(i[0]) + ",300 lw 2 nohead"
 		c+=str(t+(float(i[0])-t)/2) + " "
 		if counter <=4:
-			d += "'data/TripsKmlClusterColors.csv' using " + str(counter) + ":(300):("+str(float(i[0])-t)+") with boxes linestyle "+str(i[2])+" notitle,"
+			d += "'data/TripsKmlClusterColors.csv' using " + str(counter) + ":(300):("+str(float(i[0])-t)+") with boxes linestyle "+str(i[2])+" title '" +str(i[1]) + "',"
 		counter+=1
 		t = float(i[0])
 	print>>output2, c
