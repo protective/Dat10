@@ -19,6 +19,9 @@ if [ ! -d $PREFIX"_images" ]; then
 fi
 
 
+ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py normalRoad $TRIPS | gnuplot"
+scp d103@172.25.26.191:Dat10/src/images/normalRoad.png $PREFIX"_images"/normalRoad.png
+
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py accelerationFuelStart2 $ACCDATA | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/accelerationFuelStart2.png $PREFIX"_images"/accelerationFuelStart2.png
 
@@ -31,7 +34,7 @@ ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py acceleration
 scp d103@172.25.26.191:Dat10/src/images/accelerationFuelStart2DataA.png $PREFIX"_images"/accelerationFuelStart2DataA.png
 
 
-: << 'COMMENT'
+
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py avgKmprl $TRIPS | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/avgKmprl.png $PREFIX"_images"/avgKmprl.png
@@ -139,8 +142,6 @@ scp d103@172.25.26.191:Dat10/src/images/idle3.png $PREFIX"_images"/idle3.png
 
 
 
-ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py normalRoad $TRIPS | gnuplot"
-scp d103@172.25.26.191:Dat10/src/images/normalRoad.png $PREFIX"_images"/normalRoad.png
 
 ssh -x -l d103 172.25.26.191 "cd Dat10/src/;python extractImages.py sidra $CRUISEDATA | gnuplot"
 scp d103@172.25.26.191:Dat10/src/images/sidra.png $PREFIX"_images"/sidra.png
@@ -251,7 +252,7 @@ scp d103@172.25.26.191:Dat10/src/images/sidraAcc.png $PREFIX"_images"/sidraAcc.p
 
 
 
-
+: << 'COMMENT'
 COMMENT
 
 
