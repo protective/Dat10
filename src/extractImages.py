@@ -1182,19 +1182,23 @@ elif TYPE == 'acceleration3D':
 		if LANG == 'da':
 			print "set xlabel 'Starthastighed (km/t)'"
 			print "set ylabel 'Acceleration (m/s^2)'"
+			zlabel1 = 'Standard afvigelse (ml/s)'
+			zlabel2 = 'Brændstofeffektivitet (ml/s)'
 		if LANG == 'en':
 			print "set xlabel 'Start speed (km/h)'"
 			print "set ylabel 'Acceleration (m/s^2)'"
+			zlabel1 = 'Standard deviation (ml/s)'
+			zlabel2 = 'Fuel efficiency (ml/s)'
 		print "set ytics 0.25"
 
 		if v[0]==100:
-			print "set label 1 'Standard deviation (ml/s)' center rotate by 90 at graph 0, graph 0, graph 0.5 offset -7"
+			print "set label 1 '" + zlabel1 + "' center rotate by 90 at graph 0, graph 0, graph 0.5 offset -7"
 			print "unset logscale"
 			print "unset zr; set zr[0:]"
 			print "unset xr; set xr[0:160] reverse"
 			print "unset yr; set yr[0:2]"
 		elif v[0]==101:
-			print "set label 1 'Standard deviation (ml/s)' center rotate by 90 at graph 0, graph 0, graph 0.5 offset -7"
+			print "set label 1 '" + zlabel1 + "' center rotate by 90 at graph 0, graph 0, graph 0.5 offset -7"
 
 			print "set logscale z 10"
 			print "set logscale cb 10"
@@ -1205,7 +1209,7 @@ elif TYPE == 'acceleration3D':
 		else:
 			print "set cbrange[0:80]"
 			print "unset logscale"
-			print "set label 1 'Fuel (ml/s)' center rotate by 90 at graph 0, graph 0, graph 0.5 offset -7"
+			print "set label 1 '" + zlabel2 + "' center rotate by 90 at graph 0, graph 0, graph 0.5 offset -7"
 			print "unset zr; set  zr[0:]"
 			print "unset xr; set xr[0:160] reverse"
 			print "unset yr; set yr[0:2]"
