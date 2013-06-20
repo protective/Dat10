@@ -1554,5 +1554,16 @@ elif TYPE == 'checkFuel':
 	
 	print "plot '" + path + "data/checkFuel.csv' with boxes notitle"
 
+elif TYPE == 'driverChange':
+	res = con.query('select tid, km_pr_l from ' + TABLE + ' where vehicleid=2 order by tid;').getresult()
+	output = open('data/driverChange.csv', 'wb+')
+	for r in res:
+		print >> output, str(r[0]) + ' ' + str(r[1])
+	
+	print "set arrow from 5700, 0 to 5700,15"
+	print "set output 'images/driverChange.png'"
+	print "plot 'data/driverChange.csv'"
+		
+
 else:
 	print "Nothing"
