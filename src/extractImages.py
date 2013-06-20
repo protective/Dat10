@@ -1183,7 +1183,7 @@ elif TYPE == 'acceleration3D':
 			print "set xlabel 'Starthastighed (km/t)'"
 			print "set ylabel 'Acceleration (m/s^2)'"
 			zlabel1 = 'Standard afvigelse (ml/s)'
-			zlabel2 = 'Brændstofeffektivitet (ml/s)'
+			zlabel2 = 'Br\346ndstofeffektivitet (ml/s)'
 		if LANG == 'en':
 			print "set xlabel 'Start speed (km/h)'"
 			print "set ylabel 'Acceleration (m/s^2)'"
